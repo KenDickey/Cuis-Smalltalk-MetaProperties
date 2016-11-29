@@ -1,12 +1,12 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 28 November 2016 at 6:20:56 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 28 November 2016 at 7:20:12 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 2!
+!provides: 'Morph-MetaProperties' 1 3!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #PropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #PropertyEditor
-	instanceVariableNames: 'morph metaProps showAllIvars showAllProps'
+	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morph-MetaProperties'!
@@ -185,20 +185,269 @@ icon
 
 	^ VisualPropertyMorph fontIcon ! !
 
+!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:41:29'!
+propertiesDict
+	"Private - could export a #propertiesDo: method"
+
+	^ properties ! !
+
 !ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:18:59'!
 icon
 
 	^ VisualPropertyMorph windowIcon ! !
 
-!PropertyEditor methodsFor: 'initialization' stamp: 'KenD 11/28/2016 08:24:25'!
+!PropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 18:28:46'!
+aboutToGrab: aMorph
+	"submorph is being grabbed by a hand.
+	Perform necessary adjustments (if any) and return the actual morph
+	that should be added to the hand.
+	Answer nil to reject the drag."
+"
+	Transcript show: 'PropertyEditor aboutToGrab: ', aMorph printString ; newLine.
+"
+	^ (aMorph isKindOf: VisualPropertyMorph)
+		ifTrue: [ 
+			(aMorph propertyValue isKindOf: Color)
+			ifTrue: [ DropColorMorph fromColor: aMorph propertyValue ]
+			ifFalse: [ SignMorph forObject: aMorph propertyValue ]
+		] 
+		ifFalse: [ self ] "Title selected. User wants to move me. Pick me up"! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:19:50'!
+addProperty
+
+	self notYetImplemented ! !
+
+!PropertyEditor methodsFor: 'initialization' stamp: 'KenD 11/28/2016 18:27:45'!
+addTitle: aString
+
+	titleMorph := WindowTitleMorph title: aString  buttonsNamed: #( close collapse showHalo ).
+	titleMorph color: Theme current menuTitleBar.
+	self addMorphFront: titleMorph.! !
+
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/28/2016 18:29:38'!
+adjustSubmorphsLayout
+
+	super adjustSubmorphsLayout.
+	self titleMorph reset.  "Needed after adjustSubmorphsLayout"! !
+
+!PropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 18:29:13'!
+allowsSubmorphDrag
+	"Answer whether our morphs can just be grabbed with the hand, instead of requiring the use of the halo. Redefined to answer true."
+
+	^ true! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:04:06'!
+alwaysHiddenIVars
+	"Answer a collection of names of ivars never to be shown"
+
+	^ #(properties)! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:04:33'!
+alwaysHiddenProperties
+	"Answer a collection of names of properties never to be shown"
+
+	^ #(morphModifiers)! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:22'!
+changed: myMorph
+
+	"@@@FIXME: my target morph has changed; need to update display@@@"
+	PopUpMenu inform: self printString , ' target changed'! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:45'!
+closeButtonClicked
+	"The user clicked on the close-box control in the window title.  For Mac users only, the Mac convention of option-click-on-close-box is obeyed if the mac option key is down."
+
+	Preferences dismissAllOnOptionClose ifTrue:
+		[Sensor rawMacOptionKeyPressed ifTrue:
+			[^ self world closeUnchangedWindows]].
+	self targetMorph removeActionsForEvent: #propertyChanged.
+	self delete  "closeBox overrides stayUp"! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:54'!
+collapseButtonClicked
+	
+	self collapse
+! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:16:16'!
+edit: propName
+"
+	Remove
+	Rename
+	Edit Value
+	Reset  to old Value
+	Cancel
+"
+	"@@@FIXME: NYI @@@"
+	(HoverHelpMorph contents: 'Need editor for ' , propName asString)
+		popUpForHand: self targetMorph world activeHand! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:16:39'!
+fontPreferenceChanged
+
+	super fontPreferenceChanged.
+	self refreshView.! !
+
+!PropertyEditor methodsFor: 'initialization' stamp: 'KenD 11/28/2016 18:33:34'!
 forMorph: aMorph
 	"Initialize, but do NOT open this instance"
 
-	morph := aMorph.  "NB: immutable"
+	targetMorph := aMorph.  "NB: immutable"
 	showAllIvars  := false.
 	showAllProps := false.
-	metaProps := MetaProperty metaPropsForMorph: aMorph
-	! !
+	metaProps := MetaProperty metaPropsForMorph: aMorph.
+	targetMorph when: #propertyChanged send: #refreshView to: self.
+	self defaultTarget: self;
+		 stayUp: true;
+		 refreshView;
+	 	 yourself! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:12:24'!
+ivarNames
+	"Answer an alpha-sorted collection of instance variable names to be shown
+	when ShowAllIvars is true"
+
+	| ivarNames neverShown |
+	ivarNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
+	neverShown := self alwaysHiddenIVars.
+	
+	self targetMorph class allInstVarNames do: [ :ivarName | 
+		(neverShown includes: ivarName)
+			ifFalse: [ ivarNames add: ivarName ]
+	].
+
+	^ ivarNames ! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:24'!
+metaProps
+
+	^ metaProps! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:03:51'!
+propertyNames
+	"Answer an alpha-sorted collection of property names less MetaProperties"
+
+	| propNames neverShown metaPropsDict |
+	propNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
+	metaPropsDict := self metaProps.
+	neverShown     := self alwaysHiddenProperties.
+	
+	self targetMorph propertiesDict keysDo: [ :propName | 
+		(neverShown includes: propName)
+			ifFalse: [ 
+				(metaPropsDict includesKey: propName)
+					ifFalse:  [ propNames add: propName ]
+			] 
+	].
+
+	^ propNames ! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:17:52'!
+refreshView
+
+	"Something may have changed.."
+	| aMorph |
+	aMorph := self targetMorph.
+	self removeAllMorphs.
+	
+	self addTitle: (aMorph printStringLimitedTo: 60).
+
+	"add operations"
+	self add: 'Refresh Me'            target: self selector: #refreshView.
+	self add: 'Add Property'          target: self selector: #addProperty.
+	self add: 'Toggle IVar Display' target: self selector: #toggleIVarView.
+
+	self addLine.
+	
+	"add properties"
+	self propertyNames do: [ :name | | propMorph |
+		propMorph := 
+			VisualPropertyMorph 
+					propName: name 
+					morph: aMorph 
+					propMeta: (aMorph valueOfMetaProperty: name).
+		propMorph  target: self;
+					selector: #edit: ;
+					arguments: { name. }.
+		self addMorphBack: propMorph
+	].
+
+	(self showAllIvars)  ifTrue: [ "add ivars"
+		
+		self addLine.
+	
+		aMorph class allInstVarNames do: [ :ivarName | | displayString |
+			displayString := 
+				(ivarName, ': ', 
+					((aMorph instVarNamed: ivarName) printString) )
+							truncateWithElipsisTo: 40.
+			(ivarName asString = 'properties')
+			ifFalse: [
+				self add: displayString 
+					  target: self 
+				  	  selector: #editIvar: 
+					  argument: ivarName
+			]
+		]
+	].
+	
+	self titleMorph morphExtent: (self titleMorph morphExtent x) @ (Preferences windowTitleFont height).
+	self adjustSubmorphsLayout;
+		yourself! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:39'!
+showAllIvars
+
+	^ showAllIvars! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:35:24'!
+showAllIvars: aBool
+
+	showAllIvars := aBool! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:53'!
+showAllProps
+
+	^ showAllProps! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:35:08'!
+showAllProps: aBool
+
+	showAllProps := aBool! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:18:46'!
+showHaloButtonClicked
+	"Show my targetMorph's halo"
+	| aMorph |
+	aMorph := self targetMorph.
+	aMorph isInWorld 
+		ifTrue: [ aMorph show; addHalo ]
+		ifFalse: [
+"			(HoverHelpMorph 
+			contents: aMorph printString , ' not shown in world')
+				popUpForHand: self  world activeHand
+"			aMorph openInWorld; 
+				show;
+				morphPosition: 200@100;
+				addHalo   
+		]! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:01'!
+targetMorph
+
+	^ targetMorph ! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:18:53'!
+toggleIVarView
+
+	self toggleIVars; refreshView! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:36:13'!
+toggleIVars
+
+	self showAllIvars: (self showAllIvars not)! !
 
 !PropertyEditor class methodsFor: 'instance creation' stamp: 'KenD 11/28/2016 08:19:15'!
 forMorph: aMorph
