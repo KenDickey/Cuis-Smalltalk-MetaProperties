@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 28 November 2016 at 4:44:39 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 28 November 2016 at 6:20:56 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 1!
+!provides: 'Morph-MetaProperties' 1 2!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
@@ -12,16 +12,6 @@ MenuMorph subclass: #PropertyEditor
 	category: 'Morph-MetaProperties'!
 !classDefinition: 'PropertyEditor class' category: #'Morph-MetaProperties'!
 PropertyEditor class
-	instanceVariableNames: ''!
-
-!classDefinition: #PropertyMorph category: #'Morph-MetaProperties'!
-MenuItemMorph subclass: #PropertyMorph
-	instanceVariableNames: ''
-	classVariableNames: 'BlankIcon BoolIcon CharIcon ChronIcon ClassIcon ClosureIcon CollectIcon CpxIcon FalseIcon FileIcon FloatIcon FolderIcon FontIcon FracIcon IntIcon NilIcon ObjIcon OneOfIcon PtIcon RngIcon StrIcon StreamIcon SymIcon TrueIcon WindowIcon'
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'PropertyMorph class' category: #'Morph-MetaProperties'!
-PropertyMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #VisualPropertyMorph category: #'Morph-MetaProperties'!
@@ -69,6 +59,136 @@ I am an abstract class for Morph meta-properties.
 My instances are used to allow generation of PropertyEditors for Morphs.
 
 See method #whyMe in the class side for documentation.!
+
+!ProtoObject methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 16:50:29'!
+icon
+
+	^ VisualPropertyMorph blankIcon! !
+
+!Object methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 16:49:48'!
+icon
+
+	^ VisualPropertyMorph objectIcon ! !
+
+!Boolean methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 17:57:21'!
+icon
+
+	^ VisualPropertyMorph booleanIcon ! !
+
+!False methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 16:53:15'!
+icon
+
+	^ VisualPropertyMorph falseIcon ! !
+
+!True methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 16:51:04'!
+icon
+
+	^ VisualPropertyMorph trueIcon ! !
+
+!UndefinedObject methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 16:51:54'!
+icon
+
+	^ VisualPropertyMorph nilIcon ! !
+
+!Magnitude methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:01:20'!
+icon
+
+	^ VisualPropertyMorph integerIcon ! !
+
+!Float methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:03:25'!
+icon
+
+	^ VisualPropertyMorph floatIcon ! !
+
+!Fraction methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:03:53'!
+icon
+
+	^ VisualPropertyMorph fractionIcon ! !
+
+!Integer methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:02:04'!
+icon
+
+	^ VisualPropertyMorph integerIcon ! !
+
+!Time methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:12:42'!
+icon
+
+	^ VisualPropertyMorph chronIcon ! !
+
+!Complex methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:02:50'!
+icon
+
+	^ VisualPropertyMorph complexIcon ! !
+
+!Character methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:05:14'!
+icon
+
+	^ VisualPropertyMorph charIcon ! !
+
+!Timespan methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:13:23'!
+icon
+
+	^ VisualPropertyMorph chronIcon ! !
+
+!BlockClosure methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:07:55'!
+icon
+
+	^ VisualPropertyMorph closureIcon ! !
+
+!Collection methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:09:25'!
+icon
+
+	^ VisualPropertyMorph collectionIcon ! !
+
+!String methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:05:54'!
+icon
+
+	^ VisualPropertyMorph stringIcon ! !
+
+!Symbol methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:06:25'!
+icon
+
+	^ VisualPropertyMorph symbolIcon ! !
+
+!Stream methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:10:13'!
+icon
+
+	^ VisualPropertyMorph streamIcon ! !
+
+!FileIOAccessor methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:17:39'!
+icon
+
+	^ VisualPropertyMorph fileIcon ! !
+
+!FileSystemEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:17:29'!
+icon
+
+	^ VisualPropertyMorph fileIcon ! !
+
+!DirectoryEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:15:57'!
+icon
+
+	^ VisualPropertyMorph folderIcon ! !
+
+!FileEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:16:36'!
+icon
+
+	^ VisualPropertyMorph fileIcon ! !
+
+!Point methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:19:42'!
+icon
+
+	^ VisualPropertyMorph pointIcon ! !
+
+!AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:13:57'!
+icon
+
+	^ VisualPropertyMorph fontIcon ! !
+
+!ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:18:59'!
+icon
+
+	^ VisualPropertyMorph windowIcon ! !
 
 !PropertyEditor methodsFor: 'initialization' stamp: 'KenD 11/28/2016 08:24:25'!
 forMorph: aMorph
