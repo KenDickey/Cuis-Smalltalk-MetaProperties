@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 28 November 2016 at 7:20:12 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 12:07:15 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 3!
+!provides: 'Morph-MetaProperties' 1 4!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
@@ -212,6 +212,16 @@ aboutToGrab: aMorph
 			ifFalse: [ SignMorph forObject: aMorph propertyValue ]
 		] 
 		ifFalse: [ self ] "Title selected. User wants to move me. Pick me up"! !
+
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/28/2016 21:26:48'!
+addAllProperties
+
+	self notYetImplemented ! !
+
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/28/2016 21:26:37'!
+addIVars
+
+	self notYetImplemented ! !
 
 !PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:19:50'!
 addProperty
