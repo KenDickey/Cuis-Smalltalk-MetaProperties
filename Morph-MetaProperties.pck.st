@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 30 November 2016 at 4:00:29 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 30 November 2016 at 4:50:31 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 6!
+!provides: 'Morph-MetaProperties' 1 8!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
@@ -249,6 +249,18 @@ addMetaPropsDisplay
 		self addMorphBack: propMorph
 	].! !
 
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 16:38:18'!
+addOperationsDisplay
+	"This is a separate method so subclasses can override"
+
+	self add: 'Refresh Me'             target: self selector: #refreshView;
+		 add: 'Add Visual Property' target: self selector: #addVisualProperty;
+		 add: 'Toggle IVar Display' target: self selector: #toggleIVarView;
+		 add: 'Toggle nonVisual Props Display' target: self selector: #toggleOrdinaryPropsView;
+		 add: 'show drop target for Morph'      target: self targetMorph selector: #showDropTarget;
+		 add: 'edit Morph''s layoutSpec'           target: self targetMorph selector: #editMyLayoutSpec;
+		 add: 'open a message window for Morph' target: self targetMorph selector: #messageWindow.! !
+
 !PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 15:59:32'!
 addOrdinaryPropertiesDisplay
 	" Add display of ordinary properties to self"
@@ -267,13 +279,13 @@ addOrdinaryPropertiesDisplay
 	].
 ! !
 
-!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 14:31:43'!
-addPropertiesDisplay
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 16:39:01'!
+addOrdinaryProperty
 
 	self notYetImplemented ! !
 
-!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:19:50'!
-addProperty
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 14:31:43'!
+addPropertiesDisplay
 
 	self notYetImplemented ! !
 
@@ -283,6 +295,11 @@ addTitle: aString
 	titleMorph := WindowTitleMorph title: aString  buttonsNamed: #( close collapse showHalo ).
 	titleMorph color: Theme current menuTitleBar.
 	self addMorphFront: titleMorph.! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 16:38:53'!
+addVisualProperty
+
+	self notYetImplemented ! !
 
 !PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/28/2016 18:29:38'!
 adjustSubmorphsLayout
@@ -397,7 +414,7 @@ metaProps
 
 	^ metaProps! !
 
-!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:03:51'!
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 16:30:33'!
 propertyNames
 	"Answer an alpha-sorted collection of property names less MetaProperties"
 
@@ -406,17 +423,20 @@ propertyNames
 	metaPropsDict := self metaProps.
 	neverShown     := self alwaysHiddenProperties.
 	
-	self targetMorph propertiesDict keysDo: [ :propName | 
+	(self targetMorph propertiesDict)
+	ifNotNil: [ :dict |
+		dict keysDo: [ :propName | 
 		(neverShown includes: propName)
 			ifFalse: [ 
 				(metaPropsDict includesKey: propName)
 					ifFalse:  [ propNames add: propName ]
 			] 
+		]
 	].
 
 	^ propNames ! !
 
-!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 15:58:12'!
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 16:08:09'!
 refreshView
 
 	"Something may have changed.."
@@ -426,14 +446,8 @@ refreshView
 	
 	self addTitle: (aMorph printStringLimitedTo: 60).
 
-	"add operations"
-	self add: 'Refresh Me'            target: self selector: #refreshView.
-	self add: 'Add Property'          target: self selector: #addProperty.
-	self add: 'Toggle IVar Display' target: self selector: #toggleIVarView.
-	self add: 'Toggle Properties Display' target: self selector: #toggleOrdinaryPropsView.
-	
+	self addOperationsDisplay.
 	self addMetaPropsDisplay.
-
 	self showAllIvars  ifTrue: [ self addIVarsDisplay ].
 	self showAllProps ifTrue: [ self addOrdinaryPropertiesDisplay ].
 	
