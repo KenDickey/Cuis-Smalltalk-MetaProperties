@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 12:07:15 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 30 November 2016 at 4:00:29 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 4!
+!provides: 'Morph-MetaProperties' 1 6!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
@@ -213,13 +213,62 @@ aboutToGrab: aMorph
 		] 
 		ifFalse: [ self ] "Title selected. User wants to move me. Pick me up"! !
 
-!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/28/2016 21:26:48'!
-addAllProperties
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 15:07:42'!
+addIVarsDisplay
+	" Add display of IVars to self"
+	
+	self addLine.
+	
+	self ivarNames do: [ :ivarName | | displayString |
+			displayString := 
+				(ivarName, ': ', 
+					((self instVarNamed: ivarName) printString))
+							truncateWithElipsisTo: 40.
+			self add: displayString 
+				  target: self 
+			  	  selector: #editIvar: 
+				  argument: ivarName
+	].
+! !
 
-	self notYetImplemented ! !
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 15:35:30'!
+addMetaPropsDisplay
+	" Add display of MetaProperty selections to self"
 
-!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/28/2016 21:26:37'!
-addIVars
+	self addLine.
+	
+	self metaPropNames do: [ :name | | propMorph |
+		propMorph := 
+			VisualPropertyMorph 
+					propName: name 
+					morph: self targetMorph 
+					propMeta: (self metaProps at: name).
+		propMorph  target: self;
+					selector: #edit: ;
+					arguments: { name. }.
+		self addMorphBack: propMorph
+	].! !
+
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 15:59:32'!
+addOrdinaryPropertiesDisplay
+	" Add display of ordinary properties to self"
+	
+	self addLine.
+	
+	self propertyNames do: [ :propName | | displayString |
+			displayString := 
+				(propName, ': ', 
+					((self targetMorph valueOfProperty: propName) printString))
+							truncateWithElipsisTo: 40.
+			self add: displayString 
+				  target: self 
+			  	  selector: #editIvar: 
+				  argument: propName
+	].
+! !
+
+!PropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 14:31:43'!
+addPropertiesDisplay
 
 	self notYetImplemented ! !
 
@@ -314,21 +363,34 @@ forMorph: aMorph
 		 refreshView;
 	 	 yourself! !
 
-!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:12:24'!
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:49:25'!
 ivarNames
-	"Answer an alpha-sorted collection of instance variable names to be shown
-	when ShowAllIvars is true"
+	"Answer an alpha-sorted collection of Instance variable names less MetaProperties"
 
-	| ivarNames neverShown |
+	| ivarNames neverShown metaPropsDict |
 	ivarNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
-	neverShown := self alwaysHiddenIVars.
+	metaPropsDict := self metaProps.
+	neverShown     := self alwaysHiddenIVars.
 	
 	self targetMorph class allInstVarNames do: [ :ivarName | 
 		(neverShown includes: ivarName)
-			ifFalse: [ ivarNames add: ivarName ]
+			ifFalse: [ 
+				(metaPropsDict includesKey: ivarName)
+					ifFalse:  [ ivarNames add: ivarName ]
+			] 
 	].
 
 	^ ivarNames ! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:04:49'!
+metaPropNames
+	"Answer an alpha-sorted collection of MetaProperty names"
+
+	| metaPropNames |
+	metaPropNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
+	self metaProps keysDo: [ :mpName |  metaPropNames add: mpName ].
+
+	^ metaPropNames ! !
 
 !PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:24'!
 metaProps
@@ -354,7 +416,7 @@ propertyNames
 
 	^ propNames ! !
 
-!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:17:52'!
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 15:58:12'!
 refreshView
 
 	"Something may have changed.."
@@ -368,40 +430,12 @@ refreshView
 	self add: 'Refresh Me'            target: self selector: #refreshView.
 	self add: 'Add Property'          target: self selector: #addProperty.
 	self add: 'Toggle IVar Display' target: self selector: #toggleIVarView.
-
-	self addLine.
+	self add: 'Toggle Properties Display' target: self selector: #toggleOrdinaryPropsView.
 	
-	"add properties"
-	self propertyNames do: [ :name | | propMorph |
-		propMorph := 
-			VisualPropertyMorph 
-					propName: name 
-					morph: aMorph 
-					propMeta: (aMorph valueOfMetaProperty: name).
-		propMorph  target: self;
-					selector: #edit: ;
-					arguments: { name. }.
-		self addMorphBack: propMorph
-	].
+	self addMetaPropsDisplay.
 
-	(self showAllIvars)  ifTrue: [ "add ivars"
-		
-		self addLine.
-	
-		aMorph class allInstVarNames do: [ :ivarName | | displayString |
-			displayString := 
-				(ivarName, ': ', 
-					((aMorph instVarNamed: ivarName) printString) )
-							truncateWithElipsisTo: 40.
-			(ivarName asString = 'properties')
-			ifFalse: [
-				self add: displayString 
-					  target: self 
-				  	  selector: #editIvar: 
-					  argument: ivarName
-			]
-		]
-	].
+	self showAllIvars  ifTrue: [ self addIVarsDisplay ].
+	self showAllProps ifTrue: [ self addOrdinaryPropertiesDisplay ].
 	
 	self titleMorph morphExtent: (self titleMorph morphExtent x) @ (Preferences windowTitleFont height).
 	self adjustSubmorphsLayout;
@@ -449,15 +483,30 @@ targetMorph
 
 	^ targetMorph ! !
 
-!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:18:53'!
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:44:19'!
+titleMorph
+
+	^ titleMorph! !
+
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 15:33:47'!
 toggleIVarView
 
-	self toggleIVars; refreshView! !
+	self toggleShowIVars; refreshView! !
 
-!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:36:13'!
-toggleIVars
+!PropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 15:34:18'!
+toggleOrdinaryPropsView
+
+	self toggleShowProps; refreshView! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:33:30'!
+toggleShowIVars
 
 	self showAllIvars: (self showAllIvars not)! !
+
+!PropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:33:20'!
+toggleShowProps
+
+	self showAllProps: (self showAllProps not)! !
 
 !PropertyEditor class methodsFor: 'instance creation' stamp: 'KenD 11/28/2016 08:19:15'!
 forMorph: aMorph
@@ -780,10 +829,11 @@ windowIcon
 
 	^WindowIcon! !
 
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 08:18:23'!
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:42:51'!
 metaPropsForMorph: aMorph
 
-	self notYetImplemented ! !
+	"self notYetImplemented"
+	^ Dictionary new! !
 
 !MetaProperty class methodsFor: 'documentation' stamp: 'KenD 11/27/2016 16:30:47'!
 whyMe
