@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 2 December 2016 at 7:24:38 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 3 December 2016 at 9:52:14 am'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 9!
+!provides: 'Morph-MetaProperties' 1 10!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
@@ -331,11 +331,16 @@ addVisualProperty
 
 	self notYetImplemented ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 11/28/2016 18:29:38'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/3/2016 09:51:35'!
 adjustSubmorphsLayout
 
+	| calculatedExtent |
 	super adjustSubmorphsLayout.
-	self titleMorph reset.  "Needed after adjustSubmorphsLayout"! !
+	calculatedExtent := self morphExtent.
+	self morphExtent: (calculatedExtent x max: self minItemWidth) @ calculatedExtent y.
+	self titleMorph morphExtent: (calculatedExtent x max: self minItemWidth) @ self titleMorph morphHeight.
+	self titleMorph reset.  "Needed after adjustSubmorphsLayout"
+! !
 
 !VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 18:29:13'!
 allowsSubmorphDrag
@@ -443,6 +448,14 @@ metaPropNames
 metaProps
 
 	^ metaProps! !
+
+!VisualPropertyEditor methodsFor: 'geometry' stamp: 'KenD 12/3/2016 09:44:54'!
+minItemWidth
+	"Answer enough space to contain generous title"
+
+	^ ((StringMorph contents: '0123456789112345678921234567893'
+						font: Preferences windowTitleFont) 
+				measureContents) x! !
 
 !VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 16:30:33'!
 propertyNames
