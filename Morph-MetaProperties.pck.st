@@ -1,9 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 3 December 2016 at 12:38:06 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 4 December 2016 at 3:30:59 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 11!
+!provides: 'Morph-MetaProperties' 1 12!
+!requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
-!requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -36,12 +36,52 @@ VisualPropertyMenuItem class
 
 !classDefinition: #MetaProperty category: #'Morph-MetaProperties'!
 Object subclass: #MetaProperty
-	instanceVariableNames: 'isImmutable'
+	instanceVariableNames: 'kind'
 	classVariableNames: 'MetaPropDict'
 	poolDictionaries: ''
 	category: 'Morph-MetaProperties'!
 !classDefinition: 'MetaProperty class' category: #'Morph-MetaProperties'!
 MetaProperty class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyFrom category: #'Morph-MetaProperties'!
+MetaProperty subclass: #MetaPropertyFrom
+	instanceVariableNames: 'minValue'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyFrom class' category: #'Morph-MetaProperties'!
+MetaPropertyFrom class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyOneOf category: #'Morph-MetaProperties'!
+MetaProperty subclass: #MetaPropertyOneOf
+	instanceVariableNames: 'choiceCollection'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyOneOf class' category: #'Morph-MetaProperties'!
+MetaPropertyOneOf class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyRange category: #'Morph-MetaProperties'!
+MetaProperty subclass: #MetaPropertyRange
+	instanceVariableNames: 'minValue maxValue'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyRange class' category: #'Morph-MetaProperties'!
+MetaPropertyRange class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyViaTest category: #'Morph-MetaProperties'!
+MetaProperty subclass: #MetaPropertyViaTest
+	instanceVariableNames: 'testClosure'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyViaTest class' category: #'Morph-MetaProperties'!
+MetaPropertyViaTest class
 	instanceVariableNames: ''!
 
 
@@ -69,13 +109,51 @@ ivars:
 !
 
 !MetaProperty commentStamp: '<historical>' prior: 0!
-I am an abstract class for Morph meta-properties.  My instances are immutable and may be shared.
+I am the parent class for Morph meta-properties.  
+
+My instances are immutable and may be shared.  See class side for common MetaProperties.
 
 I maintain MetaPropDict, a dictionary of Class->Dict(name->metaProp).  See #MetaProperty class>>MetapropDictForClass:
 
 My instances are used to allow generation of PropertyEditors for Morphs.
 
-See method #whyMe in the class side for documentation.!
+See method #whyMe in the class side for documentation.
+
+
+"Simple Class test"
+(MetaProperty kind: String) accepts: #symbol.
+
+"OneOf choice"
+(MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #fee.
+
+"Number Range"
+(MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 1.2.
+
+"Point Range"
+(MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@5.
+
+"Positive Point"
+(MetaPropertyFrom kind: Point minValue: 0@0) accepts: 23@47.
+
+"Pattern Match"
+(MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 'mombazzi'.
+
+!
+
+!MetaPropertyFrom commentStamp: '<historical>' prior: 0!
+I accept  minValue <= newValue!
+
+!MetaPropertyOneOf commentStamp: '<historical>' prior: 0!
+I only accept values which are included in choiceCollection.!
+
+!MetaPropertyRange commentStamp: '<historical>' prior: 0!
+I accept values in a range where:  minValue <= newValue <= maxValue.
+!
+
+!MetaPropertyViaTest commentStamp: '<historical>' prior: 0!
+I test via  (aClosure value: newValue).
+
+aClosure should take one argument are return a boolean.!
 
 !ProtoObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/2/2016 14:21:49'!
 icon
@@ -948,6 +1026,33 @@ windowIcon
 
 	^WindowIcon! !
 
+!MetaProperty methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:21:39'!
+accepts: newValue
+
+	^ newValue isKindOf: kind! !
+
+!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:20:57'!
+initialize
+
+	kind := Object "default"! !
+
+!MetaProperty methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:33:35'!
+kind
+
+	^ kind! !
+
+!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:19:45'!
+kind: aClass
+
+	(aClass isKindOf: Class)
+	ifTrue:  [ kind := aClass ]
+	ifFalse: [ self error: 'Expected a class: ', aClass printString ].! !
+
+!MetaProperty class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:24:56'!
+kind: aClass
+
+	^ self new kind: aClass! !
+
 !MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/2/2016 15:37:12'!
 metaPropDict
 	"Answer a dictionary of Class->Dict(name->metaProp)"
@@ -998,4 +1103,134 @@ MetaProperties are considered immutable and may be shared.  They are associated 
 
 See the #examples class category.
 '! !
+
+!MetaPropertyFrom methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:57:36'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ minValue <= newValue ]! !
+
+!MetaPropertyFrom methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:58:26'!
+kind: aClass minValue: min
+
+	super kind: aClass.
+	(min  isKindOf: aClass) ifFalse: [ self error: 'minValue must be aKindOf: ',  aClass printString ].
+	minValue := min.! !
+
+!MetaPropertyFrom methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:56:58'!
+minValue
+
+	^ minValue! !
+
+!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:16'!
+kind: aClass minValue: min
+
+	^ self new kind: aClass minValue: min! !
+
+!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:28'!
+minValue: min
+
+	^ self new kind: Object minValue: min! !
+
+!MetaPropertyOneOf methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:29:45'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ choiceCollection includes: newValue ]! !
+
+!MetaPropertyOneOf methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:34:10'!
+choices
+
+	^ choiceCollection! !
+
+!MetaPropertyOneOf methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:28:45'!
+kind: aClass choices: aCollection
+
+	super kind: aClass.
+	(aCollection isKindOf: Collection)
+	ifTrue:  [ choiceCollection := aCollection ]
+	ifFalse: [ self error: 'Expected a collection of value choices: ', aCollection printString ].! !
+
+!MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:40:39'!
+choices: aCollection
+
+	^ self new kind: Object choices: aCollection! !
+
+!MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:30:57'!
+kind: aClass choices: aCollection
+
+	^ self new kind: aClass choices: aCollection! !
+
+!MetaPropertyRange methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:43:49'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ minValue <= newValue ]
+			and: [ newValue <= maxValue ]! !
+
+!MetaPropertyRange methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:45:45'!
+kind: aClass minValue: min maxValue: max
+
+	super kind: aClass.
+	(min  isKindOf: aClass) ifFalse: [ self error: 'minValue must be aKindOf: ',  aClass printString ].
+	(max isKindOf: aClass) ifFalse: [ self error: 'maxValue must be aKindOf: ', aClass printString ].
+	minValue := min.
+	maxValue := max.! !
+
+!MetaPropertyRange methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:42:29'!
+maxValue
+
+	^ maxValue! !
+
+!MetaPropertyRange methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:42:19'!
+minValue
+
+	^ minValue! !
+
+!MetaPropertyRange class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:41:31'!
+kind: aClass minValue: min maxValue: max
+
+	^ self new kind: aClass minValue: min maxValue: max! !
+
+!MetaPropertyRange class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:41:43'!
+minValue: min maxValue: max
+
+	^ self new kind: Object minValue: min maxValue: max! !
+
+!MetaPropertyViaTest methodsFor: 'testing' stamp: 'KenD 12/4/2016 15:19:09'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ testClosure value: newValue ]! !
+
+!MetaPropertyViaTest methodsFor: 'initialization' stamp: 'KenD 12/4/2016 15:18:19'!
+kind: aClass test: aClosure
+
+	super kind: aClass.
+	(aClosure isKindOf: BlockClosure) 
+		ifFalse: [ self error: 'Expected a BlockClosure: ', aClosure printString ].
+	(aClosure argumentCount = 1) 
+		ifFalse: [ self error: 'Test should take one argument and answer a boolean: ',
+					aClosure printString ].
+	testClosure := aClosure.! !
+
+!MetaPropertyViaTest methodsFor: 'accessing' stamp: 'KenD 12/4/2016 15:18:32'!
+test
+
+	^ testClosure! !
+
+!MetaPropertyViaTest methodsFor: 'accessing' stamp: 'KenD 12/4/2016 15:18:29'!
+testClosure
+
+	^ testClosure! !
+
+!MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:17'!
+kind: aClass test: aClosure
+
+	^ self new kind: aClass test: aClosure! !
+
+!MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:10'!
+test: aClosure
+
+	^ self new kind: Object test: aClosure! !
 VisualPropertyMenuItem initialize!
