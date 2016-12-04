@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 3 December 2016 at 9:52:14 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 3 December 2016 at 12:38:06 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 10!
+!provides: 'Morph-MetaProperties' 1 11!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
@@ -449,13 +449,12 @@ metaProps
 
 	^ metaProps! !
 
-!VisualPropertyEditor methodsFor: 'geometry' stamp: 'KenD 12/3/2016 09:44:54'!
+!VisualPropertyEditor methodsFor: 'geometry' stamp: 'KenD 12/3/2016 12:32:04'!
 minItemWidth
 	"Answer enough space to contain generous title"
 
-	^ ((StringMorph contents: '0123456789112345678921234567893'
-						font: Preferences windowTitleFont) 
-				measureContents) x! !
+	^ Preferences windowTitleFont widthOfString: '0123456789112345678921234567893'
+! !
 
 !VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 16:30:33'!
 propertyNames
