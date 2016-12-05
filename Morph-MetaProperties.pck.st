@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 1:56:03 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:19:26 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 19!
+!provides: 'Morph-MetaProperties' 1 20!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -108,9 +108,9 @@ MetaPropertyViaTest class
 !VisualPropertyEditor commentStamp: '<historical>' prior: 0!
 My instances present the public visual properties of Morphs -- those which have MetaProperties.
 
-MetaProperties can be added to any Morph and all submorphs will inherit them.
+MetaProperties can be added to any Morph class and all submorph classes will inherit them.
 
-See class MetaProperty and this class for details. !
+See class MetaProperty and my class #initialize method for details. !
 
 !OrdinaryPropertyMenuItem commentStamp: '<historical>' prior: 0!
 My instances supply menu iterms which can have their values dragged for DragNDrop.
@@ -320,6 +320,85 @@ propertiesDict
 icon
 
 	^ VisualPropertyMenuItem windowIcon ! !
+
+!ImageMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 14:35:01'!
+image
+
+	^ self form! !
+
+!StringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:16:32'!
+emphasis
+
+	^ emphasis! !
+
+!StringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:15:33'!
+emphasis: emphasisCode
+
+	self font: font emphasis: emphasisCode! !
+
+!StringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:14:22'!
+font: aFont
+
+	emphasis ifNil: [ emphasis := 0 ].
+	self font: aFont emphasis: emphasis! !
+
+!MinimalStringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 14:56:55'!
+contents
+
+	^ contents ! !
+
+!MinimalStringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:05:14'!
+emphasis
+
+	^ emphasis! !
+
+!MinimalStringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 14:59:08'!
+emphasis: emphasisCode
+
+	emphasis := emphasisCode.
+	self fitContents.
+	self redrawNeeded ! !
+
+!MinimalStringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:05:49'!
+front
+
+	^ self fontToUse! !
+
+!MinimalStringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:07:11'!
+front: fontToUse
+
+	font :=
+		(emphasis isNil or: [emphasis = 0]) 
+			ifTrue: [fontToUse]
+			ifFalse: [fontToUse emphasized: emphasis].
+	self fitContents.
+	self redrawNeeded ! !
+
+!OneLineEditorMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:01:56'!
+emphasis
+
+	^ emphasis ! !
+
+!OneLineEditorMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:09:45'!
+emphasis: emphasisCode
+
+	emphasis := emphasisCode.
+	self font: self font  "resets old font emphasis and redraws" ! !
+
+!OneLineEditorMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:01:15'!
+font
+
+	^ self baseFont! !
+
+!OneLineEditorMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:07:26'!
+front: fontToUse
+
+	font :=
+		(emphasis isNil or: [emphasis = 0]) 
+			ifTrue: [fontToUse]
+			ifFalse: [fontToUse emphasized: emphasis].
+	self fitContents.
+	self redrawNeeded ! !
 
 !VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/2/2016 16:35:15'!
 aboutToGrab: aMorph
@@ -690,7 +769,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 08:08:55'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 15:16:59'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -704,14 +783,66 @@ initialize
 	
 	"Seed MetaProperties for known Morphs"
 	propsDict := MetaProperty preDefinedPropsDict.
+
 	classDict := MetaProperty metaPropsDictForClass: RectangleLikeMorph.
 	classDict at: #extent put: (propsDict at: #acceptsPositivePoint). 
 	classDict at: #color put: (propsDict at: #acceptsColor). 
+
 	classDict := MetaProperty metaPropsDictForClass: BorderedRectMorph.
 	classDict at: #borderColor put: (propsDict at: #acceptsColor). 
 	classDict at: #borderWidth put: (propsDict at: #acceptsInteger).
 	
-	! !
+	classDict := MetaProperty metaPropsDictForClass: LineMorph.
+	classDict at: #startPoint put: (propsDict at: #acceptsPoint). 
+	classDict at: #endPoint put: (propsDict at: #acceptsPoint). 
+	classDict at: #color put: (propsDict at: #acceptsColor). 
+	classDict at: #lineWidth put: (propsDict at: #acceptsInteger). 
+
+	classDict := MetaProperty metaPropsDictForClass: PointerLineMorph.
+	classDict at: #endPointMorph put: (propsDict at: #acceptsMorph). 
+
+	classDict := MetaProperty metaPropsDictForClass: Panel.
+	classDict at: #widgetsColor put: (propsDict at: #acceptsColor). 
+	classDict at: #stayUp put: (propsDict at: #acceptsBoolean). 
+
+	classDict := MetaProperty metaPropsDictForClass: PluggableButtonMorph.
+	classDict at: #label put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #icon put: (propsDict at: #acceptsForm).
+	classDict at: #iconName put: (propsDict at: #acceptsSymbol).
+
+	classDict := MetaProperty metaPropsDictForClass: ImageMorph.
+	classDict at: #image put: (propsDict at: #acceptsForm).
+
+	classDict := MetaProperty metaPropsDictForClass: BorderedImageMorph.
+	classDict at: #borderColor put: (propsDict at: #acceptsColor).
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
+	classDict at: #borderStyle put: (propsDict at: #acceptsBorderStyle).
+
+	classDict := MetaProperty metaPropsDictForClass: FramedLayoutMorph.
+	classDict at: #borderColor put: (propsDict at: #acceptsColor).
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
+	classDict at: #frameSelector put: (propsDict at: #acceptsBorderStyle).
+
+	classDict := MetaProperty metaPropsDictForClass: WindowTitleMorph.
+	classDict at: #titleString put: (propsDict at: #acceptsString).
+	
+	classDict := MetaProperty metaPropsDictForClass: StringMorph.
+	classDict at: #contents put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"	
+	classDict := MetaProperty metaPropsDictForClass: MinimalStringMorph.
+	classDict at: #contents put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"
+		classDict := MetaProperty metaPropsDictForClass: OneLineEditorMorph.
+	classDict at: #contents put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"
+
+
+
+! !
 
 !OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/2/2016 16:05:43'!
 allowsMorphDrop
@@ -1123,7 +1254,7 @@ propertyValue: newValue
 	self targetMorph instVarNamed: self name put: newValue.
 	self update.! !
 
-!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:24:00'!
+!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 14:19:19'!
 testAccepts
 
 	self assert: ((MetaProperty kind: String) accepts: 'aString').
@@ -1134,6 +1265,10 @@ testAccepts
 	self assert: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #fie).
 	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #bogus).
 	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: 4@5).
+	self deny: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: nil).
+	self assert: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: true).
+	self assert: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: false).
+	self deny: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: #bogus).
 
 	"Number Range"
 	self assert: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 1.2).
@@ -1215,7 +1350,7 @@ kind: aClass
 	ifTrue:  [ kind := aClass ]
 	ifFalse: [ self error: 'Expected a class: ', aClass printString ].! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/4/2016 16:50:01'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 14:29:02'!
 initialize
 	"Add typical usages to dictionary for sharing."
 "
@@ -1229,6 +1364,7 @@ initialize
 	props at: #acceptsNumber put: (MetaProperty kind: Number).
 	props at: #acceptsColor put: (MetaProperty kind: Color).
 	props at: #acceptsPoint put: (MetaProperty kind: Point).
+	props at: #acceptsRectangle put: (MetaProperty kind: Rectangle).
 	props at: #acceptsBoolean put: (MetaProperty kind: Boolean).
 	props at: #acceptsMorph put: (MetaProperty kind: Morph).
 	props at: #acceptsNil put: (MetaProperty kind: UndefinedObject).
@@ -1242,7 +1378,9 @@ initialize
 	props at: #acceptsFileEntry put: (MetaProperty kind: FileEntry ).
 	props at: #acceptsText put: (MetaProperty kind: Text).
 	props at: #acceptsFont put: (MetaProperty kind: AbstractFont ).
-	
+	props at: #acceptsForm put: (MetaProperty kind: Form).
+	props at: #acceptsLocation put: (MetaProperty kind: MorphicLocation).
+
 	
 	
 	! !
@@ -1384,6 +1522,17 @@ choices: aCollection
 
 	^ self new kind: Object choices: aCollection! !
 
+!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 14:43:12'!
+initialize
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyOneOf initialize.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	props at: #acceptsBoolean put: (MetaPropertyOneOf kind: Boolean choices: #(true false)).
+	props at: #acceptsBorderStyle put: (MetaPropertyOneOf kind: Symbol choices: #(inset raised simple)).! !
+
 !MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:30:57'!
 kind: aClass choices: aCollection
 
@@ -1465,3 +1614,4 @@ VisualPropertyEditor initialize!
 VisualPropertyMenuItem initialize!
 MetaProperty initialize!
 MetaPropertyFrom initialize!
+MetaPropertyOneOf initialize!
