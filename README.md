@@ -8,18 +8,23 @@ Tested in Cuis 5.0 revision 2986
 	Feature require: #'Morphic-ColorEditor'.  "optional"
 	Feature require: #'Morph-MetaProperties'. "NB: NOT 'Morphic' "
 
-       (VisualPropertyEditor forMorph: EllipseMorph initializedInstance) openInWorld.
+	(VisualPropertyEditor forMorph: EllipseMorph initializedInstance) openInWorld.
+	ImagePallet namedColors.  "Click on a color and drop on a color property"
+	(SignMorph forObject: 6) openInHand. "drop 6 on borderWidth property"
 ````
 
 The basic usage is for annotating Morph subclasses for visual editing via DragNDrop.
 
-Thi smeans making visual only the instance variables and properties for controlling a Morph's visual characteristics to allow a VisualPropertyEditor to be constructed. 
+This means making visual __only___ the instance variables and properties for controlling a Morph's visual characteristics in order to allow a ***VisualPropertyEditor*** to be constructed. 
 
 This annotation is done by adding ***MetaProperties*** for the typical instance variables and properties.  MetaProperties are used to check what values an iVar #accepts:
 
 See method #VisualPropertyEditor class>>initialize.
 
-MetaProperties are immutable, so can be shared.  Many are predefined.
+MetaProperties are immutable, so can be shared.  Many are predefined.  
+````Smalltalk
+(MetaProperty metaPropNamed: #acceptsColor) explore.
+````
 
 MetaMorph creation examples:
 ````Smalltalk
