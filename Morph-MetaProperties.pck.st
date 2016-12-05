@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 4 December 2016 at 8:38:20 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 7:49:28 am'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 14!
+!provides: 'Morph-MetaProperties' 1 16!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
@@ -127,6 +127,10 @@ I am the parent class for Morph meta-properties.
 My instances are immutable and may be shared.  See class side for common MetaProperties.
 
 I maintain MetaPropDict, a dictionary of Class->Dict(name->metaProp).  See #MetaProperty class>>MetapropDictForClass:
+
+Also, there is PreDefinedPropsDict, which contains metaPropName->metaProp for sharing.  These pre-defined MetaProperties are typically added in my class and subclass #initialize methods.
+e.g.
+   MetaProperty metaPropNamed: #acceptsColor.
 
 My instances are used to allow generation of PropertyEditors for Morphs.
 
@@ -350,18 +354,31 @@ addIVarsDisplay
 
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/4/2016 20:16:50'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/5/2016 07:30:43'!
 addMetaPropsDisplay
 	" Add display of MetaProperty selections to self"
 
+	| ivarNames |
+	ivarNames := self targetMorph class allInstVarNames.
+	
 	self addLine.
 	
 	self metaPropNames do: [ :name | | propMorph |
 		propMorph := 
-			VisualIVarMenuItem 
-					propName: name 
-					morph: self targetMorph 
-					propMeta: (self metaProps at: name).
+		((ivarNames includes: name)
+			ifTrue: [
+				VisualIVarMenuItem 
+						propName: name 
+						morph: self targetMorph 
+						propMeta: (self metaProps at: name)
+			]
+			ifFalse: [
+				VisualPropertyMenuItem 
+						propName: name 
+						morph: self targetMorph 
+						propMeta: (self metaProps at: name)
+			]
+		).
 		propMorph  target: self;
 					selector: #edit: ;
 					arguments: { name. }.
@@ -822,11 +839,11 @@ propertyValue
 
 	^ self targetMorph valueOfProperty: self name! !
 
-!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/4/2016 20:36:17'!
+!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/5/2016 07:43:17'!
 propertyValue: newValue
 	"Assumed checking already done.  Does NOT change cashed value"
 
-	self targetMorph setProperty: self name toValue: (self metaProperty value: newValue).
+	self targetMorph setProperty: self name toValue: newValue.
 	self update.
 ! !
 
@@ -1154,6 +1171,12 @@ metaPropDict
 	MetaPropDict ifNil: [ MetaPropDict := Dictionary new ].
 	
 	^ MetaPropDict! !
+
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/5/2016 07:39:48'!
+metaPropNamed: metaPropName
+
+	^ PreDefinedPropsDict at: metaPropName ifAbsent: [ nil ]
+	! !
 
 !MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/2/2016 15:36:33'!
 metaPropsDictForClass: aClass
