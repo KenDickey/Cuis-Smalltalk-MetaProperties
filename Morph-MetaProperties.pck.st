@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:23:27 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:43:45 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 21!
+!provides: 'Morph-MetaProperties' 1 22!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -305,10 +305,20 @@ icon
 
 	^ VisualPropertyMenuItem pointIcon ! !
 
+!AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:35:29'!
+availableFonts
+
+	^ AvailableFonts ! !
+
 !AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/2/2016 14:23:02'!
 icon
 
 	^ VisualPropertyMenuItem fontIcon ! !
+
+!AbstractFont class methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:38:34'!
+availableFonts
+
+	^ AvailableFonts ! !
 
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:41:29'!
 propertiesDict
@@ -769,7 +779,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 15:16:59'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 15:32:56'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -831,6 +841,7 @@ initialize
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
 	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"	
+	
 	classDict := MetaProperty metaPropsDictForClass: MinimalStringMorph.
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
@@ -1034,7 +1045,7 @@ valueMorph
 
 	^ SignMorph forObject: self propertyValue! !
 
-!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:38:34'!
+!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/5/2016 15:43:12'!
 wantsDroppedMorph: aMorph event: evt
 	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
 
@@ -1044,7 +1055,10 @@ wantsDroppedMorph: aMorph event: evt
 		ifFalse: [ 
 			(aMorph isKindOf: DropColorMorph)
 			ifTrue: [dropValue := aMorph color] 
-			ifFalse: [dropValue := aMorph] 
+			ifFalse: [ (aMorph isKindOf: FontMorph)
+				ifTrue: [ dropValue := aMorph font ]
+				ifFalse: [dropValue := aMorph] 
+			]
 		].
 	(self allowsValue: dropValue)
 		ifTrue: [ self propertyValue: dropValue ].
