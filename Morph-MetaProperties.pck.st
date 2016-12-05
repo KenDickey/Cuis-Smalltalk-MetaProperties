@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:19:26 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:23:27 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 20!
+!provides: 'Morph-MetaProperties' 1 21!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -1472,7 +1472,7 @@ minValue
 
 	^ minValue! !
 
-!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/4/2016 16:59:55'!
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 15:23:19'!
 initialize
 	"Add typical usages to dictionary for sharing."
 "
@@ -1480,8 +1480,9 @@ initialize
 "
 	| props |
 	props := self preDefinedPropsDict.
-	props at: #acceptsPositivePoint put: (MetaPropertyFrom kind: Point minValue: 0@0).
-	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).! !
+	props at: #acceptsPositivePoint     put: (MetaPropertyFrom kind: Point minValue: 0@0).
+	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).
+	props at: #acceptsPositiveInteger put: (MetaPropertyFrom kind: Integer minValue: 0).! !
 
 !MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:16'!
 kind: aClass minValue: min
