@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 4 December 2016 at 3:30:59 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 4 December 2016 at 8:38:20 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 12!
+!provides: 'Morph-MetaProperties' 1 14!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
@@ -34,10 +34,20 @@ MenuItemMorph subclass: #VisualPropertyMenuItem
 VisualPropertyMenuItem class
 	instanceVariableNames: ''!
 
+!classDefinition: #VisualIVarMenuItem category: #'Morph-MetaProperties'!
+VisualPropertyMenuItem subclass: #VisualIVarMenuItem
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'VisualIVarMenuItem class' category: #'Morph-MetaProperties'!
+VisualIVarMenuItem class
+	instanceVariableNames: ''!
+
 !classDefinition: #MetaProperty category: #'Morph-MetaProperties'!
 Object subclass: #MetaProperty
 	instanceVariableNames: 'kind'
-	classVariableNames: 'MetaPropDict'
+	classVariableNames: 'MetaPropDict PreDefinedPropsDict'
 	poolDictionaries: ''
 	category: 'Morph-MetaProperties'!
 !classDefinition: 'MetaProperty class' category: #'Morph-MetaProperties'!
@@ -107,6 +117,9 @@ ivars:
   prevValue -- cached previous property value (used for undo)
   targetMorph -- changes to me are reflected in this specific morph
 !
+
+!VisualIVarMenuItem commentStamp: '<historical>' prior: 0!
+Like for a Property but for IVars.!
 
 !MetaProperty commentStamp: '<historical>' prior: 0!
 I am the parent class for Morph meta-properties.  
@@ -337,7 +350,7 @@ addIVarsDisplay
 
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 14:23:16'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/4/2016 20:16:50'!
 addMetaPropsDisplay
 	" Add display of MetaProperty selections to self"
 
@@ -345,7 +358,7 @@ addMetaPropsDisplay
 	
 	self metaPropNames do: [ :name | | propMorph |
 		propMorph := 
-			VisualPropertyMenuItem 
+			VisualIVarMenuItem 
 					propName: name 
 					morph: self targetMorph 
 					propMeta: (self metaProps at: name).
@@ -647,6 +660,24 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/4/2016 20:06:01'!
+initialize
+"
+	VisualPropertyEditor initialize.
+"
+	"Add typical Morph visual properties to MetaProperty's MetaPropDict"
+	
+	| classDict propsDict |
+	propsDict := MetaProperty preDefinedPropsDict.
+	classDict := MetaProperty metaPropsDictForClass: RectangleLikeMorph.
+	classDict at: #extent put: (propsDict at: #acceptsPositivePoint). 
+	classDict at: #color put: (propsDict at: #acceptsColor). 
+	classDict := MetaProperty metaPropsDictForClass: BorderedRectMorph.
+	classDict at: #borderColor put: (propsDict at: #acceptsColor). 
+	classDict at: #borderWidth put: (propsDict at: #acceptsInteger).
+	
+	! !
+
 !OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/2/2016 16:05:43'!
 allowsMorphDrop
 	"Answer whether we accept dropping morphs.  We don't"
@@ -791,13 +822,12 @@ propertyValue
 
 	^ self targetMorph valueOfProperty: self name! !
 
-!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:32:38'!
+!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/4/2016 20:36:17'!
 propertyValue: newValue
 	"Assumed checking already done.  Does NOT change cashed value"
 
-	self targetMorph setProperty: self name toValue: (self metaProperty dropAcceptor value: newValue).
-	self setContents.
-	self owner ifNotNil: [ self owner adjustSubmorphsLayout ].
+	self targetMorph setProperty: self name toValue: (self metaProperty value: newValue).
+	self update.
 ! !
 
 !VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:41:45'!
@@ -825,6 +855,13 @@ undo
 	"Reset value from remembered value"
 
 	self targetMorph setProperty: self name  toValue: self prevValue! !
+
+!VisualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/4/2016 20:36:52'!
+update
+
+	self setContents.
+	self owner ifNotNil: [ self owner adjustSubmorphsLayout ].
+	self targetMorph redrawNeeded.! !
 
 !VisualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 11/28/2016 16:34:02'!
 valueMorph
@@ -1026,6 +1063,31 @@ windowIcon
 
 	^WindowIcon! !
 
+!VisualIVarMenuItem methodsFor: 'initialization' stamp: 'KenD 12/4/2016 20:18:25'!
+propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
+
+	super initialize.
+	name := aSymbol.
+	targetMorph := aMorph.
+	metaProperty := aPropertyDescriptor.
+	prevValue := aMorph instVarNamed: aSymbol.	
+	self setContents;
+		 target: self;
+		 icon: prevValue icon; 
+		 selector: #edit! !
+
+!VisualIVarMenuItem methodsFor: 'initialization' stamp: 'KenD 12/4/2016 20:19:09'!
+propertyValue
+
+	^ self targetMorph instVarNamed: self name! !
+
+!VisualIVarMenuItem methodsFor: 'initialization' stamp: 'KenD 12/4/2016 20:37:04'!
+propertyValue: newValue
+	"Assume access check already made"
+
+	self targetMorph instVarNamed: self name put: newValue.
+	self update.! !
+
 !MetaProperty methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:21:39'!
 accepts: newValue
 
@@ -1047,6 +1109,38 @@ kind: aClass
 	(aClass isKindOf: Class)
 	ifTrue:  [ kind := aClass ]
 	ifFalse: [ self error: 'Expected a class: ', aClass printString ].! !
+
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/4/2016 16:50:01'!
+initialize
+	"Add typical usages to dictionary for sharing."
+"
+	MetaProperty initialize.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	props at: #acceptsString put: (MetaProperty kind: String).
+	props at: #acceptsSymbol put: (MetaProperty kind: Symbol).
+	props at: #acceptsCharacter put: (MetaProperty kind: Character).
+	props at: #acceptsNumber put: (MetaProperty kind: Number).
+	props at: #acceptsColor put: (MetaProperty kind: Color).
+	props at: #acceptsPoint put: (MetaProperty kind: Point).
+	props at: #acceptsBoolean put: (MetaProperty kind: Boolean).
+	props at: #acceptsMorph put: (MetaProperty kind: Morph).
+	props at: #acceptsNil put: (MetaProperty kind: UndefinedObject).
+	props at: #acceptsClass put: (MetaProperty kind: Class).
+	props at: #acceptsInteger put: (MetaProperty kind: Integer).
+	props at: #acceptsFraction put: (MetaProperty kind: Fraction ).
+	props at: #acceptsFloat put: (MetaProperty kind: Float).
+	props at: #acceptsCollection put: (MetaProperty kind: Collection ).
+	props at: #acceptsArray put: (MetaProperty kind: Array ).
+	props at: #acceptsDictionary put: (MetaProperty kind: Dictionary).
+	props at: #acceptsFileEntry put: (MetaProperty kind: FileEntry ).
+	props at: #acceptsText put: (MetaProperty kind: Text).
+	props at: #acceptsFont put: (MetaProperty kind: AbstractFont ).
+	
+	
+	
+	! !
 
 !MetaProperty class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:24:56'!
 kind: aClass
@@ -1086,6 +1180,13 @@ metaPropsForMorph: aMorph
 	
 	^ metaPropDict! !
 
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/4/2016 16:37:09'!
+preDefinedPropsDict
+
+	PreDefinedPropsDict ifNil: [ PreDefinedPropsDict := Dictionary new ].
+	
+	^ PreDefinedPropsDict ! !
+
 !MetaProperty class methodsFor: 'documentation' stamp: 'KenD 12/2/2016 15:43:36'!
 whyMe
 
@@ -1121,6 +1222,17 @@ kind: aClass minValue: min
 minValue
 
 	^ minValue! !
+
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/4/2016 16:59:55'!
+initialize
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyFrom initialize.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	props at: #acceptsPositivePoint put: (MetaPropertyFrom kind: Point minValue: 0@0).
+	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).! !
 
 !MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:16'!
 kind: aClass minValue: min
@@ -1233,4 +1345,7 @@ kind: aClass test: aClosure
 test: aClosure
 
 	^ self new kind: Object test: aClosure! !
+VisualPropertyEditor initialize!
 VisualPropertyMenuItem initialize!
+MetaProperty initialize!
+MetaPropertyFrom initialize!
