@@ -1,6 +1,6 @@
 # Cuis-Smalltalk-MetaProperties
 ===============================
-PropertyEditor for Morphs
+VisualPropertyEditor for Morphs
 
 Tested in Cuis 5.0 revision 2986
 
