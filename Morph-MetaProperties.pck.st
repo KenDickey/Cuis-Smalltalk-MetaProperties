@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 7:49:28 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 8:09:01 am'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 16!
+!provides: 'Morph-MetaProperties' 1 17!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
@@ -677,7 +677,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/4/2016 20:06:01'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 08:08:55'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -685,6 +685,11 @@ initialize
 	"Add typical Morph visual properties to MetaProperty's MetaPropDict"
 	
 	| classDict propsDict |
+	"Ensure named MetaProperties exist"
+	MetaProperty initialize.
+	MetaProperty allSubclassesDo: [ :sc | sc initialize ].
+	
+	"Seed MetaProperties for known Morphs"
 	propsDict := MetaProperty preDefinedPropsDict.
 	classDict := MetaProperty metaPropsDictForClass: RectangleLikeMorph.
 	classDict at: #extent put: (propsDict at: #acceptsPositivePoint). 
