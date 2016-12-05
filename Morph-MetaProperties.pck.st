@@ -1,9 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 8:09:01 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 1:24:30 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 17!
+!provides: 'Morph-MetaProperties' 1 18!
+!requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
-!requires: 'Morphic-Misc1' 1 86 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -42,6 +42,16 @@ VisualPropertyMenuItem subclass: #VisualIVarMenuItem
 	category: 'Morph-MetaProperties'!
 !classDefinition: 'VisualIVarMenuItem class' category: #'Morph-MetaProperties'!
 VisualIVarMenuItem class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyTests category: #'Morph-MetaProperties'!
+TestCase subclass: #MetaPropertyTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyTests class' category: #'Morph-MetaProperties'!
+MetaPropertyTests class
 	instanceVariableNames: ''!
 
 !classDefinition: #MetaProperty category: #'Morph-MetaProperties'!
@@ -120,6 +130,9 @@ ivars:
 
 !VisualIVarMenuItem commentStamp: '<historical>' prior: 0!
 Like for a Property but for IVars.!
+
+!MetaPropertyTests commentStamp: '<historical>' prior: 0!
+Unit tests for MetaProeprties!
 
 !MetaProperty commentStamp: '<historical>' prior: 0!
 I am the parent class for Morph meta-properties.  
@@ -1109,6 +1122,58 @@ propertyValue: newValue
 
 	self targetMorph instVarNamed: self name put: newValue.
 	self update.! !
+
+!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:24:00'!
+testAccepts
+
+	self assert: ((MetaProperty kind: String) accepts: 'aString').
+	self deny: ((MetaProperty kind: String) accepts: 2@3).
+	self assert: ((MetaProperty kind: String) accepts: #symbol).
+
+	"OneOf choice"
+	self assert: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #fie).
+	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #bogus).
+	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: 4@5).
+
+	"Number Range"
+	self assert: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 1.2).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 0.7).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 7).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 4).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 2@3).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: #bogus).
+		
+	"Point Range"
+	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@4).
+	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 4@3).
+	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@5).
+	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 5@1).
+	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: -1@1).
+	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 0.3@1).
+
+
+	"Positive Point"
+	self assert: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: 23@47).
+	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: -23@47).
+	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: -23@-47).
+	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: 1@-1).
+
+	"Pattern Match"
+	self assert: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 'mombazzi').
+	self deny: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 'bamboozle').
+	self deny: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 43).
+! !
+
+!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:22:28'!
+testPredefinedMProps
+
+	self assert: ((MetaProperty metaPropNamed: #acceptsString) accepts: 'aString').
+	self assert: ((MetaProperty metaPropNamed: #acceptsColor) accepts: Color blue).
+	self assert: ((MetaProperty metaPropNamed: #acceptsPositivePoint) accepts: 2@3).
+	self assert: ((MetaProperty metaPropNamed: #acceptsPositiveNumber) accepts: 0.1).
+	
+	self deny: ((MetaProperty metaPropNamed: #acceptsPositivePoint) accepts: -2@3).
+	self deny: ((MetaProperty metaPropNamed: #acceptsPositiveNumber) accepts: -1).! !
 
 !MetaProperty methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:21:39'!
 accepts: newValue
