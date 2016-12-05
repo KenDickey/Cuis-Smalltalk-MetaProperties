@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 1:24:30 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 1:56:03 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 18!
+!provides: 'Morph-MetaProperties' 1 19!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -1164,6 +1164,24 @@ testAccepts
 	self deny: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 43).
 ! !
 
+!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:55:45'!
+testCreationGuards
+
+	"Kind must be a Class"
+	self should: [ MetaProperty kind: 37 ] raise: Error.
+	self should: [ MetaProperty kind: Color blue ] raise: Error.
+	
+	"Values must be of right kind"
+	self should: [ MetaPropertyFrom kind: Point minValue: Color red ] raise: Error.
+	self should: [ MetaPropertyFrom kind: Number minValue: 3@4 ] raise: Error.
+	self should: [ MetaPropertyOneOf kind: Number choices: #(fee fie fo fum) ] raise: Error.
+	self should: [ MetaPropertyOneOf kind: Number choices: Color green ] raise: Error.
+	self should: [ MetaPropertyRange kind: Number minValue: 1@2 maxValue: 3 ] raise: Error.
+	self should: [ MetaPropertyRange kind: Number minValue: 1 maxValue: 2@3 ] raise: Error.
+	self should: [ MetaPropertyViaTest kind: Number test: Color white ] raise: Error.
+	self should: [ MetaPropertyViaTest kind: Number test: [ :a :b | a + b ] ] raise: Error.
+	self should: [ MetaPropertyViaTest kind: 34 test: [ :a :b | a + b ] ] raise: Error.! !
+
 !MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:22:28'!
 testPredefinedMProps
 
@@ -1348,13 +1366,18 @@ choices
 
 	^ choiceCollection! !
 
-!MetaPropertyOneOf methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:28:45'!
+!MetaPropertyOneOf methodsFor: 'initialization' stamp: 'KenD 12/5/2016 13:50:52'!
 kind: aClass choices: aCollection
 
 	super kind: aClass.
 	(aCollection isKindOf: Collection)
-	ifTrue:  [ choiceCollection := aCollection ]
-	ifFalse: [ self error: 'Expected a collection of value choices: ', aCollection printString ].! !
+		ifFalse: [ self error: 'Expected a collection of value choices: ', aCollection printString ].
+	(aCollection allSatisfy: [ :elt | elt isKindOf: aClass])
+		ifFalse: [ self error: 'Expected collection elements of kind: ', aClass printString,
+					 ' got: ', aCollection printString ].
+	
+	choiceCollection := aCollection.
+! !
 
 !MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:40:39'!
 choices: aCollection
