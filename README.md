@@ -38,7 +38,7 @@ MetaMorph creation examples:
 (MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 1.2.
 
 "Point Range"
-(MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@5.
+(MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@3.
 
 "Positive Point"
 (MetaPropertyFrom kind: Point minValue: 0@0) accepts: 23@47.
