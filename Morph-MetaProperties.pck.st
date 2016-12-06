@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 5 December 2016 at 4:26:58 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 2:26:45 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 24!
+!provides: 'Morph-MetaProperties' 1 25!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -929,9 +929,8 @@ allowsValue: aValue
 
 	^ self metaProperty accepts: aValue! !
 
-!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:42:34'!
+!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:08:52'!
 cleanUpForMorph: aMorph.
-	"@@FIXME: graphical animation of rejected drop@@"
 
 	aMorph delete! !
 
@@ -1014,13 +1013,51 @@ schedulePostRemovalOf: aMorph
 	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.1
 ! !
 
-!VisualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 11/28/2016 16:33:26'!
+!VisualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 12/6/2016 14:25:15'!
 setContents
-	"(re)set my content string"
+	"(re)set my content string and icon"
 
 	self contents: ( (name asString , ':  ', (self propertyValue printString))
 						truncateWithElipsisTo: 40 ).
 	self icon: (self propertyValue icon)! !
+
+!VisualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/6/2016 14:22:30'!
+showAccept: aMorph
+
+	| hilightMorph mPos mExtent |
+	mPos := aMorph morphPositionInWorld.
+	mExtent := aMorph morphExtent.
+	hilightMorph := FrameMorph new.
+	hilightMorph borderWidth: 6;
+					borderColor: Color green;
+					morphExtent: mExtent + 6;
+					openInWorld;
+					morphPosition: mPos - (6@6).
+
+	self addAlarm: #cleanUpForMorph: with: aMorph        after: 200.
+	self addAlarm: #cleanUpForMorph: with: hilightMorph after: 400.! !
+
+!VisualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/6/2016 14:20:39'!
+showReject: aMorph
+
+	| leftStroke rightStroke mPos mExtent |
+	mPos := aMorph morphPositionInWorld.
+	mExtent := aMorph morphExtent.
+	leftStroke   := LineMorph 
+						startPoint: mPos - (10@10) 
+						endPoint: (mPos + mExtent + (10@10)) 
+						width: 6
+						color: Color red.
+	rightStroke := LineMorph 
+						startPoint: mPos + (-10 @ (mExtent y + 10))
+						endPoint: (mPos + ((10 + mExtent x) @ -10)) 
+						width: 6
+						color: Color red.
+	leftStroke   openInWorld.
+	rightStroke openInWorld.
+	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2.
+	self addAlarm: #cleanUpForMorph: with: leftStroke after: 400.	
+	self addAlarm: #cleanUpForMorph: with: rightStroke after: 400.! !
 
 !VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:35:46'!
 targetMorph
@@ -1045,7 +1082,7 @@ valueMorph
 
 	^ SignMorph forObject: self propertyValue! !
 
-!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/5/2016 15:43:12'!
+!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:01:24'!
 wantsDroppedMorph: aMorph event: evt
 	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
 
@@ -1061,11 +1098,16 @@ wantsDroppedMorph: aMorph event: evt
 			]
 		].
 	(self allowsValue: dropValue)
-		ifTrue: [ self propertyValue: dropValue ].
+		ifTrue: [ 
+			self propertyValue: dropValue.
+			self showAccept: aMorph. 
+	 	]
+		ifFalse: [
+			self showReject: aMorph.
+		].
 	
-	"We can't just delet aMorph as rejecting the drop adds it to tis old owner at 0@0.
+	"We can't just delet aMorph as rejecting the drop adds it to its old owner at 0@0.
 	 So we accept the drop, but then delete aMorph."
-	self schedulePostRemovalOf: aMorph.  "@@@FIXME: this is ugly!!@@@"
 
 	^ true  "Always accept drop -- even if we reject the value, then delete the morph"! !
 
