@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:43:45 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:59:56 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 22!
+!provides: 'Morph-MetaProperties' 1 23!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -314,11 +314,6 @@ availableFonts
 icon
 
 	^ VisualPropertyMenuItem fontIcon ! !
-
-!AbstractFont class methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:38:34'!
-availableFonts
-
-	^ AvailableFonts ! !
 
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:41:29'!
 propertiesDict
