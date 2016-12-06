@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 2:26:45 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 2:50:05 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 25!
+!provides: 'Morph-MetaProperties' 1 26!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Misc1' 1 86 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -410,7 +410,7 @@ front: fontToUse
 	self fitContents.
 	self redrawNeeded ! !
 
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/2/2016 16:35:15'!
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:40:14'!
 aboutToGrab: aMorph
 	"submorph is being grabbed by a hand.
 	Perform necessary adjustments (if any) and return the actual morph
@@ -430,10 +430,12 @@ aboutToGrab: aMorph
 	ifFalse: [
 		(valueToDrag isKindOf: Color)
 			ifTrue:  [ ^ DropColorMorph fromColor: valueToDrag ]
-			ifFalse: [ ^ SignMorph           forObject:  valueToDrag ]
+			ifFalse: [ (valueToDrag isKindOf: AbstractFont)
+				ifTrue: [ ^ FontMorph font:          valueToDrag ]
+				ifFalse: [ ^ SignMorph forObject:  valueToDrag ]
+			]
 	]
-
-	! !
+! !
 
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:23:37'!
 addIVarsDisplay
