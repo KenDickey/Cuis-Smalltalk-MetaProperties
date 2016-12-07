@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 7:33:36 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 7:40:17 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 30!
+!provides: 'Morph-MetaProperties' 1 31!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Misc1' 1 92 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -306,6 +306,13 @@ icon
 icon
 
 	^ VisualPropertyMenuItem fileIcon ! !
+
+!Form methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 19:39:56'!
+morphForDrag
+	"Answer a morph suitable for DragNDrop"
+	
+	^ ImageMorph new image: self
+! !
 
 !Color methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:46:47'!
 morphForDrag
