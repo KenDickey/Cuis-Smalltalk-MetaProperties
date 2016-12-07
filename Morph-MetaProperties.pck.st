@@ -1,9 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 7 December 2016 at 1:47:55 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2996] on 7 December 2016 at 3:14:51 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 32!
-!requires: 'Cuis-Base' 50 2984 nil!
-!requires: 'Morphic-Misc1' 1 92 nil!
+!provides: 'Morph-MetaProperties' 1 34!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
+!requires: 'Cuis-Base' 50 2996 nil!
+!requires: 'Morphic-Misc1' 1 95 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -354,11 +354,6 @@ icon
 
 	^ VisualMenuItem pointIcon ! !
 
-!AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:35:29'!
-availableFonts
-
-	^ AvailableFonts ! !
-
 !AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:42'!
 icon
 
@@ -485,7 +480,7 @@ front: fontToUse
 	self fitContents.
 	self redrawNeeded ! !
 
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 18:49:33'!
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 15:14:22'!
 aboutToGrab: aMorph
 	"submorph is being grabbed by a hand.
 	Perform necessary adjustments (if any) and return the actual morph
@@ -495,7 +490,7 @@ aboutToGrab: aMorph
 	Transcript show: 'PropertyEditor aboutToGrab: ', aMorph printString ; newLine.
 "
 	| valueToDrag |
-	(aMorph isKindOf: VisualPropertyMenuItem)
+	(aMorph isKindOf: VisualMenuItem)
 		ifTrue: [ valueToDrag := aMorph propertyValue ].
 	(aMorph isKindOf: OrdinaryPropertyMenuItem)
 		ifTrue: [ valueToDrag := aMorph value ].
@@ -622,7 +617,7 @@ adjustSubmorphsLayout
 	self titleMorph reset.  "Needed after adjustSubmorphsLayout"
 ! !
 
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 18:29:13'!
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:47:43'!
 allowsSubmorphDrag
 	"Answer whether our morphs can just be grabbed with the hand, instead of requiring the use of the halo. Redefined to answer true."
 
@@ -1024,7 +1019,7 @@ prevValue
 
 	^ prevValue! !
 
-!VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:38:18'!
+!VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:55:23'!
 processMouseDown: evt localPosition: localEventPosition
 	"Do nothing upon mouse-down except inform the hand to watch for a 
 	click; wait until an ensuing #click: message gets dispatched"
@@ -1039,44 +1034,26 @@ processMouseDown: evt localPosition: localEventPosition
 
 ! !
 
-!VisualMenuItem methodsFor: 'initialization' stamp: 'KenD 11/28/2016 16:32:10'!
-propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
-
-	super initialize.
-	name := aSymbol.
-	targetMorph := aMorph.
-	metaProperty := aPropertyDescriptor.
-	prevValue := aMorph valueOfProperty: aSymbol.	
-	self setContents;
-		 target: self;
-		 icon: prevValue icon; 
-		 selector: #edit
-! !
-
 !VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:30:25'!
 propertyDescriptor
 
 	^ self metaProperty! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:30:35'!
+!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:25'!
 propertyName
 
-	^ self name ! !
+	self subclassResponsibility ! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:31:08'!
+!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:39'!
 propertyValue
 
-	^ self targetMorph valueOfProperty: self name! !
+	self subclassResponsibility! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 09:13:52'!
+!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:50'!
 propertyValue: newValue
 	"Assumed checking already done.  Does NOT change cashed value"
 
-	| myMorph |
-	myMorph := self targetMorph.
-	myMorph setProperty: self name toValue: newValue.
-	myMorph morphExtent: (myMorph morphExtent max: myMorph minimumExtent).
-	self update.
+	self subclassResponsibility
 ! !
 
 !VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:41:45'!
@@ -1149,11 +1126,6 @@ update
 	self setContents.
 	self owner ifNotNil: [ self owner adjustSubmorphsLayout ].
 	self targetMorph redrawNeeded.! !
-
-!VisualMenuItem methodsFor: 'private' stamp: 'KenD 11/28/2016 16:34:02'!
-valueMorph
-
-	^ SignMorph forObject: self propertyValue! !
 
 !VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 19:02:11'!
 wantsDroppedMorph: aMorph event: evt
@@ -1306,13 +1278,13 @@ pointIcon
 
 	^PtIcon! !
 
-!VisualMenuItem class methodsFor: 'instance creation' stamp: 'KenD 11/28/2016 16:17:41'!
+!VisualMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:07:44'!
 propName: aSymbol morph: aMorph
 
 	^ self propName: aSymbol morph: aMorph propMeta: MetaProperty default
 ! !
 
-!VisualMenuItem class methodsFor: 'instance creation' stamp: 'KenD 11/28/2016 16:17:54'!
+!VisualMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:07:38'!
 propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
 
 	^self new propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
@@ -1373,6 +1345,36 @@ propertyValue: newValue
 	| myMorph |
 	myMorph := self targetMorph.
 	myMorph instVarNamed: self name put: newValue.
+	myMorph morphExtent: (myMorph morphExtent max: myMorph minimumExtent).
+	self update.
+! !
+
+!VisualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/7/2016 15:00:40'!
+propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
+
+	super initialize.
+	name := aSymbol.
+	targetMorph := aMorph.
+	metaProperty := aPropertyDescriptor.
+	prevValue := aMorph valueOfProperty: aSymbol.	
+	self setContents;
+		 target: self;
+		 icon: prevValue icon; 
+		 selector: #edit
+! !
+
+!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:00'!
+propertyValue
+
+	^ self targetMorph valueOfProperty: self name! !
+
+!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:07'!
+propertyValue: newValue
+	"Assumed checking already done.  Does NOT change cashed value"
+
+	| myMorph |
+	myMorph := self targetMorph.
+	myMorph setProperty: self name toValue: newValue.
 	myMorph morphExtent: (myMorph morphExtent max: myMorph minimumExtent).
 	self update.
 ! !
