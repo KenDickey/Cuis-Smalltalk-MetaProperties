@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 7:06:06 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 7:33:36 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 28!
+!provides: 'Morph-MetaProperties' 1 30!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Misc1' 1 92 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -336,11 +336,6 @@ morphForDrag
 	^ FontMorph font: self
 ! !
 
-!AbstractFont class methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 16:13:12'!
-availableFonts
-
-	^ AvailableFonts ! !
-
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:45:31'!
 morphForDrag
 	"Answer a morph suitable for DragNDrop"
@@ -368,6 +363,12 @@ icon
 !ImageMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 14:35:01'!
 image
 
+	^ self form! !
+
+!ImageMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 19:33:29'!
+valueWhenDropped
+	"Answer my form (image)"
+	
 	^ self form! !
 
 !StringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 15:16:32'!
