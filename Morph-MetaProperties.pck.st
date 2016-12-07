@@ -1,8 +1,8 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 2:50:05 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 7:06:06 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 26!
+!provides: 'Morph-MetaProperties' 1 28!
 !requires: 'Cuis-Base' 50 2984 nil!
-!requires: 'Morphic-Misc1' 1 86 nil!
+!requires: 'Morphic-Misc1' 1 92 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
@@ -195,6 +195,13 @@ icon
 
 	^ VisualPropertyMenuItem objectIcon ! !
 
+!Object methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:45:12'!
+morphForDrag
+	"Answer a morph suitable for DragNDrop"
+	
+	^ SignMorph forObject: self
+! !
+
 !Boolean methodsFor: '*morph-metaproperties' stamp: 'KenD 12/2/2016 14:22:02'!
 icon
 
@@ -300,6 +307,13 @@ icon
 
 	^ VisualPropertyMenuItem fileIcon ! !
 
+!Color methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:46:47'!
+morphForDrag
+	"Answer a morph suitable for DragNDrop"
+	
+	^ DropColorMorph fromColor: self
+! !
+
 !Point methodsFor: '*morph-metaproperties' stamp: 'KenD 12/2/2016 14:22:56'!
 icon
 
@@ -315,16 +329,36 @@ icon
 
 	^ VisualPropertyMenuItem fontIcon ! !
 
+!AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:48:32'!
+morphForDrag
+	"Answer a morph suitable for DragNDrop"
+	
+	^ FontMorph font: self
+! !
+
 !AbstractFont class methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 16:13:12'!
 availableFonts
 
 	^ AvailableFonts ! !
+
+!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:45:31'!
+morphForDrag
+	"Answer a morph suitable for DragNDrop"
+	
+	^ self
+! !
 
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:41:29'!
 propertiesDict
 	"Private - could export a #propertiesDo: method"
 
 	^ properties ! !
+
+!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:57:46'!
+valueWhenDropped
+	"Subclasses which wrap values should override (e.g. SignMorph, DropColorMorph)"
+	
+	^ self! !
 
 !ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 12/2/2016 14:23:09'!
 icon
@@ -410,7 +444,7 @@ front: fontToUse
 	self fitContents.
 	self redrawNeeded ! !
 
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:40:14'!
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 18:49:33'!
 aboutToGrab: aMorph
 	"submorph is being grabbed by a hand.
 	Perform necessary adjustments (if any) and return the actual morph
@@ -426,15 +460,8 @@ aboutToGrab: aMorph
 		ifTrue: [ valueToDrag := aMorph value ].
 	
 	valueToDrag isNil
-	ifTrue: [^ self ] "Title selected. User wants to move me. Pick me up"
-	ifFalse: [
-		(valueToDrag isKindOf: Color)
-			ifTrue:  [ ^ DropColorMorph fromColor: valueToDrag ]
-			ifFalse: [ (valueToDrag isKindOf: AbstractFont)
-				ifTrue: [ ^ FontMorph font:          valueToDrag ]
-				ifFalse: [ ^ SignMorph forObject:  valueToDrag ]
-			]
-	]
+	ifTrue:  [^ self ] "Title selected. User wants to move me. Pick me up"
+	ifFalse: [ ^ valueToDrag morphForDrag ]
 ! !
 
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:23:37'!
@@ -1084,34 +1111,24 @@ valueMorph
 
 	^ SignMorph forObject: self propertyValue! !
 
-!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:01:24'!
+!VisualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 19:02:11'!
 wantsDroppedMorph: aMorph event: evt
 	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
 
-	| dropValue |
-	(aMorph isKindOf: SignMorph)
-		ifTrue: [ dropValue := aMorph object ]
-		ifFalse: [ 
-			(aMorph isKindOf: DropColorMorph)
-			ifTrue: [dropValue := aMorph color] 
-			ifFalse: [ (aMorph isKindOf: FontMorph)
-				ifTrue: [ dropValue := aMorph font ]
-				ifFalse: [dropValue := aMorph] 
-			]
-		].
-	(self allowsValue: dropValue)
+	(self allowsValue: aMorph valueWhenDropped)
 		ifTrue: [ 
-			self propertyValue: dropValue.
+			self propertyValue: aMorph valueWhenDropped.
 			self showAccept: aMorph. 
 	 	]
 		ifFalse: [
 			self showReject: aMorph.
 		].
 	
-	"We can't just delet aMorph as rejecting the drop adds it to its old owner at 0@0.
-	 So we accept the drop, but then delete aMorph."
+	"Rejecting the drop adds aMorph to its old owner at 0@0.
+	 So we accept the drop, but then delete aMorph.  
+	This is done in #showAccept and #showReject."
 
-	^ true  "Always accept drop -- even if we reject the value, then delete the morph"! !
+	^ true  "Always accept drop"! !
 
 !VisualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:29'!
 blankIcon
