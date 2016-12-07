@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2996] on 7 December 2016 at 3:14:51 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2996] on 7 December 2016 at 3:30:29 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 34!
+!provides: 'Morph-MetaProperties' 1 35!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Cuis-Base' 50 2996 nil!
 !requires: 'Morphic-Misc1' 1 95 nil!
@@ -552,17 +552,22 @@ addMetaPropsDisplay
 		self addMorphBack: propMorph
 	].! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/7/2016 09:05:22'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/7/2016 15:29:10'!
 addOperationsDisplay
 	"This is a separate method so subclasses can override"
 
-	self add: 'Refresh Me'             target: self selector: #refreshView;
-"		 add: 'Add Visual Property' target: self selector: #addVisualProperty; "
-		 add: 'Toggle IVar Display' target: self selector: #toggleIVarView;
-		 add: 'Toggle nonVisual Props Display' target: self selector: #toggleOrdinaryPropsView;
-		 add: 'Show drop target for Morph'      target: self targetMorph selector: #showDropTarget;
-		 add: 'Edit Morph''s layoutSpec'           target: self targetMorph selector: #editMyLayoutSpec;
-		 add: 'Open a message window for Morph' target: self targetMorph selector: #messageWindow.! !
+	self add: 'Refresh Me'  target: self 
+			selector: #refreshView;
+		 add: 'toggle Instance Variable display' target: self 
+			selector: #toggleIVarView;
+		 add: 'toggle non-visual Properties display' target: self 
+			selector: #toggleOrdinaryPropsView;
+		 add: 'show Drop Target for Morph' target: self targetMorph 
+			selector: #showDropTarget;
+		 add: 'edit Morph''s LayoutSpec'  target: self targetMorph 
+			selector: #editMyLayoutSpec;
+		 add: 'open a Message Window for Morph' target: self targetMorph 
+			selector: #messageWindow.! !
 
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:13:17'!
 addOrdinaryPropertiesDisplay
@@ -844,7 +849,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 15:32:56'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:20:41'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -911,7 +916,8 @@ initialize
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
 	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"
-		classDict := MetaProperty metaPropsDictForClass: OneLineEditorMorph.
+	
+	classDict := MetaProperty metaPropsDictForClass: OneLineEditorMorph.
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
 	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"
