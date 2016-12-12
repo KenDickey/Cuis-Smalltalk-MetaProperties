@@ -1,9 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2996] on 7 December 2016 at 3:30:29 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 4:04:04 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 35!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
+!provides: 'Morph-MetaProperties' 1 36!
 !requires: 'Cuis-Base' 50 2996 nil!
 !requires: 'Morphic-Misc1' 1 95 nil!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -366,11 +366,15 @@ morphForDrag
 	^ FontMorph font: self
 ! !
 
-!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:45:31'!
+!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/11/2016 15:40:47'!
 morphForDrag
 	"Answer a morph suitable for DragNDrop"
 	
-	^ self
+	^ (self world == self)
+		ifTrue: [ SignMorph forObject: self ] "World"
+		ifFalse: [ self ]
+	
+	
 ! !
 
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 13:47:02'!
@@ -521,12 +525,13 @@ addIVarsDisplay
 
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/7/2016 09:09:22'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/11/2016 15:48:04'!
 addMetaPropsDisplay
 	" Add display of MetaProperty selections to self"
 
-	| ivarNames |
-	ivarNames := self targetMorph class allInstVarNames.
+	| ivarNames myMorph |
+	myMorph := self targetMorph.
+	ivarNames := myMorph class allInstVarNames.
 	
 	self addLine.
 	
@@ -536,23 +541,22 @@ addMetaPropsDisplay
 			ifTrue: [
 				VisualIVarMenuItem 
 						propName: name 
-						morph: self targetMorph 
+						morph: myMorph 
 						propMeta: (self metaProps at: name)
 			]
 			ifFalse: [
 				VisualPropertyMenuItem 
 						propName: name 
-						morph: self targetMorph 
+						morph: myMorph 
 						propMeta: (self metaProps at: name)
 			]
 		).
-		propMorph  target: self;
-					selector: #edit: ;
-					arguments: { name. }.
+		propMorph  target: propMorph;
+					  selector: #edit.
 		self addMorphBack: propMorph
 	].! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/7/2016 15:29:10'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/11/2016 13:24:13'!
 addOperationsDisplay
 	"This is a separate method so subclasses can override"
 
@@ -560,7 +564,7 @@ addOperationsDisplay
 			selector: #refreshView;
 		 add: 'toggle Instance Variable display' target: self 
 			selector: #toggleIVarView;
-		 add: 'toggle non-visual Properties display' target: self 
+		 add: 'toggle Instance Properties display' target: self 
 			selector: #toggleOrdinaryPropsView;
 		 add: 'show Drop Target for Morph' target: self targetMorph 
 			selector: #showDropTarget;
@@ -926,11 +930,16 @@ initialize
 
 ! !
 
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/2/2016 16:05:43'!
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:53:49'!
 allowsMorphDrop
-	"Answer whether we accept dropping morphs.  We don't"
+	"We don't allow editing by Drop, but answer true here to visually reject and delete dropped morph."
 
-	^ false! !
+	^ true! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:55:31'!
+cleanUpForMorph: aMorph.
+
+	aMorph delete! !
 
 !OrdinaryPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/2/2016 16:03:28'!
 itemForIVar: aName targetMorph: aMorph
@@ -966,6 +975,29 @@ processMouseDown: evt localPosition: localEventPosition
 
 ! !
 
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 14:32:50'!
+showReject: aMorph
+	"Draw and erase a red X"
+
+	| leftStroke rightStroke mPos mExtent |
+	mPos := aMorph morphPositionInWorld.
+	mExtent := aMorph morphExtent.
+	leftStroke   := LineMorph 
+						startPoint: mPos - (10@10) 
+						endPoint: (mPos + mExtent + (10@10)) 
+						width: 6
+						color: Color red.
+	rightStroke := LineMorph 
+						startPoint: mPos + (-10 @ (mExtent y + 10))
+						endPoint: (mPos + ((10 + mExtent x) @ -10)) 
+						width: 6
+						color: Color red.
+	leftStroke   openInWorld.
+	rightStroke openInWorld.
+	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2.
+	self addAlarm: #cleanUpForMorph: with: leftStroke after: 400.	
+	self addAlarm: #cleanUpForMorph: with: rightStroke after: 400.! !
+
 !OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:15:02'!
 targetMorph
 
@@ -978,6 +1010,18 @@ value
 	^ (accessKind = #property)
 		ifTrue:  [ targetMorph valueOfProperty: name ]
 		ifFalse: [ targetMorph instVarNamed:     name ]! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:52:43'!
+wantsDroppedMorph: aMorph event: evt
+	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
+
+	self showReject: aMorph.
+	
+	"Rejecting the drop adds aMorph to its old owner at 0@0.
+	 So we accept the drop, but then delete aMorph.  
+	This is done in #showReject."
+
+	^ true  "Always 'accept' drop"! !
 
 !OrdinaryPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/2/2016 16:00:46'!
 itemForIVar: aName targetMorph: aMorph
@@ -1005,10 +1049,11 @@ cleanUpForMorph: aMorph.
 
 	aMorph delete! !
 
-!VisualMenuItem methodsFor: 'editing' stamp: 'KenD 11/28/2016 16:37:00'!
+!VisualMenuItem methodsFor: 'editing' stamp: 'KenD 12/11/2016 16:02:45'!
 edit
 
-	self metaProperty edit: self targetMorph ! !
+	self metaProperty edit: self targetMorph propName: self name.
+	self update ! !
 
 !VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:30'!
 metaProperty
@@ -1077,8 +1122,9 @@ setContents
 						truncateWithElipsisTo: 40 ).
 	self icon: (self propertyValue icon)! !
 
-!VisualMenuItem methodsFor: 'events' stamp: 'KenD 12/6/2016 14:22:30'!
+!VisualMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:37'!
 showAccept: aMorph
+	"Draw and erase a green box"
 
 	| hilightMorph mPos mExtent |
 	mPos := aMorph morphPositionInWorld.
@@ -1093,8 +1139,9 @@ showAccept: aMorph
 	self addAlarm: #cleanUpForMorph: with: aMorph        after: 200.
 	self addAlarm: #cleanUpForMorph: with: hilightMorph after: 400.! !
 
-!VisualMenuItem methodsFor: 'events' stamp: 'KenD 12/6/2016 14:20:39'!
+!VisualMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:13'!
 showReject: aMorph
+	"Draw and erase a red X"
 
 	| leftStroke rightStroke mPos mExtent |
 	mPos := aMorph morphPositionInWorld.
@@ -1464,6 +1511,12 @@ accepts: newValue
 
 	^ newValue isKindOf: kind! !
 
+!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/11/2016 15:21:19'!
+edit: myMorph propName: nameString
+
+	(HoverHelpMorph contents: 'Need editor for ' , nameString asString)
+		popUpForHand: myMorph world activeHand! !
+
 !MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:20:57'!
 initialize
 
@@ -1635,6 +1688,15 @@ accepts: newValue
 choices
 
 	^ choiceCollection! !
+
+!MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/11/2016 15:57:49'!
+edit: myMorph propName: nameString
+
+	| menu selectIndex |
+	menu := PopUpMenu labelArray: self choices.
+	selectIndex := menu startUpWithCaption: 'Set ', nameString, ' to:'.
+	myMorph instVarNamed: nameString asSymbol put: ( self choices at: selectIndex ). "@@FIXME: setProperty@@"
+	myMorph redrawNeeded.! !
 
 !MetaPropertyOneOf methodsFor: 'initialization' stamp: 'KenD 12/5/2016 13:50:52'!
 kind: aClass choices: aCollection
