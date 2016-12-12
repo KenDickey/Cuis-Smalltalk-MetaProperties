@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 4:26:53 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 12 December 2016 at 2:52:38 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 37!
+!provides: 'Morph-MetaProperties' 1 38!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 99 nil!
@@ -24,44 +24,14 @@ MenuItemMorph subclass: #OrdinaryPropertyMenuItem
 OrdinaryPropertyMenuItem class
 	instanceVariableNames: ''!
 
-!classDefinition: #VisualMenuItem category: #'Morph-MetaProperties'!
-MenuItemMorph subclass: #VisualMenuItem
-	instanceVariableNames: 'metaProperty name prevValue targetMorph'
+!classDefinition: #VirtualPropertyMenuItem category: #'Morph-MetaProperties'!
+MenuItemMorph subclass: #VirtualPropertyMenuItem
+	instanceVariableNames: 'metaProperty name prevValue targetMorph accessProc updateProc'
 	classVariableNames: 'BlankIcon BoolIcon CharIcon ChronIcon ClassIcon ClosureIcon CollectIcon CpxIcon FalseIcon FileIcon FloatIcon FolderIcon FontIcon FracIcon IntIcon NilIcon ObjIcon OneOfIcon PtIcon RngIcon StrIcon StreamIcon SymIcon TrueIcon WindowIcon'
 	poolDictionaries: ''
 	category: 'Morph-MetaProperties'!
-!classDefinition: 'VisualMenuItem class' category: #'Morph-MetaProperties'!
-VisualMenuItem class
-	instanceVariableNames: ''!
-
-!classDefinition: #VisualIVarMenuItem category: #'Morph-MetaProperties'!
-VisualMenuItem subclass: #VisualIVarMenuItem
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'VisualIVarMenuItem class' category: #'Morph-MetaProperties'!
-VisualIVarMenuItem class
-	instanceVariableNames: ''!
-
-!classDefinition: #VisualPropertyMenuItem category: #'Morph-MetaProperties'!
-VisualMenuItem subclass: #VisualPropertyMenuItem
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'VisualPropertyMenuItem class' category: #'Morph-MetaProperties'!
-VisualPropertyMenuItem class
-	instanceVariableNames: ''!
-
-!classDefinition: #VisualVirtualPropMenuItem category: #'Morph-MetaProperties'!
-VisualMenuItem subclass: #VisualVirtualPropMenuItem
-	instanceVariableNames: 'getter setter'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'VisualVirtualPropMenuItem class' category: #'Morph-MetaProperties'!
-VisualVirtualPropMenuItem class
+!classDefinition: 'VirtualPropertyMenuItem class' category: #'Morph-MetaProperties'!
+VirtualPropertyMenuItem class
 	instanceVariableNames: ''!
 
 !classDefinition: #MetaPropertyTests category: #'Morph-MetaProperties'!
@@ -137,7 +107,7 @@ My instances supply menu iterms which can have their values dragged for DragNDro
 
 My accessKind is either #property #instanceVar.!
 
-!VisualMenuItem commentStamp: '<historical>' prior: 0!
+!VirtualPropertyMenuItem commentStamp: '<historical>' prior: 0!
 My instances display a menu selection for a Morph visual property.  
 See documentation method: MetaProperty class>>whyMe
 
@@ -146,17 +116,8 @@ ivars:
   name -- property name (a symbol)
   prevValue -- cached previous property value (used for undo)
   targetMorph -- changes to me are reflected in this specific morph
-!
-
-!VisualIVarMenuItem commentStamp: '<historical>' prior: 0!
-I am a VisualMenuItem specialized for a Morph's instance variable.!
-
-!VisualPropertyMenuItem commentStamp: '<historical>' prior: 0!
-I am a VisualMenuItem specialized for a Morph Property.!
-
-!VisualVirtualPropMenuItem commentStamp: '<historical>' prior: 0!
-I am a VisualMenuItem specialized for a property synthesized by methods.
-
+  accessProc -- a closure of 0 args which returns a value
+  updateProc -- a closure which takes 1 value
 !
 
 !MetaPropertyTests commentStamp: '<historical>' prior: 0!
@@ -213,15 +174,15 @@ I test via  (aClosure value: newValue).
 
 aClosure should take one argument are return a boolean.!
 
-!ProtoObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:07:44'!
+!ProtoObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:10'!
 icon
 
-	^ VisualMenuItem blankIcon! !
+	^ VirtualPropertyMenuItem blankIcon! !
 
-!Object methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:07:48'!
+!Object methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:15'!
 icon
 
-	^ VisualMenuItem objectIcon ! !
+	^ VirtualPropertyMenuItem objectIcon ! !
 
 !Object methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:45:12'!
 morphForDrag
@@ -230,110 +191,110 @@ morphForDrag
 	^ SignMorph forObject: self
 ! !
 
-!Boolean methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:07:55'!
+!Boolean methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:22'!
 icon
 
-	^ VisualMenuItem booleanIcon ! !
+	^ VirtualPropertyMenuItem booleanIcon ! !
 
-!False methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:02'!
+!False methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:30'!
 icon
 
-	^ VisualMenuItem falseIcon ! !
+	^ VirtualPropertyMenuItem falseIcon ! !
 
-!True methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:07:59'!
+!True methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:27'!
 icon
 
-	^ VisualMenuItem trueIcon ! !
+	^ VirtualPropertyMenuItem trueIcon ! !
 
-!UndefinedObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:07:51'!
+!UndefinedObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:18'!
 icon
 
-	^ VisualMenuItem nilIcon ! !
+	^ VirtualPropertyMenuItem nilIcon ! !
 
-!Magnitude methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:05'!
+!Magnitude methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:35'!
 icon
 
-	^ VisualMenuItem integerIcon ! !
+	^ VirtualPropertyMenuItem integerIcon ! !
 
-!Float methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:15'!
+!Float methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:45'!
 icon
 
-	^ VisualMenuItem floatIcon ! !
+	^ VirtualPropertyMenuItem floatIcon ! !
 
-!Fraction methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:08'!
+!Fraction methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:38'!
 icon
 
-	^ VisualMenuItem fractionIcon ! !
+	^ VirtualPropertyMenuItem fractionIcon ! !
 
-!Integer methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:12'!
+!Integer methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:42'!
 icon
 
-	^ VisualMenuItem integerIcon ! !
+	^ VirtualPropertyMenuItem integerIcon ! !
 
-!Time methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:18'!
+!Time methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:49'!
 icon
 
-	^ VisualMenuItem chronIcon ! !
+	^ VirtualPropertyMenuItem chronIcon ! !
 
-!Complex methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:46'!
+!Complex methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:17'!
 icon
 
-	^ VisualMenuItem complexIcon ! !
+	^ VirtualPropertyMenuItem complexIcon ! !
 
-!Character methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:10:32'!
+!Character methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:38'!
 icon
 
-	^ VisualMenuItem charIcon ! !
+	^ VirtualPropertyMenuItem charIcon ! !
 
-!Timespan methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:10:37'!
+!Timespan methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:41'!
 icon
 
-	^ VisualMenuItem chronIcon ! !
+	^ VirtualPropertyMenuItem chronIcon ! !
 
-!BlockClosure methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:39'!
+!BlockClosure methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:11'!
 icon
 
-	^ VisualMenuItem closureIcon ! !
+	^ VirtualPropertyMenuItem closureIcon ! !
 
-!Collection methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:21'!
+!Collection methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:52'!
 icon
 
-	^ VisualMenuItem collectionIcon ! !
+	^ VirtualPropertyMenuItem collectionIcon ! !
 
-!String methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:26'!
+!String methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:56'!
 icon
 
-	^ VisualMenuItem stringIcon ! !
+	^ VirtualPropertyMenuItem stringIcon ! !
 
-!Symbol methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:29'!
+!Symbol methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:59'!
 icon
 
-	^ VisualMenuItem symbolIcon ! !
+	^ VirtualPropertyMenuItem symbolIcon ! !
 
-!Stream methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:33'!
+!Stream methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:04'!
 icon
 
-	^ VisualMenuItem streamIcon ! !
+	^ VirtualPropertyMenuItem streamIcon ! !
 
-!FileIOAccessor methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:10:41'!
+!FileIOAccessor methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:44'!
 icon
 
-	^ VisualMenuItem fileIcon ! !
+	^ VirtualPropertyMenuItem fileIcon ! !
 
-!FileSystemEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:10:44'!
+!FileSystemEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:47'!
 icon
 
-	^ VisualMenuItem fileIcon ! !
+	^ VirtualPropertyMenuItem fileIcon ! !
 
-!DirectoryEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:10:47'!
+!DirectoryEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:50'!
 icon
 
-	^ VisualMenuItem folderIcon ! !
+	^ VirtualPropertyMenuItem folderIcon ! !
 
-!FileEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:10:51'!
+!FileEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:53'!
 icon
 
-	^ VisualMenuItem fileIcon ! !
+	^ VirtualPropertyMenuItem fileIcon ! !
 
 !Form methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 19:39:56'!
 morphForDrag
@@ -349,15 +310,15 @@ morphForDrag
 	^ DropColorMorph fromColor: self
 ! !
 
-!Point methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:36'!
+!Point methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:08'!
 icon
 
-	^ VisualMenuItem pointIcon ! !
+	^ VirtualPropertyMenuItem pointIcon ! !
 
-!AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:42'!
+!AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:14'!
 icon
 
-	^ VisualMenuItem fontIcon ! !
+	^ VirtualPropertyMenuItem fontIcon ! !
 
 !AbstractFont methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:48:32'!
 morphForDrag
@@ -394,10 +355,10 @@ valueWhenDropped
 	
 	^ self! !
 
-!ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 12/7/2016 09:08:48'!
+!ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:20'!
 icon
 
-	^ VisualMenuItem windowIcon ! !
+	^ VirtualPropertyMenuItem windowIcon ! !
 
 !ImageMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 14:35:01'!
 image
@@ -484,7 +445,7 @@ front: fontToUse
 	self fitContents.
 	self redrawNeeded ! !
 
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 15:14:22'!
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/12/2016 14:42:26'!
 aboutToGrab: aMorph
 	"submorph is being grabbed by a hand.
 	Perform necessary adjustments (if any) and return the actual morph
@@ -494,7 +455,7 @@ aboutToGrab: aMorph
 	Transcript show: 'PropertyEditor aboutToGrab: ', aMorph printString ; newLine.
 "
 	| valueToDrag |
-	(aMorph isKindOf: VisualMenuItem)
+	(aMorph isKindOf: VirtualPropertyMenuItem)
 		ifTrue: [ valueToDrag := aMorph propertyValue ].
 	(aMorph isKindOf: OrdinaryPropertyMenuItem)
 		ifTrue: [ valueToDrag := aMorph value ].
@@ -525,27 +486,27 @@ addIVarsDisplay
 
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/11/2016 15:48:04'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/12/2016 14:44:04'!
 addMetaPropsDisplay
 	" Add display of MetaProperty selections to self"
 
-	| ivarNames myMorph |
+	| myIvarNames myMorph |
 	myMorph := self targetMorph.
-	ivarNames := myMorph class allInstVarNames.
+	myIvarNames := self ivarNames.
 	
 	self addLine.
 	
 	self metaPropNames do: [ :name | | propMorph |
 		propMorph := 
-		((ivarNames includes: name)
+		((myIvarNames includes: name)
 			ifTrue: [
-				VisualIVarMenuItem 
-						propName: name 
+				VirtualPropertyMenuItem 
+						ivarName: name 
 						morph: myMorph 
 						propMeta: (self metaProps at: name)
 			]
 			ifFalse: [
-				VisualPropertyMenuItem 
+				VirtualPropertyMenuItem 
 						propName: name 
 						morph: myMorph 
 						propMeta: (self metaProps at: name)
@@ -554,7 +515,8 @@ addMetaPropsDisplay
 		propMorph  target: propMorph;
 					  selector: #edit.
 		self addMorphBack: propMorph
-	].! !
+	].
+! !
 
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/11/2016 16:26:02'!
 addOperationsDisplay
@@ -632,11 +594,11 @@ allowsSubmorphDrag
 
 	^ true! !
 
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:04:06'!
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 11:19:20'!
 alwaysHiddenIVars
 	"Answer a collection of names of ivars never to be shown"
 
-	^ #(properties)! !
+	^ #(properties extent location)! !
 
 !VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:04:33'!
 alwaysHiddenProperties
@@ -685,7 +647,7 @@ fontPreferenceChanged
 	super fontPreferenceChanged.
 	self refreshView.! !
 
-!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 11/28/2016 18:33:34'!
+!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 12/12/2016 11:12:17'!
 forMorph: aMorph
 	"Initialize, but do NOT open this instance"
 
@@ -693,20 +655,20 @@ forMorph: aMorph
 	showAllIvars  := false.
 	showAllProps := false.
 	metaProps := MetaProperty metaPropsForMorph: aMorph.
-	targetMorph when: #propertyChanged send: #refreshView to: self.
+	targetMorph when: #propertyChanged send: #refreshView to: self. "@@@use it@@"
 	self defaultTarget: self;
 		 stayUp: true;
 		 refreshView;
 	 	 yourself! !
 
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:49:25'!
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 13:59:01'!
 ivarNames
 	"Answer an alpha-sorted collection of Instance variable names less MetaProperties"
 
 	| ivarNames neverShown metaPropsDict |
 	ivarNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
 	metaPropsDict := self metaProps.
-	neverShown     := self alwaysHiddenIVars.
+	neverShown     := (self alwaysHiddenIVars) , (self morphSelectorProperties).
 	
 	self targetMorph class allInstVarNames do: [ :ivarName | 
 		(neverShown includes: ivarName)
@@ -739,6 +701,12 @@ minItemWidth
 
 	^ Preferences windowTitleFont widthOfString: '0123456789112345678921234567893'
 ! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 11:29:59'!
+morphSelectorProperties
+	"Answer a collection of names of properties accessed via selector"
+
+	^ #(morphPosition morphExtent)! !
 
 !VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 16:30:33'!
 propertyNames
@@ -853,7 +821,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:20:41'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/12/2016 11:29:11'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -869,7 +837,8 @@ initialize
 	propsDict := MetaProperty preDefinedPropsDict.
 
 	classDict := MetaProperty metaPropsDictForClass: RectangleLikeMorph.
-	classDict at: #extent put: (propsDict at: #acceptsPositivePoint). 
+	classDict at: #morphExtent   put: (propsDict at: #acceptsPositivePoint). 
+	classDict at: #morphPosition put: (propsDict at: #acceptsPoint). 
 	classDict at: #color put: (propsDict at: #acceptsColor). 
 
 	classDict := MetaProperty metaPropsDictForClass: BorderedRectMorph.
@@ -1033,44 +1002,44 @@ itemForProperty: aName targetMorph: aMorph
 
 	^self new itemForProperty: aName targetMorph: aMorph! !
 
-!VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:38:00'!
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:38:00'!
 allowsMorphDrop
 	"Answer whether we accept dropping morphs. Redefined to answer true."
 
 	^ true! !
 
-!VisualMenuItem methodsFor: 'testing' stamp: 'KenD 11/28/2016 16:37:33'!
+!VirtualPropertyMenuItem methodsFor: 'testing' stamp: 'KenD 11/28/2016 16:37:33'!
 allowsValue: aValue
 
 	^ self metaProperty accepts: aValue! !
 
-!VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:08:52'!
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:08:52'!
 cleanUpForMorph: aMorph.
 
 	aMorph delete! !
 
-!VisualMenuItem methodsFor: 'editing' stamp: 'KenD 12/11/2016 16:02:45'!
+!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 12/11/2016 16:02:45'!
 edit
 
 	self metaProperty edit: self targetMorph propName: self name.
 	self update ! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:30'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:30'!
 metaProperty
 
 	^ metaProperty! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:37'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:37'!
 name
 
 	^ name! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:58'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:58'!
 prevValue
 
 	^ prevValue! !
 
-!VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:55:23'!
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:55:23'!
 processMouseDown: evt localPosition: localEventPosition
 	"Do nothing upon mouse-down except inform the hand to watch for a 
 	click; wait until an ensuing #click: message gets dispatched"
@@ -1085,36 +1054,52 @@ processMouseDown: evt localPosition: localEventPosition
 
 ! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:30:25'!
+!VirtualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/12/2016 14:38:06'!
+propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor accessProc: getterClosure updateProc: setterClosure
+
+	super initialize.
+	name := aSymbol.
+	targetMorph := aMorph.
+	metaProperty := aPropertyDescriptor.
+	prevValue := getterClosure value.	
+	accessProc := getterClosure.
+	updateProc := setterClosure.
+	self setContents;
+		 target: self;
+		 icon: prevValue icon; 
+		 selector: #edit! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:30:25'!
 propertyDescriptor
 
 	^ self metaProperty! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:25'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:25'!
 propertyName
 
 	self subclassResponsibility ! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:39'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/12/2016 14:38:44'!
 propertyValue
+	"Getter"
 
-	self subclassResponsibility! !
+	^ accessProc value! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:50'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/12/2016 14:38:53'!
 propertyValue: newValue
-	"Assumed checking already done.  Does NOT change cashed value"
+	"Setter"
 
-	self subclassResponsibility
-! !
+	updateProc value: newValue.
+	self update! !
 
-!VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:41:45'!
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:41:45'!
 schedulePostRemovalOf: aMorph
 	"See comment in VisualPropertyMorph>>wantsDroppedMorph:event:"
 
 	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.1
 ! !
 
-!VisualMenuItem methodsFor: 'private' stamp: 'KenD 12/6/2016 14:25:15'!
+!VirtualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 12/6/2016 14:25:15'!
 setContents
 	"(re)set my content string and icon"
 
@@ -1122,7 +1107,7 @@ setContents
 						truncateWithElipsisTo: 40 ).
 	self icon: (self propertyValue icon)! !
 
-!VisualMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:37'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:37'!
 showAccept: aMorph
 	"Draw and erase a green box"
 
@@ -1139,7 +1124,7 @@ showAccept: aMorph
 	self addAlarm: #cleanUpForMorph: with: aMorph        after: 200.
 	self addAlarm: #cleanUpForMorph: with: hilightMorph after: 400.! !
 
-!VisualMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:13'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:13'!
 showReject: aMorph
 	"Draw and erase a red X"
 
@@ -1162,25 +1147,25 @@ showReject: aMorph
 	self addAlarm: #cleanUpForMorph: with: leftStroke after: 400.	
 	self addAlarm: #cleanUpForMorph: with: rightStroke after: 400.! !
 
-!VisualMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:35:46'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:35:46'!
 targetMorph
 
 	^ targetMorph ! !
 
-!VisualMenuItem methodsFor: 'editing' stamp: 'KenD 11/28/2016 16:35:20'!
+!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 11/28/2016 16:35:20'!
 undo
 	"Reset value from remembered value"
 
 	self targetMorph setProperty: self name  toValue: self prevValue! !
 
-!VisualMenuItem methodsFor: 'events' stamp: 'KenD 12/4/2016 20:36:52'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/4/2016 20:36:52'!
 update
 
 	self setContents.
 	self owner ifNotNil: [ self owner adjustSubmorphsLayout ].
 	self targetMorph redrawNeeded.! !
 
-!VisualMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 19:02:11'!
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 19:02:11'!
 wantsDroppedMorph: aMorph event: evt
 	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
 
@@ -1199,77 +1184,77 @@ wantsDroppedMorph: aMorph event: evt
 
 	^ true  "Always accept drop"! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:29'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:29'!
 blankIcon
 
 	^BlankIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:35'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:35'!
 booleanIcon
 
 	^BoolIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:41'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:41'!
 charIcon
 
 	^CharIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:49'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:49'!
 chronIcon
 
 	^ChronIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:55'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:55'!
 classIcon
 
 	^ClassIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:01'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:01'!
 closureIcon
 
 	^ClosureIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:09'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:09'!
 collectionIcon
 
 	^CollectIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:15'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:15'!
 complexIcon
 
 	^CpxIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:22'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:22'!
 falseIcon
 
 	^FalseIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:28'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:28'!
 fileIcon
 
 	^FileIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:36'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:36'!
 floatIcon
 
 	^FloatIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:41'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:41'!
 folderIcon
 
 	^FolderIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:46'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:46'!
 fontIcon
 
 	^FontIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:50'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:50'!
 fractionIcon
 
 	^FracIcon! !
 
-!VisualMenuItem class methodsFor: 'class initialization' stamp: 'KenD 11/28/2016 16:18:45'!
+!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 11/28/2016 16:18:45'!
 initialize
 "
 	VisualPropertyMorph initialize.
@@ -1306,131 +1291,104 @@ initialize
 	
 ! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:56'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:56'!
 integerIcon
 
 	^IntIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:02'!
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:37'!
+ivarName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
+	"Instance Variable based accessor"
+	
+	^ self 
+		propName: aSymbol 
+		morph: aMorph 
+		propMeta: aPropertyDescriptor 
+		accessProc: [ ^ aMorph instVarNamed: aSymbol ] 
+		updateProc: [ :newValue | aMorph instVarNamed: aSymbol put: newValue ] ! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:02'!
 nilIcon
 
 	^NilIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:06'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:06'!
 objectIcon
 
 	^ObjIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:12'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:12'!
 oneOfIcon
 
 	^OneOfIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:17'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:17'!
 pointIcon
 
 	^PtIcon! !
 
-!VisualMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:07:44'!
+!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:07:44'!
 propName: aSymbol morph: aMorph
 
 	^ self propName: aSymbol morph: aMorph propMeta: MetaProperty default
 ! !
 
-!VisualMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:07:38'!
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:31'!
 propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
+	"Selector based accessor"
+	
+	| setterSym |
+	setterSym := (aSymbol , ':') asSymbol.
+	^ self 
+		propName: aSymbol 
+		morph: aMorph 
+		propMeta: aPropertyDescriptor 
+		accessProc: [ aMorph perform: aSymbol ] 
+		updateProc: [ :newValue | aMorph perform: setterSym with: newValue ] ! !
 
-	^self new propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
-! !
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:10'!
+propName: aSymbol 
+morph: aMorph 
+propMeta: aPropertyDescriptor 
+accessProc: getterClosure 
+updateProc: setterClosure 
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:26'!
+	"Generalized value accessor"
+	^ self new propName: aSymbol 
+				morph: aMorph
+				propMeta: aPropertyDescriptor 
+				accessProc: getterClosure 
+				updateProc: setterClosure ! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:26'!
 rangeIcon
 
 	^RngIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:31'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:31'!
 streamIcon
 
 	^StreamIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:37'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:37'!
 stringIcon
 
 	^StrIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:43'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:43'!
 symbolIcon
 
 	^SymIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:49'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:49'!
 trueIcon
 
 	^TrueIcon! !
 
-!VisualMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:54'!
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:54'!
 windowIcon
 
 	^WindowIcon! !
-
-!VisualIVarMenuItem methodsFor: 'initialization' stamp: 'KenD 12/4/2016 20:18:25'!
-propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
-
-	super initialize.
-	name := aSymbol.
-	targetMorph := aMorph.
-	metaProperty := aPropertyDescriptor.
-	prevValue := aMorph instVarNamed: aSymbol.	
-	self setContents;
-		 target: self;
-		 icon: prevValue icon; 
-		 selector: #edit! !
-
-!VisualIVarMenuItem methodsFor: 'initialization' stamp: 'KenD 12/4/2016 20:19:09'!
-propertyValue
-
-	^ self targetMorph instVarNamed: self name! !
-
-!VisualIVarMenuItem methodsFor: 'initialization' stamp: 'KenD 12/7/2016 09:18:57'!
-propertyValue: newValue
-	"Assume access check already made"
-
-	| myMorph |
-	myMorph := self targetMorph.
-	myMorph instVarNamed: self name put: newValue.
-	myMorph morphExtent: (myMorph morphExtent max: myMorph minimumExtent).
-	self update.
-! !
-
-!VisualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/7/2016 15:00:40'!
-propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
-
-	super initialize.
-	name := aSymbol.
-	targetMorph := aMorph.
-	metaProperty := aPropertyDescriptor.
-	prevValue := aMorph valueOfProperty: aSymbol.	
-	self setContents;
-		 target: self;
-		 icon: prevValue icon; 
-		 selector: #edit
-! !
-
-!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:00'!
-propertyValue
-
-	^ self targetMorph valueOfProperty: self name! !
-
-!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:07'!
-propertyValue: newValue
-	"Assumed checking already done.  Does NOT change cashed value"
-
-	| myMorph |
-	myMorph := self targetMorph.
-	myMorph setProperty: self name toValue: newValue.
-	myMorph morphExtent: (myMorph morphExtent max: myMorph minimumExtent).
-	self update.
-! !
 
 !MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 14:19:19'!
 testAccepts
@@ -1805,7 +1763,7 @@ test: aClosure
 
 	^ self new kind: Object test: aClosure! !
 VisualPropertyEditor initialize!
-VisualMenuItem initialize!
+VirtualPropertyMenuItem initialize!
 MetaProperty initialize!
 MetaPropertyFrom initialize!
 MetaPropertyOneOf initialize!
