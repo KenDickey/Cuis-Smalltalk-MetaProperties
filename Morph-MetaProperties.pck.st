@@ -1,9 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 4:04:04 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 4:26:53 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 36!
-!requires: 'Cuis-Base' 50 2996 nil!
-!requires: 'Morphic-Misc1' 1 95 nil!
+!provides: 'Morph-MetaProperties' 1 37!
+!requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
+!requires: 'Morphic-Misc1' 1 99 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -556,7 +556,7 @@ addMetaPropsDisplay
 		self addMorphBack: propMorph
 	].! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/11/2016 13:24:13'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/11/2016 16:26:02'!
 addOperationsDisplay
 	"This is a separate method so subclasses can override"
 
@@ -566,11 +566,11 @@ addOperationsDisplay
 			selector: #toggleIVarView;
 		 add: 'toggle Instance Properties display' target: self 
 			selector: #toggleOrdinaryPropsView;
-		 add: 'show Drop Target for Morph' target: self targetMorph 
+		 add: 'show Drop Target for morph' target: self targetMorph 
 			selector: #showDropTarget;
-		 add: 'edit Morph''s LayoutSpec'  target: self targetMorph 
+		 add: 'edit morph''s LayoutSpec'  target: self targetMorph 
 			selector: #editMyLayoutSpec;
-		 add: 'open a Message Window for Morph' target: self targetMorph 
+		 add: 'open a Message Window for morph' target: self targetMorph 
 			selector: #messageWindow.! !
 
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:13:17'!
