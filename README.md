@@ -27,6 +27,9 @@ MetaProperties are immutable, so can be shared.  Many are predefined.
 (MetaProperty metaPropNamed: #acceptsColor) explore.
 ````
 
+![VisualPropertyEditor via MetaProperties](VisualPropertiesEditor.png)
+
+
 MetaMorph creation examples:
 ````Smalltalk
 "Simple Class test"
