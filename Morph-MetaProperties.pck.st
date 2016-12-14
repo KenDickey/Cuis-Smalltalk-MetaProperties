@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 6:41:48 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 14 December 2016 at 2:43:40 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 39!
+!provides: 'Morph-MetaProperties' 1 40!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 99 nil!
@@ -46,7 +46,7 @@ MetaPropertyTests class
 
 !classDefinition: #MetaProperty category: #'Morph-MetaProperties'!
 Object subclass: #MetaProperty
-	instanceVariableNames: 'kind'
+	instanceVariableNames: 'kind editProc'
 	classVariableNames: 'MetaPropDict PreDefinedPropsDict'
 	poolDictionaries: ''
 	category: 'Morph-MetaProperties'!
@@ -821,7 +821,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/12/2016 11:29:11'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:04:49'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -830,9 +830,8 @@ initialize
 	
 	| classDict propsDict |
 	"Ensure named MetaProperties exist"
-	MetaProperty initialize.
-	MetaProperty allSubclassesDo: [ :sc | sc initialize ].
-	
+	MetaProperty initializeDictionaries.
+
 	"Seed MetaProperties for known Morphs"
 	propsDict := MetaProperty preDefinedPropsDict.
 
@@ -944,7 +943,7 @@ processMouseDown: evt localPosition: localEventPosition
 
 ! !
 
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 14:32:50'!
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/14/2016 14:36:51'!
 showReject: aMorph
 	"Draw and erase a red X"
 
@@ -963,7 +962,7 @@ showReject: aMorph
 						color: Color red.
 	leftStroke   openInWorld.
 	rightStroke openInWorld.
-	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2.
+"	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2. " "Keep Morph when rejected"
 	self addAlarm: #cleanUpForMorph: with: leftStroke after: 400.	
 	self addAlarm: #cleanUpForMorph: with: rightStroke after: 400.! !
 
@@ -980,17 +979,14 @@ value
 		ifTrue:  [ targetMorph valueOfProperty: name ]
 		ifFalse: [ targetMorph instVarNamed:     name ]! !
 
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:52:43'!
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/14/2016 13:22:59'!
 wantsDroppedMorph: aMorph event: evt
 	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
 
 	self showReject: aMorph.
 	
-	"Rejecting the drop adds aMorph to its old owner at 0@0.
-	 So we accept the drop, but then delete aMorph.  
-	This is done in #showReject."
-
-	^ true  "Always 'accept' drop"! !
+	"Rejecting the drop adds aMorph to its old owner at 0@0."
+	^ false  "Reject the drop"! !
 
 !OrdinaryPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/2/2016 16:00:46'!
 itemForIVar: aName targetMorph: aMorph
@@ -1124,7 +1120,7 @@ showAccept: aMorph
 	self addAlarm: #cleanUpForMorph: with: aMorph        after: 200.
 	self addAlarm: #cleanUpForMorph: with: hilightMorph after: 400.! !
 
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:13'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/14/2016 14:37:10'!
 showReject: aMorph
 	"Draw and erase a red X"
 
@@ -1143,7 +1139,7 @@ showReject: aMorph
 						color: Color red.
 	leftStroke   openInWorld.
 	rightStroke openInWorld.
-	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2.
+"	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2.  "  "Keep Morph when rejected"
 	self addAlarm: #cleanUpForMorph: with: leftStroke after: 400.	
 	self addAlarm: #cleanUpForMorph: with: rightStroke after: 400.! !
 
@@ -1165,7 +1161,7 @@ update
 	self owner ifNotNil: [ self owner adjustSubmorphsLayout ].
 	self targetMorph redrawNeeded.! !
 
-!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 19:02:11'!
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/14/2016 13:21:18'!
 wantsDroppedMorph: aMorph event: evt
 	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
 
@@ -1173,16 +1169,17 @@ wantsDroppedMorph: aMorph event: evt
 		ifTrue: [ 
 			self propertyValue: aMorph valueWhenDropped.
 			self showAccept: aMorph. 
+			"Rejecting the drop adds aMorph to its old owner at 0@0.
+			 So we accept the drop, but then delete aMorph.  
+			This is done in #showAccept."
+			^ true  
 	 	]
 		ifFalse: [
 			self showReject: aMorph.
+			^ false
 		].
 	
-	"Rejecting the drop adds aMorph to its old owner at 0@0.
-	 So we accept the drop, but then delete aMorph.  
-	This is done in #showAccept and #showReject."
-
-	^ true  "Always accept drop"! !
+! !
 
 !VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:29'!
 blankIcon
@@ -1469,11 +1466,18 @@ accepts: newValue
 
 	^ newValue isKindOf: kind! !
 
-!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/11/2016 15:21:19'!
+!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/14/2016 10:54:40'!
 edit: myMorph propName: nameString
 
-	(HoverHelpMorph contents: 'Need editor for ' , nameString asString)
-		popUpForHand: myMorph world activeHand! !
+	(self editProc) 
+	 	ifNil: [  (HoverHelpMorph contents: 'Need editor for ' , nameString asString)
+			popUpForHand: myMorph world activeHand ]
+		ifNotNil: [ :closure | closure value: myMorph value: self value: nameString ]! !
+
+!MetaProperty methodsFor: 'accessing' stamp: 'KenD 12/14/2016 10:52:25'!
+editProc
+
+	^ editProc ! !
 
 !MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:20:57'!
 initialize
@@ -1492,19 +1496,54 @@ kind: aClass
 	ifTrue:  [ kind := aClass ]
 	ifFalse: [ self error: 'Expected a class: ', aClass printString ].! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 14:29:02'!
+!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/14/2016 10:51:37'!
+kind: aClass editProc: aClosure
+
+	(aClass isKindOf: Class)
+	ifTrue:  [ kind := aClass ]
+	ifFalse: [ self error: 'Expected a class: ', aClass printString ].
+	
+	(aClosure isKindOf: BlockClosure)
+		ifFalse:  [ self error: 'Expected a closure for editing: ', aClosure printString ].
+	(aClosure numArgs = 3)
+		ifFalse: [ self error: 'Expected closure w 3 args [ :morph :metaProp :procName | ..] ', 
+							  aClosure printString ].
+	editProc := aClosure ! !
+
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:02:51'!
+addToInitialDictionaries
+
+	"Does nothing -- method inherited by subclasses which do not override it"! !
+
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:23:29'!
 initialize
 	"Add typical usages to dictionary for sharing."
 "
 	MetaProperty initialize.
 "
+	
+	self initializeDictionaries.
+! !
+
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:25:55'!
+initializeDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaProperty initializeDictionaries.
+"
 	| props |
+	PreDefinedPropsDict := Dictionary new.
+	MetaPropDict            := Dictionary new.  "See VisualPropertyEditor class>>initialize"
+	
 	props := self preDefinedPropsDict.
 	props at: #acceptsString put: (MetaProperty kind: String).
 	props at: #acceptsSymbol put: (MetaProperty kind: Symbol).
 	props at: #acceptsCharacter put: (MetaProperty kind: Character).
 	props at: #acceptsNumber put: (MetaProperty kind: Number).
-	props at: #acceptsColor put: (MetaProperty kind: Color).
+	props at: #acceptsColor 
+		    put: (MetaProperty kind: Color
+								editProc: [ :morph :metaProp : name |
+												Color colorSelectionMenu ] ).
 	props at: #acceptsPoint put: (MetaProperty kind: Point).
 	props at: #acceptsRectangle put: (MetaProperty kind: Rectangle).
 	props at: #acceptsBoolean put: (MetaProperty kind: Boolean).
@@ -1519,11 +1558,15 @@ initialize
 	props at: #acceptsDictionary put: (MetaProperty kind: Dictionary).
 	props at: #acceptsFileEntry put: (MetaProperty kind: FileEntry ).
 	props at: #acceptsText put: (MetaProperty kind: Text).
-	props at: #acceptsFont put: (MetaProperty kind: AbstractFont ).
+	props at: #acceptsFont 
+		    put: (MetaProperty 
+				kind: AbstractFont
+				editProc: [ :morph :metaProp : name |
+								PickAFontPallet initializedInstance openInWorld ]  ).
 	props at: #acceptsForm put: (MetaProperty kind: Form).
 	props at: #acceptsLocation put: (MetaProperty kind: MorphicLocation).
 
-	
+	self allSubclassesDo: [ :subclass | subclass addToInitialDictionaries ].
 	
 	! !
 
@@ -1532,12 +1575,15 @@ kind: aClass
 
 	^ self new kind: aClass! !
 
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/2/2016 15:37:12'!
+!MetaProperty class methodsFor: 'instance creation' stamp: 'KenD 12/14/2016 10:46:15'!
+kind: aClass editProc: aClosure
+
+	^ self new kind: aClass editProc: aClosure! !
+
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/14/2016 14:09:10'!
 metaPropDict
 	"Answer a dictionary of Class->Dict(name->metaProp)"
 
-	MetaPropDict ifNil: [ MetaPropDict := Dictionary new ].
-	
 	^ MetaPropDict! !
 
 !MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/5/2016 07:39:48'!
@@ -1571,11 +1617,9 @@ metaPropsForMorph: aMorph
 	
 	^ metaPropDict! !
 
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/4/2016 16:37:09'!
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/14/2016 14:09:20'!
 preDefinedPropsDict
 
-	PreDefinedPropsDict ifNil: [ PreDefinedPropsDict := Dictionary new ].
-	
 	^ PreDefinedPropsDict ! !
 
 !MetaProperty class methodsFor: 'documentation' stamp: 'KenD 12/2/2016 15:43:36'!
@@ -1614,17 +1658,23 @@ minValue
 
 	^ minValue! !
 
-!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 15:23:19'!
-initialize
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:34:30'!
+addToInitialDictionaries
 	"Add typical usages to dictionary for sharing."
 "
-	MetaPropertyFrom initialize.
+	MetaPropertyFrom addToInitialDictionaries.
 "
 	| props |
 	props := self preDefinedPropsDict.
+
 	props at: #acceptsPositivePoint     put: (MetaPropertyFrom kind: Point minValue: 0@0).
 	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).
 	props at: #acceptsPositiveInteger put: (MetaPropertyFrom kind: Integer minValue: 0).! !
+
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:14:44'!
+initialize
+
+	self addToInitialDictionaries.! !
 
 !MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:16'!
 kind: aClass minValue: min
@@ -1669,21 +1719,27 @@ kind: aClass choices: aCollection
 	choiceCollection := aCollection.
 ! !
 
+!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:11:31'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyOneOf addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	
+	props at: #acceptsBoolean       put: (MetaPropertyOneOf kind: Boolean choices: #(true false)).
+	props at: #acceptsBorderStyle put: (MetaPropertyOneOf kind: Symbol choices: #(inset raised simple)).! !
+
 !MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:40:39'!
 choices: aCollection
 
 	^ self new kind: Object choices: aCollection! !
 
-!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/5/2016 14:43:12'!
+!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:14:53'!
 initialize
-	"Add typical usages to dictionary for sharing."
-"
-	MetaPropertyOneOf initialize.
-"
-	| props |
-	props := self preDefinedPropsDict.
-	props at: #acceptsBoolean put: (MetaPropertyOneOf kind: Boolean choices: #(true false)).
-	props at: #acceptsBorderStyle put: (MetaPropertyOneOf kind: Symbol choices: #(inset raised simple)).! !
+
+	self addToInitialDictionaries.! !
 
 !MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:30:57'!
 kind: aClass choices: aCollection
