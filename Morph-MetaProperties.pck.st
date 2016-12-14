@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 12 December 2016 at 2:52:38 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 6:41:48 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 38!
+!provides: 'Morph-MetaProperties' 1 39!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 99 nil!
@@ -486,7 +486,7 @@ addIVarsDisplay
 
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/12/2016 14:44:04'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/12/2016 19:38:47'!
 addMetaPropsDisplay
 	" Add display of MetaProperty selections to self"
 
@@ -500,7 +500,7 @@ addMetaPropsDisplay
 		propMorph := 
 		((myIvarNames includes: name)
 			ifTrue: [
-				VirtualPropertyMenuItem 
+				VirtualPropertyMenuItem "@@@Used? Useful?@@"
 						ivarName: name 
 						morph: myMorph 
 						propMeta: (self metaProps at: name)
