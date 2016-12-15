@@ -2,7 +2,7 @@
 ===============================
 VisualPropertyEditor for Morphs
 
-Tested in Cuis 5.0 revision 2986
+Tested in Cuis 5.0 revision 3000 -- CODE IN DEVELOPMENT
 
 ````Smalltalk
 	Feature require: #'Morphic-ColorEditor'.  "optional"

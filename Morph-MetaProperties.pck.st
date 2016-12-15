@@ -1,9 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 14 December 2016 at 2:43:40 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 14 December 2016 at 4:39:49 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 40!
+!provides: 'Morph-MetaProperties' 1 41!
 !requires: 'Cuis-Base' 50 3000 nil!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 99 nil!
+!requires: 'Morphic-ColorEditor' 1 31 nil!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -1515,14 +1516,14 @@ addToInitialDictionaries
 
 	"Does nothing -- method inherited by subclasses which do not override it"! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:23:29'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 15:30:54'!
 initialize
 	"Add typical usages to dictionary for sharing."
 "
 	MetaProperty initialize.
 "
 	
-	self initializeDictionaries.
+	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
 ! !
 
 !MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:25:55'!
