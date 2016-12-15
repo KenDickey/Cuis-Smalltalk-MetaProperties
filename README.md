@@ -5,11 +5,9 @@ VisualPropertyEditor for Morphs
 Tested in Cuis 5.0 revision 3000 -- CODE IN DEVELOPMENT
 
 ````Smalltalk
-	Feature require: #'Morphic-ColorEditor'.  "optional"
 	Feature require: #'Morph-MetaProperties'. "NB: NOT 'Morphic' "
 
-	(VisualPropertyEditor forMorph: EllipseMorph initializedInstance) openInWorld.
-	"Click on Gear Icon to show EllipseMorph"
+	"Open morphs from World menu->New Morph.. submenus"
 	ImagePallet namedColors.  "Click on a color and drop on a color property"
 	(SignMorph forObject: 6) openInHand. "drop 6 on borderWidth property"
 ````
