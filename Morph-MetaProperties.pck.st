@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 17 December 2016 at 4:10:24 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 18 December 2016 at 3:41:05 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 42!
+!provides: 'Morph-MetaProperties' 1 43!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
@@ -73,6 +73,16 @@ MetaProperty subclass: #MetaPropertyOneOf
 	category: 'Morph-MetaProperties'!
 !classDefinition: 'MetaPropertyOneOf class' category: #'Morph-MetaProperties'!
 MetaPropertyOneOf class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyMultiSelect category: #'Morph-MetaProperties'!
+MetaPropertyOneOf subclass: #MetaPropertyMultiSelect
+	instanceVariableNames: 'maxValue encodeProc decodeProc'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyMultiSelect class' category: #'Morph-MetaProperties'!
+MetaPropertyMultiSelect class
 	instanceVariableNames: ''!
 
 !classDefinition: #MetaPropertyRange category: #'Morph-MetaProperties'!
@@ -166,6 +176,18 @@ I accept  minValue <= newValue!
 !MetaPropertyOneOf commentStamp: '<historical>' prior: 0!
 I only accept values which are included in choiceCollection.!
 
+!MetaPropertyMultiSelect commentStamp: '<historical>' prior: 0!
+I use a MultiSelectMenu and arbitrate between a user friendly view and an internal encoding.
+
+The encoding is assumed to map between my choiceCollection (ordered collection of symbols) and internal encoding bits.
+
+The first choice encodes as zero.  Other encodings each add a bit.  See MultiSelectMenu class for details.
+
+encodeProc takes a value which may be a code, symbol, string, or whatever and returns nil or an encoded value.
+
+decodeProc takes an encoded value (an Integer) and reutrnd a String for the UI to display to the user.
+!
+
 !MetaPropertyRange commentStamp: '<historical>' prior: 0!
 I accept values in a range where:  minValue <= newValue <= maxValue.
 !
@@ -173,7 +195,7 @@ I accept values in a range where:  minValue <= newValue <= maxValue.
 !MetaPropertyViaTest commentStamp: '<historical>' prior: 0!
 I test via  (aClosure value: newValue).
 
-aClosure should take one argument are return a boolean.!
+aClosure should take one argument and return a boolean.!
 
 !ProtoObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:10'!
 icon
@@ -822,7 +844,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:04:49'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/18/2016 13:27:59'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -883,17 +905,17 @@ initialize
 	classDict := MetaProperty metaPropsDictForClass: StringMorph.
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"	
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
 	
 	classDict := MetaProperty metaPropsDictForClass: MinimalStringMorph.
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
 	
 	classDict := MetaProperty metaPropsDictForClass: OneLineEditorMorph.
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #emphasis put: (propsDict at: #acceptsPositiveInteger). "@@FIXME@@"
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
 
 
 
@@ -904,11 +926,6 @@ allowsMorphDrop
 	"We don't allow editing by Drop, but answer true here to visually reject and delete dropped morph."
 
 	^ true! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:55:31'!
-cleanUpForMorph: aMorph.
-
-	aMorph delete! !
 
 !OrdinaryPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/2/2016 16:03:28'!
 itemForIVar: aName targetMorph: aMorph
@@ -944,7 +961,7 @@ processMouseDown: evt localPosition: localEventPosition
 
 ! !
 
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/14/2016 14:36:51'!
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/18/2016 15:38:11'!
 showReject: aMorph
 	"Draw and erase a red X"
 
@@ -963,9 +980,10 @@ showReject: aMorph
 						color: Color red.
 	leftStroke   openInWorld.
 	rightStroke openInWorld.
-"	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2. " "Keep Morph when rejected"
-	self addAlarm: #cleanUpForMorph: with: leftStroke after: 400.	
-	self addAlarm: #cleanUpForMorph: with: rightStroke after: 400.! !
+	
+	"NB: Keep Morph when rejected"
+	leftStroke   addAlarm: #delete after: 400.	
+	rightStroke addAlarm: #delete after: 400.! !
 
 !OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:15:02'!
 targetMorph
@@ -1010,15 +1028,10 @@ allowsValue: aValue
 
 	^ self metaProperty accepts: aValue! !
 
-!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 14:08:52'!
-cleanUpForMorph: aMorph.
-
-	aMorph delete! !
-
-!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 12/11/2016 16:02:45'!
+!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 12/18/2016 13:05:45'!
 edit
 
-	self metaProperty edit: self targetMorph propName: self name.
+	self metaProperty edit: self targetMorph menuItem: self.
 	self update ! !
 
 !VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:30'!
@@ -1071,11 +1084,6 @@ propertyDescriptor
 
 	^ self metaProperty! !
 
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/7/2016 14:59:25'!
-propertyName
-
-	self subclassResponsibility ! !
-
 !VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/12/2016 14:38:44'!
 propertyValue
 	"Getter"
@@ -1089,13 +1097,6 @@ propertyValue: newValue
 	updateProc value: newValue.
 	self update! !
 
-!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:41:45'!
-schedulePostRemovalOf: aMorph
-	"See comment in VisualPropertyMorph>>wantsDroppedMorph:event:"
-
-	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.1
-! !
-
 !VirtualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 12/6/2016 14:25:15'!
 setContents
 	"(re)set my content string and icon"
@@ -1104,30 +1105,31 @@ setContents
 						truncateWithElipsisTo: 40 ).
 	self icon: (self propertyValue icon)! !
 
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/11/2016 14:33:37'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:36:45'!
 showAccept: aMorph
 	"Draw and erase a green box"
 
 	| hilightMorph mPos mExtent |
-	mPos := aMorph morphPositionInWorld.
+	mPos     := aMorph morphPositionInWorld.
 	mExtent := aMorph morphExtent.
 	hilightMorph := FrameMorph new.
-	hilightMorph borderWidth: 6;
+	hilightMorph   borderWidth: 6;
 					borderColor: Color green;
 					morphExtent: mExtent + 6;
 					openInWorld;
-					morphPosition: mPos - (6@6).
+					morphPosition: mPos - (6@6). "surround aMorph"
 
-	self addAlarm: #cleanUpForMorph: with: aMorph        after: 200.
-	self addAlarm: #cleanUpForMorph: with: hilightMorph after: 400.! !
+	aMorph        addAlarm: #delete after: 200.
+	hilightMorph addAlarm: #delete after: 400.! !
 
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/14/2016 14:37:10'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:37:40'!
 showReject: aMorph
 	"Draw and erase a red X"
 
 	| leftStroke rightStroke mPos mExtent |
 	mPos := aMorph morphPositionInWorld.
 	mExtent := aMorph morphExtent.
+	"Show a red X"
 	leftStroke   := LineMorph 
 						startPoint: mPos - (10@10) 
 						endPoint: (mPos + mExtent + (10@10)) 
@@ -1140,9 +1142,10 @@ showReject: aMorph
 						color: Color red.
 	leftStroke   openInWorld.
 	rightStroke openInWorld.
-"	self addAlarm: #cleanUpForMorph: with: aMorph after: 0.2.  "  "Keep Morph when rejected"
-	self addAlarm: #cleanUpForMorph: with: leftStroke after: 400.	
-	self addAlarm: #cleanUpForMorph: with: rightStroke after: 400.! !
+	
+	"NB: Keep Morph when rejected"
+	leftStroke   addAlarm: #delete after: 400.	
+	rightStroke addAlarm: #delete after: 400.! !
 
 !VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:35:46'!
 targetMorph
@@ -1155,19 +1158,23 @@ undo
 
 	self targetMorph setProperty: self name  toValue: self prevValue! !
 
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/4/2016 20:36:52'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 14:55:44'!
 update
 
 	self setContents.
-	self owner ifNotNil: [ self owner adjustSubmorphsLayout ].
+	self owner ifNotNil: [ self owner adjustSubmorphsLayout; refreshView ].
 	self targetMorph redrawNeeded.! !
 
-!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/14/2016 13:21:18'!
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/18/2016 15:39:20'!
 wantsDroppedMorph: aMorph event: evt
 	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
 
+
 	(self allowsValue: aMorph valueWhenDropped)
 		ifTrue: [ 
+"
+	Transcript newLine ; show: 'wantsDroppedMorph:event YES ', aMorph printString .
+"
 			self propertyValue: aMorph valueWhenDropped.
 			self showAccept: aMorph. 
 			"Rejecting the drop adds aMorph to its old owner at 0@0.
@@ -1176,6 +1183,9 @@ wantsDroppedMorph: aMorph event: evt
 			^ true  
 	 	]
 		ifFalse: [
+"
+	Transcript newLine ; show: 'wantsDroppedMorph:event NO ', aMorph printString .
+"
 			self showReject: aMorph.
 			^ false
 		].
@@ -1331,18 +1341,28 @@ propName: aSymbol morph: aMorph
 	^ self propName: aSymbol morph: aMorph propMeta: MetaProperty default
 ! !
 
-!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:31'!
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/18/2016 15:03:08'!
 propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
 	"Selector based accessor"
 	
-	| setterSym |
+	| setterSym isEncoded getterProc setterProc |
 	setterSym := (aSymbol , ':') asSymbol.
+	isEncoded := aPropertyDescriptor isKindOf: MetaPropertyMultiSelect.
+	getterProc := [ aMorph perform: aSymbol ] .
+	setterProc := [ :newValue | aMorph perform: setterSym with: newValue ].
 	^ self 
 		propName: aSymbol 
 		morph: aMorph 
 		propMeta: aPropertyDescriptor 
-		accessProc: [ aMorph perform: aSymbol ] 
-		updateProc: [ :newValue | aMorph perform: setterSym with: newValue ] ! !
+		accessProc:
+			(isEncoded 
+				ifFalse: [ getterProc ]
+				ifTrue: [ [ aPropertyDescriptor decodeProc value: (getterProc value) ] ])
+		updateProc: 
+			(isEncoded 
+				ifFalse: [ setterProc ]
+				ifTrue: [ [ :newValue |  setterProc value: (aPropertyDescriptor encodeProc value: newValue) ] ])
+			! !
 
 !VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:10'!
 propName: aSymbol 
@@ -1466,6 +1486,14 @@ testPredefinedMProps
 accepts: newValue
 
 	^ newValue isKindOf: kind! !
+
+!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/18/2016 13:08:47'!
+edit: myMorph menuItem: item
+
+	(self editProc) 
+	 	ifNil: [  (HoverHelpMorph contents: 'Need editor for ' , item name asString)
+			popUpForHand: myMorph world activeHand ]
+		ifNotNil: [ :closure | closure value: myMorph value: self value: item name ]! !
 
 !MetaProperty methodsFor: 'editing' stamp: 'KenD 12/14/2016 10:54:40'!
 edit: myMorph propName: nameString
@@ -1698,6 +1726,15 @@ choices
 
 	^ choiceCollection! !
 
+!MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/18/2016 13:08:05'!
+edit: myMorph menuItem: item
+
+	| menu selectIndex |
+	menu := PopUpMenu labelArray: self choices.
+	selectIndex := menu startUpWithCaption: 'Set ', item name asString, ' to:'.
+	item propertyValue: ( self choices at: selectIndex ). 
+	myMorph redrawNeeded.! !
+
 !MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/11/2016 15:57:49'!
 edit: myMorph propName: nameString
 
@@ -1719,6 +1756,21 @@ kind: aClass choices: aCollection
 	
 	choiceCollection := aCollection.
 ! !
+
+!MetaPropertyOneOf class methodsFor: 'testing' stamp: 'KenD 12/18/2016 09:49:30'!
+accepts: newValue
+
+	(newValue isKindOf: Integer)
+	ifTrue: [
+		self notYetImplemented 
+	].
+	
+	(newValue isKindOf: String)
+	ifTrue: [
+		self notYetImplemented 
+	].
+	
+	"test decodeProc"! !
 
 !MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:11:31'!
 addToInitialDictionaries
@@ -1746,6 +1798,96 @@ initialize
 kind: aClass choices: aCollection
 
 	^ self new kind: aClass choices: aCollection! !
+
+!MetaPropertyMultiSelect methodsFor: 'testing' stamp: 'KenD 12/18/2016 15:19:50'!
+accepts: newValue
+
+	| encoding  |
+	(self encodingInRange: newValue) ifTrue: [ ^ true ]. "already encoded"
+	
+	"test via decodeProc"
+	[ 
+		encoding := encodeProc value: newValue.
+		^ self encodingInRange: encoding 
+	]
+	on: Error do: [ ^ false ]! !
+
+!MetaPropertyMultiSelect methodsFor: 'accessing' stamp: 'KenD 12/18/2016 15:10:14'!
+decodeProc
+	"Answer a closure which takes an integer and answers a string"
+
+	^ decodeProc ! !
+
+!MetaPropertyMultiSelect methodsFor: 'editing' stamp: 'KenD 12/18/2016 14:44:23'!
+edit: myMorph menuItem: item
+
+	| menu encodedResult |
+	menu := (MultiSelectMenu 
+							choices: choiceCollection
+							seed: (self encodeProc value: item propertyValue)
+							title: item name asString).
+	encodedResult := menu invokeModal.
+	item propertyValue: encodedResult. 
+	myMorph redrawNeeded.! !
+
+!MetaPropertyMultiSelect methodsFor: 'accessing' stamp: 'KenD 12/18/2016 15:09:43'!
+encodeProc
+	"Answer a closure which takes a value and encodes it into an integer"
+
+	^ encodeProc ! !
+
+!MetaPropertyMultiSelect methodsFor: 'testing' stamp: 'KenD 12/18/2016 12:54:37'!
+encodingInRange: encoded
+
+	(encoded isKindOf: Integer)
+		ifTrue: [  "Already encoded"
+			^ ((0 <= encoded)
+				and: [ encoded <= maxValue ])
+		]
+		ifFalse: [ ^ false ]! !
+
+!MetaPropertyMultiSelect methodsFor: 'initialization' stamp: 'KenD 12/18/2016 09:12:42'!
+multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
+
+	super kind: Object choices: aCollection.
+	encodeProc := encoder.
+	decodeProc := decoder.
+	maxValue := (1 bitShift: (aCollection size)) - 1. "bitMask"
+	
+	((encoder isKindOf: BlockClosure) and: [ encoder numArgs = 1 ])
+		ifFalse: [ self error: 'Encoder should be a closure of 1 argument: ', encoder printString ].
+	((decoder isKindOf: BlockClosure) and: [ decoder numArgs = 1 ])
+		ifFalse: [ self error: 'Decoder should be a closure of 1 argument: ', decoder printString ].
+
+! !
+
+!MetaPropertyMultiSelect class methodsFor: 'class initialization' stamp: 'KenD 12/18/2016 14:49:02'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyMultiSelect addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	
+	props  at: #acceptsEmphasis 
+			put: (MetaPropertyMultiSelect 
+				multiChoiceFrom: TextEmphasis choices 
+				encodeProc:
+				 [ :intOrString |
+					(intOrString isKindOf: Integer) 
+						ifTrue: [ intOrString ]
+						ifFalse: [ (intOrString isKindOf: String) 
+									ifTrue:  [ TextEmphasis codeForChoice: intOrString ]
+									ifFalse: [ nil ]
+								]
+				]
+				decodeProc: [ :encoded | TextEmphasis stringForCode: encoded ]).! !
+
+!MetaPropertyMultiSelect class methodsFor: 'instance creation' stamp: 'KenD 12/18/2016 09:13:11'!
+multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
+
+	^ self new multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder! !
 
 !MetaPropertyRange methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:43:49'!
 accepts: newValue
