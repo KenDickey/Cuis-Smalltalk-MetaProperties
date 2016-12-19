@@ -2,31 +2,31 @@
 ===============================
 VisualPropertyEditor for Morphs
 
-This package adds 'open visual properties menu' selection to a Morph's edit menu (menu available from a Morph's constuction halo).
+This package adds ***open visual properties menu*** selection to a Morph's edit menu (menu available from a Morph's constuction halo).
 
 Common graphical properties are presented for easy editing via drag 'n drop.
 
-So you can open a visual properties menu and drag a color, font, position point, drop it on a visual property menu item and have the morph change.  You can also drag values from the menu.  So you can drag a color/font/position/border-width/.. from one Morph's visual property menu and drop it on another.
+So you can open a ___visual properties menu___ and drag a color, font, position point, drop it on a visual property menu item and have the morph change.  You can also drag values ___from___ the menu.  So you can drag a color/font/position/border-width/.. from one Morph's visual property menu and drop it on another.
 
 You can also click on some fields (more in progress) to get either a simple editor or pallet of choices for that property.  Currently, you can click on a Color, Font, or TextEmphasis property.
 
 If you open a ColorEditor, you can drop a color on its main color swatch to see that color's metrics and edit that color.  You can drag a color from the ColorEditor's color swatch and drop on a Color property in the Morph's visual properties editor.
 
-You can toggle display of a Morph's instance variables and/or properties and drag (but not edit) their values as well.
+You can toggle display of a Morph's non-visual instance variables and/or properties and drag (but not edit) their values as well.
 
-Note that if a value is not a Morph, a SignMorph is created for the value so that you can drag and drop it.  You can inspect a SignMorph to see the contained object's value.
+Note that if a value is not a Morph, a ***SignMorph*** is created for the value so that you can drag and drop it.  You can inspect a SignMorph to see the contained object's value.
 
 ![VisualPropertyEditor via MetaProperties](VisualPropertiesEditor.png)
 
-Tested in Cuis 5.0 revision 3000 -- CODE IN DEVELOPMENT -- Suggestions appreciated!
+Tested in Cuis 5.0 revision 3000 -- ***CODE IN DEVELOPMENT*** -- Suggestions appreciated!
 
 Requires packages:
 -  Cuis-Smalltalk-Morphic-Misc1
 -  Cuis-Smalltalk-NamedColors
 -  Cuis-Smalltalk-ColorEditor
 
-[More fonts available via
--  Cuis-Smalltalk-SF2-Import]
+More fonts available via (not required):
+-  Cuis-Smalltalk-SF2-Import
 
 ````Smalltalk
 	Feature require: #'Morph-MetaProperties'. "NB: NOT 'Morphic' "
@@ -53,7 +53,7 @@ MetaProperties are immutable, so can be shared.  Many are predefined.
 
 Annotating Morph Classes with MetaProperties is largely done in method #VisualPropertyEditor class>>initialize.  Note that you can require #'Morph-MetaProperties' and add annotations for your own custom morphs.
 
-MetaMorph creation examples:
+MetaProperty instance creation examples (with test):
 ````Smalltalk
 "Simple Class test"
 (MetaProperty kind: String) accepts: #symbol.
