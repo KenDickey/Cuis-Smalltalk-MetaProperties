@@ -2,7 +2,7 @@
 ===============================
 VisualPropertyEditor for Morphs
 
-This package adds ***open visual properties menu*** selection to a Morph's edit menu (menu available from a Morph's constuction halo).
+This package adds an ***open visual properties menu*** selection to a Morph's edit menu (the menu available from a Morph's constuction halo).
 
 Common graphical properties are presented for easy editing via drag 'n drop.
 
@@ -51,7 +51,7 @@ MetaProperties are immutable, so can be shared.  Many are predefined.
 (MetaProperty metaPropNamed: #acceptsColor) explore.
 ````
 
-Annotating Morph Classes with MetaProperties is largely done in method #VisualPropertyEditor class>>initialize.  Note that you can require #'Morph-MetaProperties' and add annotations for your own custom morphs.
+Annotating Morph Classes with MetaProperties is largely done in method #VisualPropertyEditor class>>initialize.  Note that you can require #'Morph-MetaProperties' in your own package(s) and add annotations for your own custom morphs.
 
 MetaProperty instance creation examples (with test):
 ````Smalltalk
