@@ -6,7 +6,7 @@ This package adds an ***open visual properties menu*** selection to a Morph's ed
 
 Common graphical properties are presented for easy editing via drag 'n drop.
 
-So you can open a ___visual properties menu___ and drag a color, font, position point, drop it on a visual property menu item and have the morph change.  You can also drag values ___from___ the menu.  So you can drag a color/font/position/border-width/.. from one Morph's visual property menu and drop it on another.
+So you can open a ___visual properties menu___ and drag a color, font, position point, drop it on a visual property menu item and have the morph change.  You can also drag values ___from___ the menu.  So you can drag a color/font/position/border-width/image/.. from one Morph's visual property menu and drop it on another.
 
 You can also click on some fields (more in progress) to get either a simple editor or pallet of choices for that property.  Currently, you can click on a Color, Font, or TextEmphasis property.
 
