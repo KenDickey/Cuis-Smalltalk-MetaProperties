@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 21 December 2016 at 1:34:09 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 21 December 2016 at 6:11:50 am'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 45!
+!provides: 'Morph-MetaProperties' 1 46!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
@@ -361,13 +361,13 @@ morphForDrag
 	
 ! !
 
-!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/21/2016 01:31:51'!
+!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/21/2016 06:11:40'!
 openVisualPropertyEditor
 
 	VisualPropertyEditor 
 		forMorph: self ::
 		openInWorld;
-		morphPositionInWorld: Sensor mousePoint .
+		morphPositionInWorld: (self morphPositionInWorld + (self morphExtent)).
 	
 	self removeHalo ! !
 
