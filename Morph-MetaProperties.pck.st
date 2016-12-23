@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 21 December 2016 at 6:11:50 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 3:59:14 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 46!
-!requires: 'Cuis-Base' 50 3000 nil!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
-!requires: 'Morphic-ColorEditor' 1 31 nil!
+!provides: 'Morph-MetaProperties' 1 45!
 !requires: 'Morphic-Misc1' 1 109 nil!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
+!requires: 'Cuis-Base' 50 3000 nil!
+!requires: 'Morphic-ColorEditor' 1 31 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -361,15 +361,13 @@ morphForDrag
 	
 ! !
 
-!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/21/2016 06:11:40'!
+!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/22/2016 15:33:05'!
 openVisualPropertyEditor
 
-	VisualPropertyEditor 
-		forMorph: self ::
-		openInWorld;
-		morphPositionInWorld: (self morphPositionInWorld + (self morphExtent)).
-	
-	self removeHalo ! !
+	(VisualPropertyEditor forMorph: self) openInWorld ::
+		morphPositionInWorld: self morphPositionInWorld
+								  + (self morphExtent / 2) ;
+		removeHalo ! !
 
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 11/28/2016 18:41:29'!
 propertiesDict
@@ -1267,10 +1265,10 @@ fractionIcon
 
 	^FracIcon! !
 
-!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 11/28/2016 16:18:45'!
+!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:55:24'!
 initialize
 "
-	VisualPropertyMorph initialize.
+	VirtualPropertyMenuItem initialize.
 "
 	| dirName |
 	dirName :=  ((CodePackage installedPackages at: self category)
@@ -1492,21 +1490,13 @@ accepts: newValue
 
 	^ newValue isKindOf: kind! !
 
-!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/18/2016 13:08:47'!
+!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/22/2016 14:38:58'!
 edit: myMorph menuItem: item
 
 	(self editProc) 
 	 	ifNil: [  (HoverHelpMorph contents: 'Need editor for ' , item name asString)
 			popUpForHand: myMorph world activeHand ]
-		ifNotNil: [ :closure | closure value: myMorph value: self value: item name ]! !
-
-!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/14/2016 10:54:40'!
-edit: myMorph propName: nameString
-
-	(self editProc) 
-	 	ifNil: [  (HoverHelpMorph contents: 'Need editor for ' , nameString asString)
-			popUpForHand: myMorph world activeHand ]
-		ifNotNil: [ :closure | closure value: myMorph value: self value: nameString ]! !
+		ifNotNil: [ :closure | closure value: myMorph value: self value: item ]! !
 
 !MetaProperty methodsFor: 'accessing' stamp: 'KenD 12/14/2016 10:52:25'!
 editProc
@@ -1559,7 +1549,7 @@ initialize
 	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
 ! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:25:55'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:28:24'!
 initializeDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1578,7 +1568,17 @@ initializeDictionaries
 		    put: (MetaProperty kind: Color
 								editProc: [ :morph :metaProp : name |
 												Color colorSelectionMenu ] ).
-	props at: #acceptsPoint put: (MetaProperty kind: Point).
+	props at: #acceptsPoint 
+		    put: (MetaProperty 
+				kind: Point
+				editProc: [ :morph :metaProp :menuItem | 
+						PointEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
 	props at: #acceptsRectangle put: (MetaProperty kind: Rectangle).
 	props at: #acceptsBoolean put: (MetaProperty kind: Boolean).
 	props at: #acceptsMorph put: (MetaProperty kind: Morph).
@@ -1692,7 +1692,12 @@ minValue
 
 	^ minValue! !
 
-!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:34:30'!
+!MetaPropertyFrom methodsFor: 'accessing' stamp: 'KenD 12/22/2016 15:52:37'!
+minValue: aValue
+
+	minValue := aValue ! !
+
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:49:35'!
 addToInitialDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1701,7 +1706,18 @@ addToInitialDictionaries
 	| props |
 	props := self preDefinedPropsDict.
 
-	props at: #acceptsPositivePoint     put: (MetaPropertyFrom kind: Point minValue: 0@0).
+	props at: #acceptsPositivePoint     
+		put: (MetaPropertyFrom 
+			  kind: Point 
+			  minValue: 0@0
+			  editProc: [ :morph :metaProp :menuItem | 
+						PointEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
 	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).
 	props at: #acceptsPositiveInteger put: (MetaPropertyFrom kind: Integer minValue: 0).! !
 
@@ -1714,6 +1730,11 @@ initialize
 kind: aClass minValue: min
 
 	^ self new kind: aClass minValue: min! !
+
+!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 15:53:32'!
+kind: aClass minValue: min editProc: editProc
+
+	^ self new kind: aClass editProc: editProc :: minValue: min! !
 
 !MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:28'!
 minValue: min
@@ -1738,15 +1759,6 @@ edit: myMorph menuItem: item
 	menu := PopUpMenu labelArray: self choices.
 	selectIndex := menu startUpWithCaption: 'Set ', item name asString, ' to:'.
 	item propertyValue: ( self choices at: selectIndex ). 
-	myMorph redrawNeeded.! !
-
-!MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/11/2016 15:57:49'!
-edit: myMorph propName: nameString
-
-	| menu selectIndex |
-	menu := PopUpMenu labelArray: self choices.
-	selectIndex := menu startUpWithCaption: 'Set ', nameString, ' to:'.
-	myMorph instVarNamed: nameString asSymbol put: ( self choices at: selectIndex ). "@@FIXME: setProperty@@"
 	myMorph redrawNeeded.! !
 
 !MetaPropertyOneOf methodsFor: 'initialization' stamp: 'KenD 12/5/2016 13:50:52'!
