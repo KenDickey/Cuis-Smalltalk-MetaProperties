@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 9:26:24 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 2:01:20 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 49!
+!provides: 'Morph-MetaProperties' 1 50!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
@@ -557,7 +557,7 @@ addMetaPropsDisplay
 	].
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/11/2016 16:26:02'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/23/2016 13:52:45'!
 addOperationsDisplay
 	"This is a separate method so subclasses can override"
 
@@ -568,9 +568,16 @@ addOperationsDisplay
 		 add: 'toggle Instance Properties display' target: self 
 			selector: #toggleOrdinaryPropsView;
 		 add: 'show Drop Target for morph' target: self targetMorph 
-			selector: #showDropTarget;
-		 add: 'edit morph''s LayoutSpec'  target: self targetMorph 
-			selector: #editMyLayoutSpec;
+			selector: #showDropTarget.
+			
+	(self isKindOf: LayoutMorph)
+		ifTrue: [ 
+			self add: 'edit LayoutMorph properties'
+				  target: self targetMorph 
+				  selector: #editMe
+		].
+
+	self
 		 add: 'open a Message Window for morph' target: self targetMorph 
 			selector: #messageWindow.! !
 
@@ -594,11 +601,6 @@ addOrdinaryPropertiesDisplay
 	].
 ! !
 
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 16:39:01'!
-addOrdinaryProperty
-
-	self notYetImplemented ! !
-
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 14:31:43'!
 addPropertiesDisplay
 
@@ -610,11 +612,6 @@ addTitle: aString
 	titleMorph := WindowTitleMorph title: aString  buttonsNamed: #( close collapse showHalo ).
 	titleMorph color: Theme current menuTitleBar.
 	self addMorphFront: titleMorph.! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 16:38:53'!
-addVisualProperty
-
-	self notYetImplemented ! !
 
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/3/2016 09:51:35'!
 adjustSubmorphsLayout
@@ -644,12 +641,6 @@ alwaysHiddenProperties
 	"Answer a collection of names of properties never to be shown"
 
 	^ #(morphModifiers)! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:22'!
-changed: myMorph
-
-	"@@@FIXME: my target morph has changed; need to update display@@@"
-	PopUpMenu inform: self printString , ' target changed'! !
 
 !VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:45'!
 closeButtonClicked
@@ -860,7 +851,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 17:19:18'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 13:55:00'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -873,6 +864,9 @@ initialize
 
 	"Seed MetaProperties for known Morphs"
 	propsDict := MetaProperty preDefinedPropsDict.
+
+	classDict := MetaProperty metaPropsDictForClass: Morph.
+	classDict at: #layoutSpec   put: (propsDict at: #acceptsLayoutSpec). 
 
 	classDict := MetaProperty metaPropsDictForClass: RectangleLikeMorph.
 	classDict at: #morphExtent   put: (propsDict at: #acceptsPositivePoint). 
@@ -1566,7 +1560,7 @@ initialize
 	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
 ! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 09:16:02'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 13:57:37'!
 initializeDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1636,6 +1630,11 @@ initializeDictionaries
 								PickAFontPallet initializedInstance openInWorld ]  ).
 	props at: #acceptsForm put: (MetaProperty kind: Form).
 	props at: #acceptsLocation put: (MetaProperty kind: MorphicLocation).
+	props at: #acceptsLayoutSpec 
+			put: (MetaProperty 
+					kind: LayoutSpec
+					editProc: [ :morph :metaProp :menuItem | 
+								 morph editMyLayoutSpec ] ).
 
 	self allSubclassesDo: [ :subclass | subclass addToInitialDictionaries ].
 	
