@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:04:36 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:24:23 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 46!
+!provides: 'Morph-MetaProperties' 1 47!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
@@ -673,7 +673,7 @@ fontPreferenceChanged
 	super fontPreferenceChanged.
 	self refreshView.! !
 
-!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 12/12/2016 11:12:17'!
+!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 12/22/2016 17:07:55'!
 forMorph: aMorph
 	"Initialize, but do NOT open this instance"
 
@@ -681,7 +681,7 @@ forMorph: aMorph
 	showAllIvars  := false.
 	showAllProps := false.
 	metaProps := MetaProperty metaPropsForMorph: aMorph.
-	targetMorph when: #propertyChanged send: #refreshView to: self. "@@@use it@@"
+	targetMorph when: #propertyChanged send: #refreshView to: self. "triggered by #propertyValue:"
 	self defaultTarget: self;
 		 stayUp: true;
 		 refreshView;
@@ -847,7 +847,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/18/2016 13:27:59'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 17:19:18'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -868,7 +868,7 @@ initialize
 
 	classDict := MetaProperty metaPropsDictForClass: BorderedRectMorph.
 	classDict at: #borderColor put: (propsDict at: #acceptsColor). 
-	classDict at: #borderWidth put: (propsDict at: #acceptsInteger).
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
 	
 	classDict := MetaProperty metaPropsDictForClass: LineMorph.
 	classDict at: #startPoint put: (propsDict at: #acceptsPoint). 
@@ -1707,7 +1707,7 @@ minValue: aValue
 
 	minValue := aValue ! !
 
-!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:49:35'!
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 17:18:00'!
 addToInitialDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1729,7 +1729,19 @@ addToInitialDictionaries
 								morphPosition: morph morphPositionInWorld 
 												+ morph morphExtent ]).
 	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).
-	props at: #acceptsPositiveInteger put: (MetaPropertyFrom kind: Integer minValue: 0).! !
+	props at: #acceptsPositiveInteger
+		    put: (MetaPropertyFrom 
+					kind: Integer 
+					minValue: 0
+					editProc: [ :morph :metaProp :menuItem | 
+						PositiveIntegerEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
+	! !
 
 !MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:14:44'!
 initialize
