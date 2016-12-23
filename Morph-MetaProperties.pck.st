@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 3:59:14 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:04:36 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 45!
+!provides: 'Morph-MetaProperties' 1 46!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
@@ -1093,7 +1093,7 @@ propertyValue
 
 	^ accessProc value! !
 
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/12/2016 14:38:53'!
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/22/2016 16:50:52'!
 propertyValue: newValue
 	"Setter"
 
@@ -1161,11 +1161,11 @@ undo
 
 	self targetMorph setProperty: self name  toValue: self prevValue! !
 
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 14:55:44'!
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/22/2016 16:56:35'!
 update
 
 	self setContents.
-	self owner ifNotNil: [ self owner adjustSubmorphsLayout; refreshView ].
+	self targetMorph triggerEvent: #propertyChanged.
 	self targetMorph redrawNeeded.! !
 
 !VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/18/2016 15:39:20'!
@@ -1549,7 +1549,7 @@ initialize
 	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
 ! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:28:24'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 16:16:37'!
 initializeDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1560,7 +1560,17 @@ initializeDictionaries
 	MetaPropDict            := Dictionary new.  "See VisualPropertyEditor class>>initialize"
 	
 	props := self preDefinedPropsDict.
-	props at: #acceptsString put: (MetaProperty kind: String).
+	props at: #acceptsString 
+			put: (MetaProperty 
+			kind: String
+			editProc: [ :morph :metaProp :menuItem | 
+						StringEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
 	props at: #acceptsSymbol put: (MetaProperty kind: Symbol).
 	props at: #acceptsCharacter put: (MetaProperty kind: Character).
 	props at: #acceptsNumber put: (MetaProperty kind: Number).
