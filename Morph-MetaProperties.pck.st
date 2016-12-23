@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 2:07:40 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 2:46:57 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 51!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
-!requires: 'Morphic-ColorEditor' 1 31 nil!
+!provides: 'Morph-MetaProperties' 1 52!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Morphic-Misc1' 1 109 nil!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
+!requires: 'Morphic-ColorEditor' 1 31 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -851,7 +851,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 13:55:00'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 14:45:48'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -907,6 +907,11 @@ initialize
 	classDict := MetaProperty metaPropsDictForClass: FramedLayoutMorph.
 	classDict at: #borderColor put: (propsDict at: #acceptsColor).
 	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
+	classDict at: #frameSelector put: (propsDict at: #acceptsBorderStyle).
+
+	classDict := MetaProperty metaPropsDictForClass: FrameMorph.
+"	classDict at: #borderColor put: (propsDict at: #acceptsColor).
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger). "
 	classDict at: #frameSelector put: (propsDict at: #acceptsBorderStyle).
 
 	classDict := MetaProperty metaPropsDictForClass: WindowTitleMorph.
