@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:24:23 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 22 December 2016 at 8:17:07 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 47!
+!provides: 'Morph-MetaProperties' 1 48!
+!requires: 'Morphic-ColorEditor' 1 31 nil!
+!requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
-!requires: 'Cuis-Base' 50 3000 nil!
-!requires: 'Morphic-ColorEditor' 1 31 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -93,6 +93,16 @@ MetaProperty subclass: #MetaPropertyRange
 	category: 'Morph-MetaProperties'!
 !classDefinition: 'MetaPropertyRange class' category: #'Morph-MetaProperties'!
 MetaPropertyRange class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyTransducer category: #'Morph-MetaProperties'!
+MetaProperty subclass: #MetaPropertyTransducer
+	instanceVariableNames: 'kinds transformProc'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyTransducer class' category: #'Morph-MetaProperties'!
+MetaPropertyTransducer class
 	instanceVariableNames: ''!
 
 !classDefinition: #MetaPropertyViaTest category: #'Morph-MetaProperties'!
@@ -191,6 +201,9 @@ decodeProc takes an encoded value (an Integer) and reutrnd a String for the UI t
 !MetaPropertyRange commentStamp: '<historical>' prior: 0!
 I accept values in a range where:  minValue <= newValue <= maxValue.
 !
+
+!MetaPropertyTransducer commentStamp: '<historical>' prior: 0!
+I can accept various kinds of objects and translate them into what I really want.!
 
 !MetaPropertyViaTest commentStamp: '<historical>' prior: 0!
 I test via  (aClosure value: newValue).
@@ -1344,13 +1357,14 @@ propName: aSymbol morph: aMorph
 	^ self propName: aSymbol morph: aMorph propMeta: MetaProperty default
 ! !
 
-!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/18/2016 15:03:08'!
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 19:59:47'!
 propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
 	"Selector based accessor"
 	
 	| setterSym isEncoded getterProc setterProc |
 	setterSym := (aSymbol , ':') asSymbol.
-	isEncoded := aPropertyDescriptor isKindOf: MetaPropertyMultiSelect.
+	isEncoded := (aPropertyDescriptor isKindOf: MetaPropertyMultiSelect)
+					or: [ aPropertyDescriptor isKindOf: MetaPropertyTransducer ].
 	getterProc := [ aMorph perform: aSymbol ] .
 	setterProc := [ :newValue | aMorph perform: setterSym with: newValue ].
 	^ self 
@@ -1964,6 +1978,78 @@ minValue: min maxValue: max
 
 	^ self new kind: Object minValue: min maxValue: max! !
 
+!MetaPropertyTransducer methodsFor: 'testing' stamp: 'KenD 12/22/2016 20:16:03'!
+accepts: newValue
+
+	^ (self kinds anySatisfy: [ :class | newValue isKindOf: class ])! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:58:24'!
+decodeProc
+	"Emulate multiselect protocol"
+	^ [ :value | value ] "identity/pass-through"! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:58:51'!
+encodeProc
+	"Emulate multiselect protocol"
+	^ transformProc ! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:37:37'!
+kinds
+
+	^ kinds! !
+
+!MetaPropertyTransducer methodsFor: 'initialization' stamp: 'KenD 12/22/2016 19:43:30'!
+kinds: classCollection transformProc: aClosure
+
+	(classCollection allSatisfy: [ :c | c isKindOf: Class ])
+		ifFalse: [ self error: 'Expected a collection of classes: ', classCollection printString ].
+	
+	(aClosure isKindOf: BlockClosure)
+		ifFalse:  [ self error: 'Expected a closure for transforming a value: ', aClosure printString ].
+	(aClosure numArgs = 1)
+		ifFalse: [ self error: 'Expected a closure for transforming a value: ', aClosure printString ].
+	transformProc := aClosure.
+	kinds := classCollection.! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:37:52'!
+transformProc
+
+	^ transformProc ! !
+
+!MetaPropertyTransducer class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 19:53:30'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyTransduce addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+
+	"Override"
+	props at: #acceptsMorph
+		    put: (MetaPropertyTransducer 
+					kinds: { Morph. Form. String. } 
+					transformProc: [ :newVal |
+						(newVal isKindOf: Morph)
+						ifTrue: [ newVal ]
+						ifFalse: [ (newVal isKindOf: String)
+							ifTrue: [ StringMorph contents: newVal ]
+							ifFalse: [ (newVal isKindOf: Form)
+								ifTrue:  [ ImageMorph new image: newVal ]
+								ifFalse: [ self error: 'Expected a Morph/Form/String got: ',
+										newVal printString ].
+							]
+						]
+					]
+				).
+
+! !
+
+!MetaPropertyTransducer class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 19:44:06'!
+kinds: classCollection transformProc: aClosure
+
+	^ self new kinds: classCollection transformProc: aClosure! !
+
 !MetaPropertyViaTest methodsFor: 'testing' stamp: 'KenD 12/4/2016 15:19:09'!
 accepts: newValue
 
@@ -1990,6 +2076,21 @@ test
 testClosure
 
 	^ testClosure! !
+
+!MetaPropertyViaTest class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 19:13:59'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyViaTest addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	
+	props at: #acceptsMorph      "override to allow Forms"
+		    put: (MetaPropertyViaTest 
+					test: [ :morphOrForm | 
+						(morphOrForm isKindOf: Morph)
+							or: [morphOrForm isKindOf: Form ] ] ).! !
 
 !MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:17'!
 kind: aClass test: aClosure
