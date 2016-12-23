@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 2:01:20 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 2:07:40 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 50!
+!provides: 'Morph-MetaProperties' 1 51!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
@@ -557,7 +557,7 @@ addMetaPropsDisplay
 	].
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/23/2016 13:52:45'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/23/2016 14:06:53'!
 addOperationsDisplay
 	"This is a separate method so subclasses can override"
 
@@ -570,7 +570,7 @@ addOperationsDisplay
 		 add: 'show Drop Target for morph' target: self targetMorph 
 			selector: #showDropTarget.
 			
-	(self isKindOf: LayoutMorph)
+	(self targetMorph isKindOf: LayoutMorph)
 		ifTrue: [ 
 			self add: 'edit LayoutMorph properties'
 				  target: self targetMorph 
