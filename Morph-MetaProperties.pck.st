@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 22 December 2016 at 8:17:07 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 9:26:24 am'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 48!
+!provides: 'Morph-MetaProperties' 1 49!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Morphic-Misc1' 1 109 nil!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -977,7 +977,7 @@ processMouseDown: evt localPosition: localEventPosition
 
 ! !
 
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/18/2016 15:38:11'!
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 09:25:22'!
 showReject: aMorph
 	"Draw and erase a red X"
 
@@ -999,7 +999,10 @@ showReject: aMorph
 	
 	"NB: Keep Morph when rejected"
 	leftStroke   addAlarm: #delete after: 400.	
-	rightStroke addAlarm: #delete after: 400.! !
+	rightStroke addAlarm: #delete after: 400.
+	
+	PopUpMenu inform: 'You can''t set this'
+	! !
 
 !OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:15:02'!
 targetMorph
@@ -1563,7 +1566,7 @@ initialize
 	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
 ! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 16:16:37'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 09:16:02'!
 initializeDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1585,7 +1588,17 @@ initializeDictionaries
 								openInWorld;
 								morphPosition: morph morphPositionInWorld 
 												+ morph morphExtent ]).
-	props at: #acceptsSymbol put: (MetaProperty kind: Symbol).
+	props at: #acceptsSymbol 
+			put: (MetaProperty 
+					kind: Symbol
+					editProc: [ :morph :metaProp :menuItem | 
+						StringEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
 	props at: #acceptsCharacter put: (MetaProperty kind: Character).
 	props at: #acceptsNumber put: (MetaProperty kind: Number).
 	props at: #acceptsColor 
