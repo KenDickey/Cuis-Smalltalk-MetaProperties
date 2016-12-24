@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 2:46:57 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 4:10:27 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 52!
+!provides: 'Morph-MetaProperties' 1 53!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
@@ -388,11 +388,11 @@ propertiesDict
 
 	^ properties ! !
 
-!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 18:57:46'!
+!Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/23/2016 16:05:30'!
 valueWhenDropped
 	"Subclasses which wrap values should override (e.g. SignMorph, DropColorMorph)"
 	
-	^ self! !
+	^ self copy! !
 
 !ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:20'!
 icon
@@ -484,7 +484,7 @@ front: fontToUse
 	self fitContents.
 	self redrawNeeded ! !
 
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/12/2016 14:42:26'!
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 15:14:43'!
 aboutToGrab: aMorph
 	"submorph is being grabbed by a hand.
 	Perform necessary adjustments (if any) and return the actual morph
@@ -495,9 +495,9 @@ aboutToGrab: aMorph
 "
 	| valueToDrag |
 	(aMorph isKindOf: VirtualPropertyMenuItem)
-		ifTrue: [ valueToDrag := aMorph propertyValue ].
+		ifTrue: [ valueToDrag := aMorph propertyValue copy ].
 	(aMorph isKindOf: OrdinaryPropertyMenuItem)
-		ifTrue: [ valueToDrag := aMorph value ].
+		ifTrue: [ valueToDrag := aMorph value copy ].
 	
 	valueToDrag isNil
 	ifTrue:  [^ self ] "Title selected. User wants to move me. Pick me up"
@@ -851,7 +851,7 @@ forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 14:45:48'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:00:01'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -881,7 +881,7 @@ initialize
 	classDict at: #startPoint put: (propsDict at: #acceptsPoint). 
 	classDict at: #endPoint put: (propsDict at: #acceptsPoint). 
 	classDict at: #color put: (propsDict at: #acceptsColor). 
-	classDict at: #lineWidth put: (propsDict at: #acceptsInteger). 
+	classDict at: #lineWidth put: (propsDict at: #acceptsPositiveInteger). 
 
 	classDict := MetaProperty metaPropsDictForClass: PointerLineMorph.
 	classDict at: #endPointMorph put: (propsDict at: #acceptsMorph). 
@@ -2033,11 +2033,11 @@ transformProc
 
 	^ transformProc ! !
 
-!MetaPropertyTransducer class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 19:53:30'!
+!MetaPropertyTransducer class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:27:55'!
 addToInitialDictionaries
 	"Add typical usages to dictionary for sharing."
 "
-	MetaPropertyTransduce addToInitialDictionaries.
+	MetaPropertyTransducer addToInitialDictionaries.
 "
 	| props |
 	props := self preDefinedPropsDict.
@@ -2094,20 +2094,16 @@ testClosure
 
 	^ testClosure! !
 
-!MetaPropertyViaTest class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 19:13:59'!
+!MetaPropertyViaTest class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:30:03'!
 addToInitialDictionaries
 	"Add typical usages to dictionary for sharing."
 "
 	MetaPropertyViaTest addToInitialDictionaries.
 "
+"
 	| props |
 	props := self preDefinedPropsDict.
-	
-	props at: #acceptsMorph      "override to allow Forms"
-		    put: (MetaPropertyViaTest 
-					test: [ :morphOrForm | 
-						(morphOrForm isKindOf: Morph)
-							or: [morphOrForm isKindOf: Form ] ] ).! !
+"! !
 
 !MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:17'!
 kind: aClass test: aClosure
