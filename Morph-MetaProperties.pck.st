@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 24 December 2016 at 5:50:45 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 24 December 2016 at 6:12:16 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 56!
+!provides: 'Morph-MetaProperties' 1 57!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
@@ -859,7 +859,7 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/24/2016 17:26:05'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/24/2016 18:06:03'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -950,7 +950,14 @@ initialize
 	classDict at: #showAllIvars put: (propsDict at: #acceptsBoolean).
 	classDict at: #showAllProps put: (propsDict at: #acceptsBoolean).
 	
+	classDict := MetaProperty metaPropsDictForClass: PluggableButtonMorph.
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #icon put: (propsDict at: #acceptsForm).
+	classDict at: #label put: (propsDict at: #acceptsString).
+	classDict at: #iconName put: (propsDict at: #acceptsSymbol).
 
+	classDict := MetaProperty metaPropsDictForClass: SystemWindow .
+	classDict at: #labelString put: (propsDict at: #acceptsString).
 
 
 ! !
