@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 4:10:27 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 24 December 2016 at 4:00:38 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 53!
-!requires: 'Cuis-Base' 50 3000 nil!
+!provides: 'Morph-MetaProperties' 1 54!
 !requires: 'Morphic-Misc1' 1 109 nil!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
+!requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -850,6 +850,11 @@ toggleShowProps
 forMorph: aMorph
 
 	^ self new forMorph: aMorph! !
+
+!VisualPropertyEditor class methodsFor: 'new-morph participation' stamp: 'KenD 12/24/2016 15:51:18'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	^ false! !
 
 !VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:00:01'!
 initialize
@@ -1805,11 +1810,11 @@ choices
 
 	^ choiceCollection! !
 
-!MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/18/2016 13:08:05'!
+!MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/24/2016 15:59:42'!
 edit: myMorph menuItem: item
 
 	| menu selectIndex |
-	menu := PopUpMenu labelArray: self choices.
+	menu := PopUpMenu labelArray: (self choices collect: [ :elt | elt printString]).
 	selectIndex := menu startUpWithCaption: 'Set ', item name asString, ' to:'.
 	item propertyValue: ( self choices at: selectIndex ). 
 	myMorph redrawNeeded.! !
