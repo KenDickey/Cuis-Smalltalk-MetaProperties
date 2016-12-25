@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 24 December 2016 at 5:32:21 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 24 December 2016 at 5:50:45 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 55!
+!provides: 'Morph-MetaProperties' 1 56!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -848,9 +848,10 @@ toggleShowProps
 
 	self showAllProps: (self showAllProps not)! !
 
-!VisualPropertyEditor class methodsFor: 'instance creation' stamp: 'KenD 11/28/2016 08:19:15'!
+!VisualPropertyEditor class methodsFor: 'instance creation' stamp: 'KenD 12/24/2016 17:50:21'!
 forMorph: aMorph
 
+	aMorph removeHalo.
 	^ self new forMorph: aMorph! !
 
 !VisualPropertyEditor class methodsFor: 'new-morph participation' stamp: 'KenD 12/24/2016 15:51:18'!
