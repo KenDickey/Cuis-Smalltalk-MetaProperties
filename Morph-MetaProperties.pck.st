@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 24 December 2016 at 4:00:38 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 24 December 2016 at 5:32:21 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 54!
+!provides: 'Morph-MetaProperties' 1 55!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
@@ -784,20 +784,22 @@ showAllIvars
 
 	^ showAllIvars! !
 
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:35:24'!
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/24/2016 17:31:12'!
 showAllIvars: aBool
 
-	showAllIvars := aBool! !
+	showAllIvars := aBool.
+	self refreshView.! !
 
 !VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:53'!
 showAllProps
 
 	^ showAllProps! !
 
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:35:08'!
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/24/2016 17:30:58'!
 showAllProps: aBool
 
-	showAllProps := aBool! !
+	showAllProps := aBool.
+	self refreshView.! !
 
 !VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:18:46'!
 showHaloButtonClicked
@@ -831,10 +833,10 @@ toggleIVarView
 
 	self toggleShowIVars; refreshView! !
 
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 15:34:18'!
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 12/24/2016 17:30:31'!
 toggleOrdinaryPropsView
 
-	self toggleShowProps; refreshView! !
+	self toggleShowProps! !
 
 !VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:33:30'!
 toggleShowIVars
@@ -856,7 +858,7 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:00:01'!
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/24/2016 17:26:05'!
 initialize
 "
 	VisualPropertyEditor initialize.
@@ -894,6 +896,12 @@ initialize
 	classDict := MetaProperty metaPropsDictForClass: Panel.
 	classDict at: #widgetsColor put: (propsDict at: #acceptsColor). 
 	classDict at: #stayUp put: (propsDict at: #acceptsBoolean). 
+	
+	classDict := MetaProperty metaPropsDictForClass: FontMorph.
+	classDict at: #labelMorph put: (propsDict at: #acceptsLabelMorph). 
+	classDict at: #string put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
 
 	classDict := MetaProperty metaPropsDictForClass: PluggableButtonMorph.
 	classDict at: #label put: (propsDict at: #acceptsString).
@@ -936,6 +944,11 @@ initialize
 	classDict at: #contents put: (propsDict at: #acceptsString).
 	classDict at: #font put: (propsDict at: #acceptsFont).
 	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
+
+	classDict := MetaProperty metaPropsDictForClass: VisualPropertyEditor .
+	classDict at: #showAllIvars put: (propsDict at: #acceptsBoolean).
+	classDict at: #showAllProps put: (propsDict at: #acceptsBoolean).
+	
 
 
 
@@ -1570,7 +1583,7 @@ initialize
 	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
 ! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 13:57:37'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/24/2016 17:01:21'!
 initializeDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1645,6 +1658,7 @@ initializeDictionaries
 					kind: LayoutSpec
 					editProc: [ :morph :metaProp :menuItem | 
 								 morph editMyLayoutSpec ] ).
+	props at: #acceptsLabelMorph put: (MetaProperty kind: LabelMorph).
 
 	self allSubclassesDo: [ :subclass | subclass addToInitialDictionaries ].
 	
