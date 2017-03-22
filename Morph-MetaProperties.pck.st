@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3035] on 14 January 2017 at 9:00:56 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3068] on 21 March 2017 at 5:34:26 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 59!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
-!requires: 'Morphic-Misc1' 1 109 nil!
+!provides: 'Morph-MetaProperties' 1 60!
 !requires: 'Cuis-Base' 50 3000 nil!
+!requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
 !classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
 MenuMorph subclass: #VisualPropertyEditor
 	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
@@ -1879,7 +1879,7 @@ accepts: newValue
 	
 	"test decodeProc"! !
 
-!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:11:31'!
+!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 3/21/2017 17:33:47'!
 addToInitialDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1889,7 +1889,10 @@ addToInitialDictionaries
 	props := self preDefinedPropsDict.
 	
 	props at: #acceptsBoolean       put: (MetaPropertyOneOf kind: Boolean choices: #(true false)).
-	props at: #acceptsBorderStyle put: (MetaPropertyOneOf kind: Symbol choices: #(inset raised simple)).! !
+	props at: #acceptsBorderStyle put: (MetaPropertyOneOf kind: Symbol choices: #(inset raised simple)).
+	props at: #acceptsAlignment 
+		  put: (MetaPropertyOneOf kind: Symbol choices: #(leftFlush rightFlush centered justified)).
+! !
 
 !MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:40:39'!
 choices: aCollection
