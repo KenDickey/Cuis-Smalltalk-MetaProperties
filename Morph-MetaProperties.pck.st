@@ -1,50 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3068] on 21 March 2017 at 5:34:26 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3071] on 29 March 2017 at 3:22:10 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 60!
-!requires: 'Cuis-Base' 50 3000 nil!
+!provides: 'Morph-MetaProperties' 1 61!
 !requires: 'Morphic-Misc1' 1 109 nil!
-!requires: 'Morphic-ColorEditor' 1 31 nil!
+!requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
-!classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
-MenuMorph subclass: #VisualPropertyEditor
-	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'VisualPropertyEditor class' category: #'Morph-MetaProperties'!
-VisualPropertyEditor class
-	instanceVariableNames: ''!
-
-!classDefinition: #OrdinaryPropertyMenuItem category: #'Morph-MetaProperties'!
-MenuItemMorph subclass: #OrdinaryPropertyMenuItem
-	instanceVariableNames: 'accessKind name targetMorph'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'OrdinaryPropertyMenuItem class' category: #'Morph-MetaProperties'!
-OrdinaryPropertyMenuItem class
-	instanceVariableNames: ''!
-
-!classDefinition: #VirtualPropertyMenuItem category: #'Morph-MetaProperties'!
-MenuItemMorph subclass: #VirtualPropertyMenuItem
-	instanceVariableNames: 'metaProperty name prevValue targetMorph accessProc updateProc'
-	classVariableNames: 'BlankIcon BoolIcon CharIcon ChronIcon ClassIcon ClosureIcon CollectIcon CpxIcon FalseIcon FileIcon FloatIcon FolderIcon FontIcon FracIcon IntIcon NilIcon ObjIcon OneOfIcon PtIcon RngIcon StrIcon StreamIcon SymIcon TrueIcon WindowIcon'
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'VirtualPropertyMenuItem class' category: #'Morph-MetaProperties'!
-VirtualPropertyMenuItem class
-	instanceVariableNames: ''!
-
-!classDefinition: #MetaPropertyTests category: #'Morph-MetaProperties'!
-TestCase subclass: #MetaPropertyTests
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'MetaPropertyTests class' category: #'Morph-MetaProperties'!
-MetaPropertyTests class
-	instanceVariableNames: ''!
-
+!requires: 'Morphic-ColorEditor' 1 31 nil!
 !classDefinition: #MetaProperty category: #'Morph-MetaProperties'!
 Object subclass: #MetaProperty
 	instanceVariableNames: 'kind editProc'
@@ -115,34 +75,46 @@ MetaProperty subclass: #MetaPropertyViaTest
 MetaPropertyViaTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #OrdinaryPropertyMenuItem category: #'Morph-MetaProperties'!
+MenuItemMorph subclass: #OrdinaryPropertyMenuItem
+	instanceVariableNames: 'accessKind name targetMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'OrdinaryPropertyMenuItem class' category: #'Morph-MetaProperties'!
+OrdinaryPropertyMenuItem class
+	instanceVariableNames: ''!
 
-!VisualPropertyEditor commentStamp: '<historical>' prior: 0!
-My instances present the public visual properties of Morphs -- those which have MetaProperties.
+!classDefinition: #VirtualPropertyMenuItem category: #'Morph-MetaProperties'!
+MenuItemMorph subclass: #VirtualPropertyMenuItem
+	instanceVariableNames: 'metaProperty name prevValue targetMorph accessProc updateProc'
+	classVariableNames: 'BlankIcon BoolIcon CharIcon ChronIcon ClassIcon ClosureIcon CollectIcon CpxIcon FalseIcon FileIcon FloatIcon FolderIcon FontIcon FracIcon IntIcon NilIcon ObjIcon OneOfIcon PtIcon RngIcon StrIcon StreamIcon SymIcon TrueIcon WindowIcon'
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'VirtualPropertyMenuItem class' category: #'Morph-MetaProperties'!
+VirtualPropertyMenuItem class
+	instanceVariableNames: ''!
 
-MetaProperties can be added to any Morph class and all submorph classes will inherit them.
+!classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
+MenuMorph subclass: #VisualPropertyEditor
+	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'VisualPropertyEditor class' category: #'Morph-MetaProperties'!
+VisualPropertyEditor class
+	instanceVariableNames: ''!
 
-See class MetaProperty and my class #initialize method for details. !
+!classDefinition: #MetaPropertyTests category: #'Morph-MetaProperties'!
+TestCase subclass: #MetaPropertyTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyTests class' category: #'Morph-MetaProperties'!
+MetaPropertyTests class
+	instanceVariableNames: ''!
 
-!OrdinaryPropertyMenuItem commentStamp: '<historical>' prior: 0!
-My instances supply menu iterms which can have their values dragged for DragNDrop.
-
-My accessKind is either #property #instanceVar.!
-
-!VirtualPropertyMenuItem commentStamp: '<historical>' prior: 0!
-My instances display a menu selection for a Morph visual property.  
-See documentation method: MetaProperty class>>whyMe
-
-ivars:
-  metaProperty -- a PropertyMetaVisualPropertyMenuItem
-  name -- property name (a symbol)
-  prevValue -- cached previous property value (used for undo)
-  targetMorph -- changes to me are reflected in this specific morph
-  accessProc -- a closure of 0 args which returns a value
-  updateProc -- a closure which takes 1 value
-!
-
-!MetaPropertyTests commentStamp: '<historical>' prior: 0!
-Unit tests for MetaProeprties!
 
 !MetaProperty commentStamp: '<historical>' prior: 0!
 I am the parent class for Morph meta-properties.  
@@ -210,6 +182,34 @@ I test via  (aClosure value: newValue).
 
 aClosure should take one argument and return a boolean.!
 
+!OrdinaryPropertyMenuItem commentStamp: '<historical>' prior: 0!
+My instances supply menu iterms which can have their values dragged for DragNDrop.
+
+My accessKind is either #property #instanceVar.!
+
+!VirtualPropertyMenuItem commentStamp: '<historical>' prior: 0!
+My instances display a menu selection for a Morph visual property.  
+See documentation method: MetaProperty class>>whyMe
+
+ivars:
+  metaProperty -- a PropertyMetaVisualPropertyMenuItem
+  name -- property name (a symbol)
+  prevValue -- cached previous property value (used for undo)
+  targetMorph -- changes to me are reflected in this specific morph
+  accessProc -- a closure of 0 args which returns a value
+  updateProc -- a closure which takes 1 value
+!
+
+!VisualPropertyEditor commentStamp: '<historical>' prior: 0!
+My instances present the public visual properties of Morphs -- those which have MetaProperties.
+
+MetaProperties can be added to any Morph class and all submorph classes will inherit them.
+
+See class MetaProperty and my class #initialize method for details. !
+
+!MetaPropertyTests commentStamp: '<historical>' prior: 0!
+Unit tests for MetaProeprties!
+
 !ProtoObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:10'!
 icon
 
@@ -226,71 +226,6 @@ morphForDrag
 	
 	^ SignMorph forObject: self
 ! !
-
-!Boolean methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:22'!
-icon
-
-	^ VirtualPropertyMenuItem booleanIcon ! !
-
-!False methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:30'!
-icon
-
-	^ VirtualPropertyMenuItem falseIcon ! !
-
-!True methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:27'!
-icon
-
-	^ VirtualPropertyMenuItem trueIcon ! !
-
-!UndefinedObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:18'!
-icon
-
-	^ VirtualPropertyMenuItem nilIcon ! !
-
-!Magnitude methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:35'!
-icon
-
-	^ VirtualPropertyMenuItem integerIcon ! !
-
-!Float methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:45'!
-icon
-
-	^ VirtualPropertyMenuItem floatIcon ! !
-
-!Fraction methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:38'!
-icon
-
-	^ VirtualPropertyMenuItem fractionIcon ! !
-
-!Integer methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:42'!
-icon
-
-	^ VirtualPropertyMenuItem integerIcon ! !
-
-!Time methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:49'!
-icon
-
-	^ VirtualPropertyMenuItem chronIcon ! !
-
-!Complex methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:17'!
-icon
-
-	^ VirtualPropertyMenuItem complexIcon ! !
-
-!Character methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:38'!
-icon
-
-	^ VirtualPropertyMenuItem charIcon ! !
-
-!Timespan methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:41'!
-icon
-
-	^ VirtualPropertyMenuItem chronIcon ! !
-
-!BlockClosure methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:11'!
-icon
-
-	^ VirtualPropertyMenuItem closureIcon ! !
 
 !Collection methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:52'!
 icon
@@ -311,26 +246,6 @@ icon
 icon
 
 	^ VirtualPropertyMenuItem streamIcon ! !
-
-!FileIOAccessor methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:44'!
-icon
-
-	^ VirtualPropertyMenuItem fileIcon ! !
-
-!FileSystemEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:47'!
-icon
-
-	^ VirtualPropertyMenuItem fileIcon ! !
-
-!DirectoryEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:50'!
-icon
-
-	^ VirtualPropertyMenuItem folderIcon ! !
-
-!FileEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:53'!
-icon
-
-	^ VirtualPropertyMenuItem fileIcon ! !
 
 !Form methodsFor: '*morph-metaproperties' stamp: 'KenD 12/6/2016 19:39:56'!
 morphForDrag
@@ -363,6 +278,71 @@ morphForDrag
 	^ FontMorph font: self
 ! !
 
+!Timespan methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:41'!
+icon
+
+	^ VirtualPropertyMenuItem chronIcon ! !
+
+!Magnitude methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:35'!
+icon
+
+	^ VirtualPropertyMenuItem integerIcon ! !
+
+!Time methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:49'!
+icon
+
+	^ VirtualPropertyMenuItem chronIcon ! !
+
+!Float methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:45'!
+icon
+
+	^ VirtualPropertyMenuItem floatIcon ! !
+
+!Fraction methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:38'!
+icon
+
+	^ VirtualPropertyMenuItem fractionIcon ! !
+
+!Integer methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:42'!
+icon
+
+	^ VirtualPropertyMenuItem integerIcon ! !
+
+!BlockClosure methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:11'!
+icon
+
+	^ VirtualPropertyMenuItem closureIcon ! !
+
+!Complex methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:17'!
+icon
+
+	^ VirtualPropertyMenuItem complexIcon ! !
+
+!Boolean methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:22'!
+icon
+
+	^ VirtualPropertyMenuItem booleanIcon ! !
+
+!False methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:30'!
+icon
+
+	^ VirtualPropertyMenuItem falseIcon ! !
+
+!True methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:27'!
+icon
+
+	^ VirtualPropertyMenuItem trueIcon ! !
+
+!UndefinedObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:18'!
+icon
+
+	^ VirtualPropertyMenuItem nilIcon ! !
+
+!Character methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:38'!
+icon
+
+	^ VirtualPropertyMenuItem charIcon ! !
+
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/11/2016 15:40:47'!
 morphForDrag
 	"Answer a morph suitable for DragNDrop"
@@ -394,21 +374,6 @@ valueWhenDropped
 	
 	^ self copy! !
 
-!ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:20'!
-icon
-
-	^ VirtualPropertyMenuItem windowIcon ! !
-
-!SystemWindow methodsFor: '*morph-metaproperties' stamp: 'KenD 12/24/2016 18:05:09'!
-labelString
-
-	^ self label! !
-
-!SystemWindow methodsFor: '*morph-metaproperties' stamp: 'KenD 12/24/2016 18:05:25'!
-labelString: aString
-
-	^ self setLabel: aString! !
-
 !ImageMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 14:35:01'!
 image
 
@@ -435,6 +400,21 @@ font: aFont
 
 	emphasis ifNil: [ emphasis := 0 ].
 	self font: aFont emphasis: emphasis! !
+
+!ImagePallet methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:20'!
+icon
+
+	^ VirtualPropertyMenuItem windowIcon ! !
+
+!SystemWindow methodsFor: '*morph-metaproperties' stamp: 'KenD 12/24/2016 18:05:09'!
+labelString
+
+	^ self label! !
+
+!SystemWindow methodsFor: '*morph-metaproperties' stamp: 'KenD 12/24/2016 18:05:25'!
+labelString: aString
+
+	^ self setLabel: aString! !
 
 !MinimalStringMorph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/5/2016 14:56:55'!
 contents
@@ -494,1048 +474,25 @@ front: fontToUse
 	self fitContents.
 	self redrawNeeded ! !
 
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 15:14:43'!
-aboutToGrab: aMorph
-	"submorph is being grabbed by a hand.
-	Perform necessary adjustments (if any) and return the actual morph
-	that should be added to the hand.
-	Answer nil to reject the drag."
-"
-	Transcript show: 'PropertyEditor aboutToGrab: ', aMorph printString ; newLine.
-"
-	| valueToDrag |
-	(aMorph isKindOf: VirtualPropertyMenuItem)
-		ifTrue: [ valueToDrag := aMorph propertyValue copy ].
-	(aMorph isKindOf: OrdinaryPropertyMenuItem)
-		ifTrue: [ valueToDrag := aMorph value copy ].
-	
-	valueToDrag isNil
-	ifTrue:  [^ self ] "Title selected. User wants to move me. Pick me up"
-	ifFalse: [ ^ valueToDrag morphForDrag ]
-! !
+!FileIOAccessor methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:44'!
+icon
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:23:37'!
-addIVarsDisplay
-	" Add display of IVars to self"
-	
-	self addLine.
-	
-	self ivarNames do: [ :ivarName | | iVal displayString propMorph |
-		iVal := self targetMorph instVarNamed: ivarName.
-		displayString := (ivarName, ': ', iVal printString)
-							truncateWithElipsisTo: 40.
-		propMorph := 
-			OrdinaryPropertyMenuItem 
-				itemForIVar: ivarName 
-				targetMorph: self targetMorph.
-		propMorph contents: displayString.
-		propMorph icon:iVal icon.
-		self addMorphBack: propMorph
-	].
+	^ VirtualPropertyMenuItem fileIcon ! !
 
-! !
+!FileSystemEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:47'!
+icon
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/12/2016 19:38:47'!
-addMetaPropsDisplay
-	" Add display of MetaProperty selections to self"
+	^ VirtualPropertyMenuItem fileIcon ! !
 
-	| myIvarNames myMorph |
-	myMorph := self targetMorph.
-	myIvarNames := self ivarNames.
-	
-	self addLine.
-	
-	self metaPropNames do: [ :name | | propMorph |
-		propMorph := 
-		((myIvarNames includes: name)
-			ifTrue: [
-				VirtualPropertyMenuItem "@@@Used? Useful?@@"
-						ivarName: name 
-						morph: myMorph 
-						propMeta: (self metaProps at: name)
-			]
-			ifFalse: [
-				VirtualPropertyMenuItem 
-						propName: name 
-						morph: myMorph 
-						propMeta: (self metaProps at: name)
-			]
-		).
-		propMorph  target: propMorph;
-					  selector: #edit.
-		self addMorphBack: propMorph
-	].
-! !
+!DirectoryEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:50'!
+icon
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/23/2016 14:06:53'!
-addOperationsDisplay
-	"This is a separate method so subclasses can override"
+	^ VirtualPropertyMenuItem folderIcon ! !
 
-	self add: 'Refresh Me'  target: self 
-			selector: #refreshView;
-		 add: 'toggle Instance Variable display' target: self 
-			selector: #toggleIVarView;
-		 add: 'toggle Instance Properties display' target: self 
-			selector: #toggleOrdinaryPropsView;
-		 add: 'show Drop Target for morph' target: self targetMorph 
-			selector: #showDropTarget.
-			
-	(self targetMorph isKindOf: LayoutMorph)
-		ifTrue: [ 
-			self add: 'edit LayoutMorph properties'
-				  target: self targetMorph 
-				  selector: #editMe
-		].
+!FileEntry methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:42:53'!
+icon
 
-	self
-		 add: 'open a Message Window for morph' target: self targetMorph 
-			selector: #messageWindow.! !
-
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:13:17'!
-addOrdinaryPropertiesDisplay
-	" Add display of ordinary properties to self"
-	
-	self addLine.
-	
-	self propertyNames do: [ :propName | | propValue displayString propMorph |
-		propValue := self targetMorph valueOfProperty: propName.
-		displayString :=  (propName, ': ', (propValue printString))
-							truncateWithElipsisTo: 40.
-		propMorph := 
-			OrdinaryPropertyMenuItem 
-				itemForProperty: propName 
-				targetMorph: self targetMorph.
-		propMorph contents: displayString.
-		propMorph icon: propValue icon.
-		self addMorphBack: propMorph
-	].
-! !
-
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 14:31:43'!
-addPropertiesDisplay
-
-	self notYetImplemented ! !
-
-!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 11/28/2016 18:27:45'!
-addTitle: aString
-
-	titleMorph := WindowTitleMorph title: aString  buttonsNamed: #( close collapse showHalo ).
-	titleMorph color: Theme current menuTitleBar.
-	self addMorphFront: titleMorph.! !
-
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/3/2016 09:51:35'!
-adjustSubmorphsLayout
-
-	| calculatedExtent |
-	super adjustSubmorphsLayout.
-	calculatedExtent := self morphExtent.
-	self morphExtent: (calculatedExtent x max: self minItemWidth) @ calculatedExtent y.
-	self titleMorph morphExtent: (calculatedExtent x max: self minItemWidth) @ self titleMorph morphHeight.
-	self titleMorph reset.  "Needed after adjustSubmorphsLayout"
-! !
-
-!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:47:43'!
-allowsSubmorphDrag
-	"Answer whether our morphs can just be grabbed with the hand, instead of requiring the use of the halo. Redefined to answer true."
-
-	^ true! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 11:19:20'!
-alwaysHiddenIVars
-	"Answer a collection of names of ivars never to be shown"
-
-	^ #(properties extent location)! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:04:33'!
-alwaysHiddenProperties
-	"Answer a collection of names of properties never to be shown"
-
-	^ #(morphModifiers)! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:45'!
-closeButtonClicked
-	"The user clicked on the close-box control in the window title.  For Mac users only, the Mac convention of option-click-on-close-box is obeyed if the mac option key is down."
-
-	Preferences dismissAllOnOptionClose ifTrue:
-		[Sensor rawMacOptionKeyPressed ifTrue:
-			[^ self world closeUnchangedWindows]].
-	self targetMorph removeActionsForEvent: #propertyChanged.
-	self delete  "closeBox overrides stayUp"! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:54'!
-collapseButtonClicked
-	
-	self collapse
-! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:16:16'!
-edit: propName
-"
-	Remove
-	Rename
-	Edit Value
-	Reset  to old Value
-	Cancel
-"
-	"@@@FIXME: NYI @@@"
-	(HoverHelpMorph contents: 'Need editor for ' , propName asString)
-		popUpForHand: self targetMorph world activeHand! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:16:39'!
-fontPreferenceChanged
-
-	super fontPreferenceChanged.
-	self refreshView.! !
-
-!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 12/22/2016 17:07:55'!
-forMorph: aMorph
-	"Initialize, but do NOT open this instance"
-
-	targetMorph := aMorph.  "NB: immutable"
-	showAllIvars  := false.
-	showAllProps := false.
-	metaProps := MetaProperty metaPropsForMorph: aMorph.
-	targetMorph when: #propertyChanged send: #refreshView to: self. "triggered by #propertyValue:"
-	self defaultTarget: self;
-		 stayUp: true;
-		 refreshView;
-	 	 yourself! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 13:59:01'!
-ivarNames
-	"Answer an alpha-sorted collection of Instance variable names less MetaProperties"
-
-	| ivarNames neverShown metaPropsDict |
-	ivarNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
-	metaPropsDict := self metaProps.
-	neverShown     := (self alwaysHiddenIVars) , (self morphSelectorProperties).
-	
-	self targetMorph class allInstVarNames do: [ :ivarName | 
-		(neverShown includes: ivarName)
-			ifFalse: [ 
-				(metaPropsDict includesKey: ivarName)
-					ifFalse:  [ ivarNames add: ivarName ]
-			] 
-	].
-
-	^ ivarNames ! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:04:49'!
-metaPropNames
-	"Answer an alpha-sorted collection of MetaProperty names"
-
-	| metaPropNames |
-	metaPropNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
-	self metaProps keysDo: [ :mpName |  metaPropNames add: mpName ].
-
-	^ metaPropNames ! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:24'!
-metaProps
-
-	^ metaProps! !
-
-!VisualPropertyEditor methodsFor: 'geometry' stamp: 'KenD 12/3/2016 12:32:04'!
-minItemWidth
-	"Answer enough space to contain generous title"
-
-	^ Preferences windowTitleFont widthOfString: '0123456789112345678921234567893'
-! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 11:29:59'!
-morphSelectorProperties
-	"Answer a collection of names of properties accessed via selector"
-
-	^ #(morphPosition morphExtent)! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 16:30:33'!
-propertyNames
-	"Answer an alpha-sorted collection of property names less MetaProperties"
-
-	| propNames neverShown metaPropsDict |
-	propNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
-	metaPropsDict := self metaProps.
-	neverShown     := self alwaysHiddenProperties.
-	
-	(self targetMorph propertiesDict)
-	ifNotNil: [ :dict |
-		dict keysDo: [ :propName | 
-		(neverShown includes: propName)
-			ifFalse: [ 
-				(metaPropsDict includesKey: propName)
-					ifFalse:  [ propNames add: propName ]
-			] 
-		]
-	].
-
-	^ propNames ! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 16:08:09'!
-refreshView
-
-	"Something may have changed.."
-	| aMorph |
-	aMorph := self targetMorph.
-	self removeAllMorphs.
-	
-	self addTitle: (aMorph printStringLimitedTo: 60).
-
-	self addOperationsDisplay.
-	self addMetaPropsDisplay.
-	self showAllIvars  ifTrue: [ self addIVarsDisplay ].
-	self showAllProps ifTrue: [ self addOrdinaryPropertiesDisplay ].
-	
-	self titleMorph morphExtent: (self titleMorph morphExtent x) @ (Preferences windowTitleFont height).
-	self adjustSubmorphsLayout;
-		yourself! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:39'!
-showAllIvars
-
-	^ showAllIvars! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/24/2016 17:31:12'!
-showAllIvars: aBool
-
-	showAllIvars := aBool.
-	self refreshView.! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:53'!
-showAllProps
-
-	^ showAllProps! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/24/2016 17:30:58'!
-showAllProps: aBool
-
-	showAllProps := aBool.
-	self refreshView.! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:18:46'!
-showHaloButtonClicked
-	"Show my targetMorph's halo"
-	| aMorph |
-	aMorph := self targetMorph.
-	aMorph isInWorld 
-		ifTrue: [ aMorph show; addHalo ]
-		ifFalse: [
-"			(HoverHelpMorph 
-			contents: aMorph printString , ' not shown in world')
-				popUpForHand: self  world activeHand
-"			aMorph openInWorld; 
-				show;
-				morphPosition: 200@100;
-				addHalo   
-		]! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:01'!
-targetMorph
-
-	^ targetMorph ! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:44:19'!
-titleMorph
-
-	^ titleMorph! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 15:33:47'!
-toggleIVarView
-
-	self toggleShowIVars; refreshView! !
-
-!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 12/24/2016 17:30:31'!
-toggleOrdinaryPropsView
-
-	self toggleShowProps! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:33:30'!
-toggleShowIVars
-
-	self showAllIvars: (self showAllIvars not)! !
-
-!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:33:20'!
-toggleShowProps
-
-	self showAllProps: (self showAllProps not)! !
-
-!VisualPropertyEditor class methodsFor: 'instance creation' stamp: 'KenD 12/24/2016 17:50:21'!
-forMorph: aMorph
-
-	aMorph removeHalo.
-	^ self new forMorph: aMorph! !
-
-!VisualPropertyEditor class methodsFor: 'new-morph participation' stamp: 'KenD 12/24/2016 15:51:18'!
-includeInNewMorphMenu
-	"Return true for all classes that can be instantiated from the menu"
-	^ false! !
-
-!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/24/2016 18:06:03'!
-initialize
-"
-	VisualPropertyEditor initialize.
-"
-	"Add typical Morph visual properties to MetaProperty's MetaPropDict"
-	
-	| classDict propsDict |
-	"Ensure named MetaProperties exist"
-	MetaProperty initializeDictionaries.
-
-	"Seed MetaProperties for known Morphs"
-	propsDict := MetaProperty preDefinedPropsDict.
-
-	classDict := MetaProperty metaPropsDictForClass: Morph.
-	classDict at: #layoutSpec   put: (propsDict at: #acceptsLayoutSpec). 
-
-	classDict := MetaProperty metaPropsDictForClass: RectangleLikeMorph.
-	classDict at: #morphExtent   put: (propsDict at: #acceptsPositivePoint). 
-	classDict at: #morphPosition put: (propsDict at: #acceptsPoint). 
-	classDict at: #color put: (propsDict at: #acceptsColor). 
-
-	classDict := MetaProperty metaPropsDictForClass: BorderedRectMorph.
-	classDict at: #borderColor put: (propsDict at: #acceptsColor). 
-	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
-	
-	classDict := MetaProperty metaPropsDictForClass: LineMorph.
-	classDict at: #startPoint put: (propsDict at: #acceptsPoint). 
-	classDict at: #endPoint put: (propsDict at: #acceptsPoint). 
-	classDict at: #color put: (propsDict at: #acceptsColor). 
-	classDict at: #lineWidth put: (propsDict at: #acceptsPositiveInteger). 
-
-	classDict := MetaProperty metaPropsDictForClass: PointerLineMorph.
-	classDict at: #endPointMorph put: (propsDict at: #acceptsMorph). 
-
-	classDict := MetaProperty metaPropsDictForClass: Panel.
-	classDict at: #widgetsColor put: (propsDict at: #acceptsColor). 
-	classDict at: #stayUp put: (propsDict at: #acceptsBoolean). 
-	
-	classDict := MetaProperty metaPropsDictForClass: FontMorph.
-	classDict at: #labelMorph put: (propsDict at: #acceptsLabelMorph). 
-	classDict at: #string put: (propsDict at: #acceptsString).
-	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
-
-	classDict := MetaProperty metaPropsDictForClass: PluggableButtonMorph.
-	classDict at: #label put: (propsDict at: #acceptsString).
-	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #icon put: (propsDict at: #acceptsForm).
-	classDict at: #iconName put: (propsDict at: #acceptsSymbol).
-
-	classDict := MetaProperty metaPropsDictForClass: ImageMorph.
-	classDict at: #image put: (propsDict at: #acceptsForm).
-
-	classDict := MetaProperty metaPropsDictForClass: BorderedImageMorph.
-	classDict at: #borderColor put: (propsDict at: #acceptsColor).
-	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
-	classDict at: #borderStyle put: (propsDict at: #acceptsBorderStyle).
-
-	classDict := MetaProperty metaPropsDictForClass: FramedLayoutMorph.
-	classDict at: #borderColor put: (propsDict at: #acceptsColor).
-	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
-	classDict at: #frameSelector put: (propsDict at: #acceptsBorderStyle).
-
-	classDict := MetaProperty metaPropsDictForClass: FrameMorph.
-"	classDict at: #borderColor put: (propsDict at: #acceptsColor).
-	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger). "
-	classDict at: #frameSelector put: (propsDict at: #acceptsBorderStyle).
-
-	classDict := MetaProperty metaPropsDictForClass: WindowTitleMorph.
-	classDict at: #titleString put: (propsDict at: #acceptsString).
-	
-	classDict := MetaProperty metaPropsDictForClass: StringMorph.
-	classDict at: #contents put: (propsDict at: #acceptsString).
-	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
-	
-	classDict := MetaProperty metaPropsDictForClass: MinimalStringMorph.
-	classDict at: #contents put: (propsDict at: #acceptsString).
-	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
-	
-	classDict := MetaProperty metaPropsDictForClass: OneLineEditorMorph.
-	classDict at: #contents put: (propsDict at: #acceptsString).
-	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
-
-	classDict := MetaProperty metaPropsDictForClass: VisualPropertyEditor .
-	classDict at: #showAllIvars put: (propsDict at: #acceptsBoolean).
-	classDict at: #showAllProps put: (propsDict at: #acceptsBoolean).
-	
-	classDict := MetaProperty metaPropsDictForClass: PluggableButtonMorph.
-	classDict at: #font put: (propsDict at: #acceptsFont).
-	classDict at: #icon put: (propsDict at: #acceptsForm).
-	classDict at: #label put: (propsDict at: #acceptsString).
-	classDict at: #iconName put: (propsDict at: #acceptsSymbol).
-
-	classDict := MetaProperty metaPropsDictForClass: SystemWindow .
-	classDict at: #labelString put: (propsDict at: #acceptsString).
-
-
-! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:53:49'!
-allowsMorphDrop
-	"We don't allow editing by Drop, but answer true here to visually reject and delete dropped morph."
-
-	^ true! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/2/2016 16:03:28'!
-itemForIVar: aName targetMorph: aMorph
-
-	accessKind := #instanceVariable.
-	targetMorph := aMorph.
-	name := aName.! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/2/2016 16:02:32'!
-itemForProperty: aName targetMorph: aMorph
-
-	accessKind := #property.
-	targetMorph := aMorph.
-	name := aName.! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:07:12'!
-name
-
-	^ name! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/2/2016 16:05:05'!
-processMouseDown: evt localPosition: localEventPosition
-	"Do nothing upon mouse-down except inform the hand to watch for a 
-	click; wait until an ensuing #click: message gets dispatched"
-"
-	Transcript newLine; show: (self name , ' got #processMouseDown:localPosition:').  
-"
-	evt wasHandled: true.
-	evt hand waitForClicksOrDrag: self
-				event: evt
-				dragSel: #dragEvent:localPosition:
-				clkSel: #mouseButton1Down:localPosition:
-
-! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 09:25:22'!
-showReject: aMorph
-	"Draw and erase a red X"
-
-	| leftStroke rightStroke mPos mExtent |
-	mPos := aMorph morphPositionInWorld.
-	mExtent := aMorph morphExtent.
-	leftStroke   := LineMorph 
-						startPoint: mPos - (10@10) 
-						endPoint: (mPos + mExtent + (10@10)) 
-						width: 6
-						color: Color red.
-	rightStroke := LineMorph 
-						startPoint: mPos + (-10 @ (mExtent y + 10))
-						endPoint: (mPos + ((10 + mExtent x) @ -10)) 
-						width: 6
-						color: Color red.
-	leftStroke   openInWorld.
-	rightStroke openInWorld.
-	
-	"NB: Keep Morph when rejected"
-	leftStroke   addAlarm: #delete after: 400.	
-	rightStroke addAlarm: #delete after: 400.
-	
-	PopUpMenu inform: 'You can''t set this'
-	! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:15:02'!
-targetMorph
-
-	^ targetMorph! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:22:54'!
-value
-	"Answer value of my targetMorph's property or instance variable"
-
-	^ (accessKind = #property)
-		ifTrue:  [ targetMorph valueOfProperty: name ]
-		ifFalse: [ targetMorph instVarNamed:     name ]! !
-
-!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/14/2016 13:22:59'!
-wantsDroppedMorph: aMorph event: evt
-	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
-
-	self showReject: aMorph.
-	
-	"Rejecting the drop adds aMorph to its old owner at 0@0."
-	^ false  "Reject the drop"! !
-
-!OrdinaryPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/2/2016 16:00:46'!
-itemForIVar: aName targetMorph: aMorph
-
-	^self new itemForIVar: aName targetMorph: aMorph! !
-
-!OrdinaryPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/2/2016 16:01:01'!
-itemForProperty: aName targetMorph: aMorph
-
-	^self new itemForProperty: aName targetMorph: aMorph! !
-
-!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:38:00'!
-allowsMorphDrop
-	"Answer whether we accept dropping morphs. Redefined to answer true."
-
-	^ true! !
-
-!VirtualPropertyMenuItem methodsFor: 'testing' stamp: 'KenD 11/28/2016 16:37:33'!
-allowsValue: aValue
-
-	^ self metaProperty accepts: aValue! !
-
-!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 12/18/2016 13:05:45'!
-edit
-
-	self metaProperty edit: self targetMorph menuItem: self.
-	self update ! !
-
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:30'!
-metaProperty
-
-	^ metaProperty! !
-
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:37'!
-name
-
-	^ name! !
-
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:58'!
-prevValue
-
-	^ prevValue! !
-
-!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:55:23'!
-processMouseDown: evt localPosition: localEventPosition
-	"Do nothing upon mouse-down except inform the hand to watch for a 
-	click; wait until an ensuing #click: message gets dispatched"
-"
-	Transcript newLine; show: (self name , ' got #processMouseDown:localPosition:').  
-"
-	evt wasHandled: true.
-	evt hand waitForClicksOrDrag: self
-				event: evt
-				dragSel: #dragEvent:localPosition:
-				clkSel: #mouseButton1Down:localPosition:
-
-! !
-
-!VirtualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/12/2016 14:38:06'!
-propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor accessProc: getterClosure updateProc: setterClosure
-
-	super initialize.
-	name := aSymbol.
-	targetMorph := aMorph.
-	metaProperty := aPropertyDescriptor.
-	prevValue := getterClosure value.	
-	accessProc := getterClosure.
-	updateProc := setterClosure.
-	self setContents;
-		 target: self;
-		 icon: prevValue icon; 
-		 selector: #edit! !
-
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:30:25'!
-propertyDescriptor
-
-	^ self metaProperty! !
-
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/12/2016 14:38:44'!
-propertyValue
-	"Getter"
-
-	^ accessProc value! !
-
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/22/2016 16:50:52'!
-propertyValue: newValue
-	"Setter"
-
-	updateProc value: newValue.
-	self update! !
-
-!VirtualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 12/6/2016 14:25:15'!
-setContents
-	"(re)set my content string and icon"
-
-	self contents: ( (name asString , ':  ', (self propertyValue printString))
-						truncateWithElipsisTo: 40 ).
-	self icon: (self propertyValue icon)! !
-
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:36:45'!
-showAccept: aMorph
-	"Draw and erase a green box"
-
-	| hilightMorph mPos mExtent |
-	mPos     := aMorph morphPositionInWorld.
-	mExtent := aMorph morphExtent.
-	hilightMorph := FrameMorph new.
-	hilightMorph   borderWidth: 6;
-					borderColor: Color green;
-					morphExtent: mExtent + 6;
-					openInWorld;
-					morphPosition: mPos - (6@6). "surround aMorph"
-
-	aMorph        addAlarm: #delete after: 200.
-	hilightMorph addAlarm: #delete after: 400.! !
-
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:37:40'!
-showReject: aMorph
-	"Draw and erase a red X"
-
-	| leftStroke rightStroke mPos mExtent |
-	mPos := aMorph morphPositionInWorld.
-	mExtent := aMorph morphExtent.
-	"Show a red X"
-	leftStroke   := LineMorph 
-						startPoint: mPos - (10@10) 
-						endPoint: (mPos + mExtent + (10@10)) 
-						width: 6
-						color: Color red.
-	rightStroke := LineMorph 
-						startPoint: mPos + (-10 @ (mExtent y + 10))
-						endPoint: (mPos + ((10 + mExtent x) @ -10)) 
-						width: 6
-						color: Color red.
-	leftStroke   openInWorld.
-	rightStroke openInWorld.
-	
-	"NB: Keep Morph when rejected"
-	leftStroke   addAlarm: #delete after: 400.	
-	rightStroke addAlarm: #delete after: 400.! !
-
-!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:35:46'!
-targetMorph
-
-	^ targetMorph ! !
-
-!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 11/28/2016 16:35:20'!
-undo
-	"Reset value from remembered value"
-
-	self targetMorph setProperty: self name  toValue: self prevValue! !
-
-!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/22/2016 16:56:35'!
-update
-
-	self setContents.
-	self targetMorph triggerEvent: #propertyChanged.
-	self targetMorph redrawNeeded.! !
-
-!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/18/2016 15:39:20'!
-wantsDroppedMorph: aMorph event: evt
-	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
-
-
-	(self allowsValue: aMorph valueWhenDropped)
-		ifTrue: [ 
-"
-	Transcript newLine ; show: 'wantsDroppedMorph:event YES ', aMorph printString .
-"
-			self propertyValue: aMorph valueWhenDropped.
-			self showAccept: aMorph. 
-			"Rejecting the drop adds aMorph to its old owner at 0@0.
-			 So we accept the drop, but then delete aMorph.  
-			This is done in #showAccept."
-			^ true  
-	 	]
-		ifFalse: [
-"
-	Transcript newLine ; show: 'wantsDroppedMorph:event NO ', aMorph printString .
-"
-			self showReject: aMorph.
-			^ false
-		].
-	
-! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:29'!
-blankIcon
-
-	^BlankIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:35'!
-booleanIcon
-
-	^BoolIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:41'!
-charIcon
-
-	^CharIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:49'!
-chronIcon
-
-	^ChronIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:55'!
-classIcon
-
-	^ClassIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:01'!
-closureIcon
-
-	^ClosureIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:09'!
-collectionIcon
-
-	^CollectIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:15'!
-complexIcon
-
-	^CpxIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:22'!
-falseIcon
-
-	^FalseIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:28'!
-fileIcon
-
-	^FileIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:36'!
-floatIcon
-
-	^FloatIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:41'!
-folderIcon
-
-	^FolderIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:46'!
-fontIcon
-
-	^FontIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:50'!
-fractionIcon
-
-	^FracIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:55:24'!
-initialize
-"
-	VirtualPropertyMenuItem initialize.
-"
-	| dirName |
-	dirName :=  ((CodePackage installedPackages at: self category)
-		    		  fullFileName upToLastPathSeparator), '/Icons/'.
-
-	BlankIcon := ImageReadWriter formFromFileNamed: dirName , 'Blank.png'.
-	BoolIcon := ImageReadWriter formFromFileNamed: dirName , 'Bool.png'.
-	CharIcon := ImageReadWriter formFromFileNamed: dirName , 'Char.png'.
-	ChronIcon := ImageReadWriter formFromFileNamed: dirName , 'Chron.png'.
-	ClassIcon := ImageReadWriter formFromFileNamed: dirName , 'Class.png'.
-	ClosureIcon := ImageReadWriter formFromFileNamed: dirName , 'Closure.png'.
-	CollectIcon := ImageReadWriter formFromFileNamed: dirName , 'Collect.png'.
-	CpxIcon := ImageReadWriter formFromFileNamed: dirName , 'Cpx.png'.
-	FalseIcon := ImageReadWriter formFromFileNamed: dirName , 'False.png'.
-	FileIcon := ImageReadWriter formFromFileNamed: dirName , 'File.png'.
-	FloatIcon := ImageReadWriter formFromFileNamed: dirName , 'Float.png'.
-	FolderIcon := ImageReadWriter formFromFileNamed: dirName , 'Folder.png'.
-	FontIcon := ImageReadWriter formFromFileNamed: dirName , 'Font.png'.
-	FracIcon := ImageReadWriter formFromFileNamed: dirName , 'Frac.png'.
-	IntIcon := ImageReadWriter formFromFileNamed: dirName , 'Int.png'.
-	NilIcon := ImageReadWriter formFromFileNamed: dirName , 'Nil.png'.
-	ObjIcon := ImageReadWriter formFromFileNamed: dirName , 'Obj.png'.
-	OneOfIcon := ImageReadWriter formFromFileNamed: dirName , 'OneOf.png'.
-	PtIcon := ImageReadWriter formFromFileNamed: dirName , 'Pt.png'.
-	RngIcon := ImageReadWriter formFromFileNamed: dirName , 'Rng.png'.
-	StrIcon := ImageReadWriter formFromFileNamed: dirName , 'Str.png'.
-	StreamIcon := ImageReadWriter formFromFileNamed: dirName , 'Stream.png'.
-	SymIcon := ImageReadWriter formFromFileNamed: dirName , 'Sym.png'.
-	TrueIcon := ImageReadWriter formFromFileNamed: dirName , 'True.png'.
-	WindowIcon := ImageReadWriter formFromFileNamed: dirName , 'Window.png'.
-	
-! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:56'!
-integerIcon
-
-	^IntIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:37'!
-ivarName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
-	"Instance Variable based accessor"
-	
-	^ self 
-		propName: aSymbol 
-		morph: aMorph 
-		propMeta: aPropertyDescriptor 
-		accessProc: [ ^ aMorph instVarNamed: aSymbol ] 
-		updateProc: [ :newValue | aMorph instVarNamed: aSymbol put: newValue ] ! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:02'!
-nilIcon
-
-	^NilIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:06'!
-objectIcon
-
-	^ObjIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:12'!
-oneOfIcon
-
-	^OneOfIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:17'!
-pointIcon
-
-	^PtIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:07:44'!
-propName: aSymbol morph: aMorph
-
-	^ self propName: aSymbol morph: aMorph propMeta: MetaProperty default
-! !
-
-!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 19:59:47'!
-propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
-	"Selector based accessor"
-	
-	| setterSym isEncoded getterProc setterProc |
-	setterSym := (aSymbol , ':') asSymbol.
-	isEncoded := (aPropertyDescriptor isKindOf: MetaPropertyMultiSelect)
-					or: [ aPropertyDescriptor isKindOf: MetaPropertyTransducer ].
-	getterProc := [ aMorph perform: aSymbol ] .
-	setterProc := [ :newValue | aMorph perform: setterSym with: newValue ].
-	^ self 
-		propName: aSymbol 
-		morph: aMorph 
-		propMeta: aPropertyDescriptor 
-		accessProc:
-			(isEncoded 
-				ifFalse: [ getterProc ]
-				ifTrue: [ [ aPropertyDescriptor decodeProc value: (getterProc value) ] ])
-		updateProc: 
-			(isEncoded 
-				ifFalse: [ setterProc ]
-				ifTrue: [ [ :newValue |  setterProc value: (aPropertyDescriptor encodeProc value: newValue) ] ])
-			! !
-
-!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:10'!
-propName: aSymbol 
-morph: aMorph 
-propMeta: aPropertyDescriptor 
-accessProc: getterClosure 
-updateProc: setterClosure 
-
-	"Generalized value accessor"
-	^ self new propName: aSymbol 
-				morph: aMorph
-				propMeta: aPropertyDescriptor 
-				accessProc: getterClosure 
-				updateProc: setterClosure ! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:26'!
-rangeIcon
-
-	^RngIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:31'!
-streamIcon
-
-	^StreamIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:37'!
-stringIcon
-
-	^StrIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:43'!
-symbolIcon
-
-	^SymIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:49'!
-trueIcon
-
-	^TrueIcon! !
-
-!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:54'!
-windowIcon
-
-	^WindowIcon! !
-
-!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 14:19:19'!
-testAccepts
-
-	self assert: ((MetaProperty kind: String) accepts: 'aString').
-	self deny: ((MetaProperty kind: String) accepts: 2@3).
-	self assert: ((MetaProperty kind: String) accepts: #symbol).
-
-	"OneOf choice"
-	self assert: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #fie).
-	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #bogus).
-	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: 4@5).
-	self deny: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: nil).
-	self assert: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: true).
-	self assert: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: false).
-	self deny: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: #bogus).
-
-	"Number Range"
-	self assert: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 1.2).
-	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 0.7).
-	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 7).
-	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 4).
-	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 2@3).
-	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: #bogus).
-		
-	"Point Range"
-	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@4).
-	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 4@3).
-	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@5).
-	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 5@1).
-	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: -1@1).
-	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 0.3@1).
-
-
-	"Positive Point"
-	self assert: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: 23@47).
-	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: -23@47).
-	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: -23@-47).
-	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: 1@-1).
-
-	"Pattern Match"
-	self assert: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 'mombazzi').
-	self deny: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 'bamboozle').
-	self deny: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 43).
-! !
-
-!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:55:45'!
-testCreationGuards
-
-	"Kind must be a Class"
-	self should: [ MetaProperty kind: 37 ] raise: Error.
-	self should: [ MetaProperty kind: Color blue ] raise: Error.
-	
-	"Values must be of right kind"
-	self should: [ MetaPropertyFrom kind: Point minValue: Color red ] raise: Error.
-	self should: [ MetaPropertyFrom kind: Number minValue: 3@4 ] raise: Error.
-	self should: [ MetaPropertyOneOf kind: Number choices: #(fee fie fo fum) ] raise: Error.
-	self should: [ MetaPropertyOneOf kind: Number choices: Color green ] raise: Error.
-	self should: [ MetaPropertyRange kind: Number minValue: 1@2 maxValue: 3 ] raise: Error.
-	self should: [ MetaPropertyRange kind: Number minValue: 1 maxValue: 2@3 ] raise: Error.
-	self should: [ MetaPropertyViaTest kind: Number test: Color white ] raise: Error.
-	self should: [ MetaPropertyViaTest kind: Number test: [ :a :b | a + b ] ] raise: Error.
-	self should: [ MetaPropertyViaTest kind: 34 test: [ :a :b | a + b ] ] raise: Error.! !
-
-!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:22:28'!
-testPredefinedMProps
-
-	self assert: ((MetaProperty metaPropNamed: #acceptsString) accepts: 'aString').
-	self assert: ((MetaProperty metaPropNamed: #acceptsColor) accepts: Color blue).
-	self assert: ((MetaProperty metaPropNamed: #acceptsPositivePoint) accepts: 2@3).
-	self assert: ((MetaProperty metaPropNamed: #acceptsPositiveNumber) accepts: 0.1).
-	
-	self deny: ((MetaProperty metaPropNamed: #acceptsPositivePoint) accepts: -2@3).
-	self deny: ((MetaProperty metaPropNamed: #acceptsPositiveNumber) accepts: -1).! !
+	^ VirtualPropertyMenuItem fileIcon ! !
 
 !MetaProperty methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:21:39'!
 accepts: newValue
@@ -1601,7 +558,7 @@ initialize
 	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
 ! !
 
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/24/2016 17:01:21'!
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 3/29/2017 14:07:26'!
 initializeDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1634,7 +591,18 @@ initializeDictionaries
 								openInWorld;
 								morphPosition: morph morphPositionInWorld 
 												+ morph morphExtent ]).
-	props at: #acceptsCharacter put: (MetaProperty kind: Character).
+	props at: #acceptsCharacter 
+			put: (MetaProperty 
+					kind: Character
+					editProc: [ :morph :metaProp :menuItem | 
+						CharacterEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent
+						]).
 	props at: #acceptsNumber put: (MetaProperty kind: Number).
 	props at: #acceptsColor 
 		    put: (MetaProperty kind: Color
@@ -2154,8 +1122,1051 @@ kind: aClass test: aClosure
 test: aClosure
 
 	^ self new kind: Object test: aClosure! !
-VisualPropertyEditor initialize!
-VirtualPropertyMenuItem initialize!
+
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:53:49'!
+allowsMorphDrop
+	"We don't allow editing by Drop, but answer true here to visually reject and delete dropped morph."
+
+	^ true! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/2/2016 16:03:28'!
+itemForIVar: aName targetMorph: aMorph
+
+	accessKind := #instanceVariable.
+	targetMorph := aMorph.
+	name := aName.! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/2/2016 16:02:32'!
+itemForProperty: aName targetMorph: aMorph
+
+	accessKind := #property.
+	targetMorph := aMorph.
+	name := aName.! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:07:12'!
+name
+
+	^ name! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/2/2016 16:05:05'!
+processMouseDown: evt localPosition: localEventPosition
+	"Do nothing upon mouse-down except inform the hand to watch for a 
+	click; wait until an ensuing #click: message gets dispatched"
+"
+	Transcript newLine; show: (self name , ' got #processMouseDown:localPosition:').  
+"
+	evt wasHandled: true.
+	evt hand waitForClicksOrDrag: self
+				event: evt
+				dragSel: #dragEvent:localPosition:
+				clkSel: #mouseButton1Down:localPosition:
+
+! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 09:25:22'!
+showReject: aMorph
+	"Draw and erase a red X"
+
+	| leftStroke rightStroke mPos mExtent |
+	mPos := aMorph morphPositionInWorld.
+	mExtent := aMorph morphExtent.
+	leftStroke   := LineMorph 
+						startPoint: mPos - (10@10) 
+						endPoint: (mPos + mExtent + (10@10)) 
+						width: 6
+						color: Color red.
+	rightStroke := LineMorph 
+						startPoint: mPos + (-10 @ (mExtent y + 10))
+						endPoint: (mPos + ((10 + mExtent x) @ -10)) 
+						width: 6
+						color: Color red.
+	leftStroke   openInWorld.
+	rightStroke openInWorld.
+	
+	"NB: Keep Morph when rejected"
+	leftStroke   addAlarm: #delete after: 400.	
+	rightStroke addAlarm: #delete after: 400.
+	
+	PopUpMenu inform: 'You can''t set this'
+	! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:15:02'!
+targetMorph
+
+	^ targetMorph! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:22:54'!
+value
+	"Answer value of my targetMorph's property or instance variable"
+
+	^ (accessKind = #property)
+		ifTrue:  [ targetMorph valueOfProperty: name ]
+		ifFalse: [ targetMorph instVarNamed:     name ]! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/14/2016 13:22:59'!
+wantsDroppedMorph: aMorph event: evt
+	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
+
+	self showReject: aMorph.
+	
+	"Rejecting the drop adds aMorph to its old owner at 0@0."
+	^ false  "Reject the drop"! !
+
+!OrdinaryPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/2/2016 16:00:46'!
+itemForIVar: aName targetMorph: aMorph
+
+	^self new itemForIVar: aName targetMorph: aMorph! !
+
+!OrdinaryPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/2/2016 16:01:01'!
+itemForProperty: aName targetMorph: aMorph
+
+	^self new itemForProperty: aName targetMorph: aMorph! !
+
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 11/28/2016 16:38:00'!
+allowsMorphDrop
+	"Answer whether we accept dropping morphs. Redefined to answer true."
+
+	^ true! !
+
+!VirtualPropertyMenuItem methodsFor: 'testing' stamp: 'KenD 11/28/2016 16:37:33'!
+allowsValue: aValue
+
+	^ self metaProperty accepts: aValue! !
+
+!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 12/18/2016 13:05:45'!
+edit
+
+	self metaProperty edit: self targetMorph menuItem: self.
+	self update ! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:30'!
+metaProperty
+
+	^ metaProperty! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:37'!
+name
+
+	^ name! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:58'!
+prevValue
+
+	^ prevValue! !
+
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:55:23'!
+processMouseDown: evt localPosition: localEventPosition
+	"Do nothing upon mouse-down except inform the hand to watch for a 
+	click; wait until an ensuing #click: message gets dispatched"
+"
+	Transcript newLine; show: (self name , ' got #processMouseDown:localPosition:').  
+"
+	evt wasHandled: true.
+	evt hand waitForClicksOrDrag: self
+				event: evt
+				dragSel: #dragEvent:localPosition:
+				clkSel: #mouseButton1Down:localPosition:
+
+! !
+
+!VirtualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/12/2016 14:38:06'!
+propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor accessProc: getterClosure updateProc: setterClosure
+
+	super initialize.
+	name := aSymbol.
+	targetMorph := aMorph.
+	metaProperty := aPropertyDescriptor.
+	prevValue := getterClosure value.	
+	accessProc := getterClosure.
+	updateProc := setterClosure.
+	self setContents;
+		 target: self;
+		 icon: prevValue icon; 
+		 selector: #edit! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:30:25'!
+propertyDescriptor
+
+	^ self metaProperty! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/12/2016 14:38:44'!
+propertyValue
+	"Getter"
+
+	^ accessProc value! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/22/2016 16:50:52'!
+propertyValue: newValue
+	"Setter"
+
+	updateProc value: newValue.
+	self update! !
+
+!VirtualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 12/6/2016 14:25:15'!
+setContents
+	"(re)set my content string and icon"
+
+	self contents: ( (name asString , ':  ', (self propertyValue printString))
+						truncateWithElipsisTo: 40 ).
+	self icon: (self propertyValue icon)! !
+
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:36:45'!
+showAccept: aMorph
+	"Draw and erase a green box"
+
+	| hilightMorph mPos mExtent |
+	mPos     := aMorph morphPositionInWorld.
+	mExtent := aMorph morphExtent.
+	hilightMorph := FrameMorph new.
+	hilightMorph   borderWidth: 6;
+					borderColor: Color green;
+					morphExtent: mExtent + 6;
+					openInWorld;
+					morphPosition: mPos - (6@6). "surround aMorph"
+
+	aMorph        addAlarm: #delete after: 200.
+	hilightMorph addAlarm: #delete after: 400.! !
+
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:37:40'!
+showReject: aMorph
+	"Draw and erase a red X"
+
+	| leftStroke rightStroke mPos mExtent |
+	mPos := aMorph morphPositionInWorld.
+	mExtent := aMorph morphExtent.
+	"Show a red X"
+	leftStroke   := LineMorph 
+						startPoint: mPos - (10@10) 
+						endPoint: (mPos + mExtent + (10@10)) 
+						width: 6
+						color: Color red.
+	rightStroke := LineMorph 
+						startPoint: mPos + (-10 @ (mExtent y + 10))
+						endPoint: (mPos + ((10 + mExtent x) @ -10)) 
+						width: 6
+						color: Color red.
+	leftStroke   openInWorld.
+	rightStroke openInWorld.
+	
+	"NB: Keep Morph when rejected"
+	leftStroke   addAlarm: #delete after: 400.	
+	rightStroke addAlarm: #delete after: 400.! !
+
+!VirtualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:35:46'!
+targetMorph
+
+	^ targetMorph ! !
+
+!VirtualPropertyMenuItem methodsFor: 'editing' stamp: 'KenD 11/28/2016 16:35:20'!
+undo
+	"Reset value from remembered value"
+
+	self targetMorph setProperty: self name  toValue: self prevValue! !
+
+!VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/22/2016 16:56:35'!
+update
+
+	self setContents.
+	self targetMorph triggerEvent: #propertyChanged.
+	self targetMorph redrawNeeded.! !
+
+!VirtualPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/18/2016 15:39:20'!
+wantsDroppedMorph: aMorph event: evt
+	"Return true if the receiver wishes to accept the given morph, which is being dropped by a hand in response to the given event. Note that for a successful drop operation both parties need to agree. The symmetric check is done automatically via aMorph wantsToBeDroppedInto: self."
+
+
+	(self allowsValue: aMorph valueWhenDropped)
+		ifTrue: [ 
+"
+	Transcript newLine ; show: 'wantsDroppedMorph:event YES ', aMorph printString .
+"
+			self propertyValue: aMorph valueWhenDropped.
+			self showAccept: aMorph. 
+			"Rejecting the drop adds aMorph to its old owner at 0@0.
+			 So we accept the drop, but then delete aMorph.  
+			This is done in #showAccept."
+			^ true  
+	 	]
+		ifFalse: [
+"
+	Transcript newLine ; show: 'wantsDroppedMorph:event NO ', aMorph printString .
+"
+			self showReject: aMorph.
+			^ false
+		].
+	
+! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:29'!
+blankIcon
+
+	^BlankIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:35'!
+booleanIcon
+
+	^BoolIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:41'!
+charIcon
+
+	^CharIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:49'!
+chronIcon
+
+	^ChronIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:55'!
+classIcon
+
+	^ClassIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:01'!
+closureIcon
+
+	^ClosureIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:09'!
+collectionIcon
+
+	^CollectIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:15'!
+complexIcon
+
+	^CpxIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:22'!
+falseIcon
+
+	^FalseIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:28'!
+fileIcon
+
+	^FileIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:36'!
+floatIcon
+
+	^FloatIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:41'!
+folderIcon
+
+	^FolderIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:46'!
+fontIcon
+
+	^FontIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:50'!
+fractionIcon
+
+	^FracIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:55:24'!
+initialize
+"
+	VirtualPropertyMenuItem initialize.
+"
+	| dirName |
+	dirName :=  ((CodePackage installedPackages at: self category)
+		    		  fullFileName upToLastPathSeparator), '/Icons/'.
+
+	BlankIcon := ImageReadWriter formFromFileNamed: dirName , 'Blank.png'.
+	BoolIcon := ImageReadWriter formFromFileNamed: dirName , 'Bool.png'.
+	CharIcon := ImageReadWriter formFromFileNamed: dirName , 'Char.png'.
+	ChronIcon := ImageReadWriter formFromFileNamed: dirName , 'Chron.png'.
+	ClassIcon := ImageReadWriter formFromFileNamed: dirName , 'Class.png'.
+	ClosureIcon := ImageReadWriter formFromFileNamed: dirName , 'Closure.png'.
+	CollectIcon := ImageReadWriter formFromFileNamed: dirName , 'Collect.png'.
+	CpxIcon := ImageReadWriter formFromFileNamed: dirName , 'Cpx.png'.
+	FalseIcon := ImageReadWriter formFromFileNamed: dirName , 'False.png'.
+	FileIcon := ImageReadWriter formFromFileNamed: dirName , 'File.png'.
+	FloatIcon := ImageReadWriter formFromFileNamed: dirName , 'Float.png'.
+	FolderIcon := ImageReadWriter formFromFileNamed: dirName , 'Folder.png'.
+	FontIcon := ImageReadWriter formFromFileNamed: dirName , 'Font.png'.
+	FracIcon := ImageReadWriter formFromFileNamed: dirName , 'Frac.png'.
+	IntIcon := ImageReadWriter formFromFileNamed: dirName , 'Int.png'.
+	NilIcon := ImageReadWriter formFromFileNamed: dirName , 'Nil.png'.
+	ObjIcon := ImageReadWriter formFromFileNamed: dirName , 'Obj.png'.
+	OneOfIcon := ImageReadWriter formFromFileNamed: dirName , 'OneOf.png'.
+	PtIcon := ImageReadWriter formFromFileNamed: dirName , 'Pt.png'.
+	RngIcon := ImageReadWriter formFromFileNamed: dirName , 'Rng.png'.
+	StrIcon := ImageReadWriter formFromFileNamed: dirName , 'Str.png'.
+	StreamIcon := ImageReadWriter formFromFileNamed: dirName , 'Stream.png'.
+	SymIcon := ImageReadWriter formFromFileNamed: dirName , 'Sym.png'.
+	TrueIcon := ImageReadWriter formFromFileNamed: dirName , 'True.png'.
+	WindowIcon := ImageReadWriter formFromFileNamed: dirName , 'Window.png'.
+	
+! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:22:56'!
+integerIcon
+
+	^IntIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:37'!
+ivarName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
+	"Instance Variable based accessor"
+	
+	^ self 
+		propName: aSymbol 
+		morph: aMorph 
+		propMeta: aPropertyDescriptor 
+		accessProc: [ ^ aMorph instVarNamed: aSymbol ] 
+		updateProc: [ :newValue | aMorph instVarNamed: aSymbol put: newValue ] ! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:02'!
+nilIcon
+
+	^NilIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:06'!
+objectIcon
+
+	^ObjIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:12'!
+oneOfIcon
+
+	^OneOfIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:17'!
+pointIcon
+
+	^PtIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/7/2016 15:07:44'!
+propName: aSymbol morph: aMorph
+
+	^ self propName: aSymbol morph: aMorph propMeta: MetaProperty default
+! !
+
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 19:59:47'!
+propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor
+	"Selector based accessor"
+	
+	| setterSym isEncoded getterProc setterProc |
+	setterSym := (aSymbol , ':') asSymbol.
+	isEncoded := (aPropertyDescriptor isKindOf: MetaPropertyMultiSelect)
+					or: [ aPropertyDescriptor isKindOf: MetaPropertyTransducer ].
+	getterProc := [ aMorph perform: aSymbol ] .
+	setterProc := [ :newValue | aMorph perform: setterSym with: newValue ].
+	^ self 
+		propName: aSymbol 
+		morph: aMorph 
+		propMeta: aPropertyDescriptor 
+		accessProc:
+			(isEncoded 
+				ifFalse: [ getterProc ]
+				ifTrue: [ [ aPropertyDescriptor decodeProc value: (getterProc value) ] ])
+		updateProc: 
+			(isEncoded 
+				ifFalse: [ setterProc ]
+				ifTrue: [ [ :newValue |  setterProc value: (aPropertyDescriptor encodeProc value: newValue) ] ])
+			! !
+
+!VirtualPropertyMenuItem class methodsFor: 'instance creation' stamp: 'KenD 12/12/2016 14:39:10'!
+propName: aSymbol 
+morph: aMorph 
+propMeta: aPropertyDescriptor 
+accessProc: getterClosure 
+updateProc: setterClosure 
+
+	"Generalized value accessor"
+	^ self new propName: aSymbol 
+				morph: aMorph
+				propMeta: aPropertyDescriptor 
+				accessProc: getterClosure 
+				updateProc: setterClosure ! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:26'!
+rangeIcon
+
+	^RngIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:31'!
+streamIcon
+
+	^StreamIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:37'!
+stringIcon
+
+	^StrIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:43'!
+symbolIcon
+
+	^SymIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:49'!
+trueIcon
+
+	^TrueIcon! !
+
+!VirtualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:23:54'!
+windowIcon
+
+	^WindowIcon! !
+
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 15:14:43'!
+aboutToGrab: aMorph
+	"submorph is being grabbed by a hand.
+	Perform necessary adjustments (if any) and return the actual morph
+	that should be added to the hand.
+	Answer nil to reject the drag."
+"
+	Transcript show: 'PropertyEditor aboutToGrab: ', aMorph printString ; newLine.
+"
+	| valueToDrag |
+	(aMorph isKindOf: VirtualPropertyMenuItem)
+		ifTrue: [ valueToDrag := aMorph propertyValue copy ].
+	(aMorph isKindOf: OrdinaryPropertyMenuItem)
+		ifTrue: [ valueToDrag := aMorph value copy ].
+	
+	valueToDrag isNil
+	ifTrue:  [^ self ] "Title selected. User wants to move me. Pick me up"
+	ifFalse: [ ^ valueToDrag morphForDrag ]
+! !
+
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:23:37'!
+addIVarsDisplay
+	" Add display of IVars to self"
+	
+	self addLine.
+	
+	self ivarNames do: [ :ivarName | | iVal displayString propMorph |
+		iVal := self targetMorph instVarNamed: ivarName.
+		displayString := (ivarName, ': ', iVal printString)
+							truncateWithElipsisTo: 40.
+		propMorph := 
+			OrdinaryPropertyMenuItem 
+				itemForIVar: ivarName 
+				targetMorph: self targetMorph.
+		propMorph contents: displayString.
+		propMorph icon:iVal icon.
+		self addMorphBack: propMorph
+	].
+
+! !
+
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/12/2016 19:38:47'!
+addMetaPropsDisplay
+	" Add display of MetaProperty selections to self"
+
+	| myIvarNames myMorph |
+	myMorph := self targetMorph.
+	myIvarNames := self ivarNames.
+	
+	self addLine.
+	
+	self metaPropNames do: [ :name | | propMorph |
+		propMorph := 
+		((myIvarNames includes: name)
+			ifTrue: [
+				VirtualPropertyMenuItem "@@@Used? Useful?@@"
+						ivarName: name 
+						morph: myMorph 
+						propMeta: (self metaProps at: name)
+			]
+			ifFalse: [
+				VirtualPropertyMenuItem 
+						propName: name 
+						morph: myMorph 
+						propMeta: (self metaProps at: name)
+			]
+		).
+		propMorph  target: propMorph;
+					  selector: #edit.
+		self addMorphBack: propMorph
+	].
+! !
+
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/23/2016 14:06:53'!
+addOperationsDisplay
+	"This is a separate method so subclasses can override"
+
+	self add: 'Refresh Me'  target: self 
+			selector: #refreshView;
+		 add: 'toggle Instance Variable display' target: self 
+			selector: #toggleIVarView;
+		 add: 'toggle Instance Properties display' target: self 
+			selector: #toggleOrdinaryPropsView;
+		 add: 'show Drop Target for morph' target: self targetMorph 
+			selector: #showDropTarget.
+			
+	(self targetMorph isKindOf: LayoutMorph)
+		ifTrue: [ 
+			self add: 'edit LayoutMorph properties'
+				  target: self targetMorph 
+				  selector: #editMe
+		].
+
+	self
+		 add: 'open a Message Window for morph' target: self targetMorph 
+			selector: #messageWindow.! !
+
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:13:17'!
+addOrdinaryPropertiesDisplay
+	" Add display of ordinary properties to self"
+	
+	self addLine.
+	
+	self propertyNames do: [ :propName | | propValue displayString propMorph |
+		propValue := self targetMorph valueOfProperty: propName.
+		displayString :=  (propName, ': ', (propValue printString))
+							truncateWithElipsisTo: 40.
+		propMorph := 
+			OrdinaryPropertyMenuItem 
+				itemForProperty: propName 
+				targetMorph: self targetMorph.
+		propMorph contents: displayString.
+		propMorph icon: propValue icon.
+		self addMorphBack: propMorph
+	].
+! !
+
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 11/30/2016 14:31:43'!
+addPropertiesDisplay
+
+	self notYetImplemented ! !
+
+!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 11/28/2016 18:27:45'!
+addTitle: aString
+
+	titleMorph := WindowTitleMorph title: aString  buttonsNamed: #( close collapse showHalo ).
+	titleMorph color: Theme current menuTitleBar.
+	self addMorphFront: titleMorph.! !
+
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/3/2016 09:51:35'!
+adjustSubmorphsLayout
+
+	| calculatedExtent |
+	super adjustSubmorphsLayout.
+	calculatedExtent := self morphExtent.
+	self morphExtent: (calculatedExtent x max: self minItemWidth) @ calculatedExtent y.
+	self titleMorph morphExtent: (calculatedExtent x max: self minItemWidth) @ self titleMorph morphHeight.
+	self titleMorph reset.  "Needed after adjustSubmorphsLayout"
+! !
+
+!VisualPropertyEditor methodsFor: 'dropping/grabbing' stamp: 'KenD 12/7/2016 14:47:43'!
+allowsSubmorphDrag
+	"Answer whether our morphs can just be grabbed with the hand, instead of requiring the use of the halo. Redefined to answer true."
+
+	^ true! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 11:19:20'!
+alwaysHiddenIVars
+	"Answer a collection of names of ivars never to be shown"
+
+	^ #(properties extent location)! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 19:04:33'!
+alwaysHiddenProperties
+	"Answer a collection of names of properties never to be shown"
+
+	^ #(morphModifiers)! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:45'!
+closeButtonClicked
+	"The user clicked on the close-box control in the window title.  For Mac users only, the Mac convention of option-click-on-close-box is obeyed if the mac option key is down."
+
+	Preferences dismissAllOnOptionClose ifTrue:
+		[Sensor rawMacOptionKeyPressed ifTrue:
+			[^ self world closeUnchangedWindows]].
+	self targetMorph removeActionsForEvent: #propertyChanged.
+	self delete  "closeBox overrides stayUp"! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:15:54'!
+collapseButtonClicked
+	
+	self collapse
+! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:16:16'!
+edit: propName
+"
+	Remove
+	Rename
+	Edit Value
+	Reset  to old Value
+	Cancel
+"
+	"@@@FIXME: NYI @@@"
+	(HoverHelpMorph contents: 'Need editor for ' , propName asString)
+		popUpForHand: self targetMorph world activeHand! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:16:39'!
+fontPreferenceChanged
+
+	super fontPreferenceChanged.
+	self refreshView.! !
+
+!VisualPropertyEditor methodsFor: 'initialization' stamp: 'KenD 12/22/2016 17:07:55'!
+forMorph: aMorph
+	"Initialize, but do NOT open this instance"
+
+	targetMorph := aMorph.  "NB: immutable"
+	showAllIvars  := false.
+	showAllProps := false.
+	metaProps := MetaProperty metaPropsForMorph: aMorph.
+	targetMorph when: #propertyChanged send: #refreshView to: self. "triggered by #propertyValue:"
+	self defaultTarget: self;
+		 stayUp: true;
+		 refreshView;
+	 	 yourself! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 13:59:01'!
+ivarNames
+	"Answer an alpha-sorted collection of Instance variable names less MetaProperties"
+
+	| ivarNames neverShown metaPropsDict |
+	ivarNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
+	metaPropsDict := self metaProps.
+	neverShown     := (self alwaysHiddenIVars) , (self morphSelectorProperties).
+	
+	self targetMorph class allInstVarNames do: [ :ivarName | 
+		(neverShown includes: ivarName)
+			ifFalse: [ 
+				(metaPropsDict includesKey: ivarName)
+					ifFalse:  [ ivarNames add: ivarName ]
+			] 
+	].
+
+	^ ivarNames ! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:04:49'!
+metaPropNames
+	"Answer an alpha-sorted collection of MetaProperty names"
+
+	| metaPropNames |
+	metaPropNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
+	self metaProps keysDo: [ :mpName |  metaPropNames add: mpName ].
+
+	^ metaPropNames ! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:24'!
+metaProps
+
+	^ metaProps! !
+
+!VisualPropertyEditor methodsFor: 'geometry' stamp: 'KenD 12/3/2016 12:32:04'!
+minItemWidth
+	"Answer enough space to contain generous title"
+
+	^ Preferences windowTitleFont widthOfString: '0123456789112345678921234567893'
+! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/12/2016 11:29:59'!
+morphSelectorProperties
+	"Answer a collection of names of properties accessed via selector"
+
+	^ #(morphPosition morphExtent)! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 16:30:33'!
+propertyNames
+	"Answer an alpha-sorted collection of property names less MetaProperties"
+
+	| propNames neverShown metaPropsDict |
+	propNames := SortedCollection sortBlock: [ :sym1 :sym2 | sym1 < sym2 ].
+	metaPropsDict := self metaProps.
+	neverShown     := self alwaysHiddenProperties.
+	
+	(self targetMorph propertiesDict)
+	ifNotNil: [ :dict |
+		dict keysDo: [ :propName | 
+		(neverShown includes: propName)
+			ifFalse: [ 
+				(metaPropsDict includesKey: propName)
+					ifFalse:  [ propNames add: propName ]
+			] 
+		]
+	].
+
+	^ propNames ! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 16:08:09'!
+refreshView
+
+	"Something may have changed.."
+	| aMorph |
+	aMorph := self targetMorph.
+	self removeAllMorphs.
+	
+	self addTitle: (aMorph printStringLimitedTo: 60).
+
+	self addOperationsDisplay.
+	self addMetaPropsDisplay.
+	self showAllIvars  ifTrue: [ self addIVarsDisplay ].
+	self showAllProps ifTrue: [ self addOrdinaryPropertiesDisplay ].
+	
+	self titleMorph morphExtent: (self titleMorph morphExtent x) @ (Preferences windowTitleFont height).
+	self adjustSubmorphsLayout;
+		yourself! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:39'!
+showAllIvars
+
+	^ showAllIvars! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/24/2016 17:31:12'!
+showAllIvars: aBool
+
+	showAllIvars := aBool.
+	self refreshView.! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:53'!
+showAllProps
+
+	^ showAllProps! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 12/24/2016 17:30:58'!
+showAllProps: aBool
+
+	showAllProps := aBool.
+	self refreshView.! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/28/2016 19:18:46'!
+showHaloButtonClicked
+	"Show my targetMorph's halo"
+	| aMorph |
+	aMorph := self targetMorph.
+	aMorph isInWorld 
+		ifTrue: [ aMorph show; addHalo ]
+		ifFalse: [
+"			(HoverHelpMorph 
+			contents: aMorph printString , ' not shown in world')
+				popUpForHand: self  world activeHand
+"			aMorph openInWorld; 
+				show;
+				morphPosition: 200@100;
+				addHalo   
+		]! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/28/2016 18:34:01'!
+targetMorph
+
+	^ targetMorph ! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:44:19'!
+titleMorph
+
+	^ titleMorph! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 11/30/2016 15:33:47'!
+toggleIVarView
+
+	self toggleShowIVars; refreshView! !
+
+!VisualPropertyEditor methodsFor: 'events' stamp: 'KenD 12/24/2016 17:30:31'!
+toggleOrdinaryPropsView
+
+	self toggleShowProps! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:33:30'!
+toggleShowIVars
+
+	self showAllIvars: (self showAllIvars not)! !
+
+!VisualPropertyEditor methodsFor: 'accessing' stamp: 'KenD 11/30/2016 15:33:20'!
+toggleShowProps
+
+	self showAllProps: (self showAllProps not)! !
+
+!VisualPropertyEditor class methodsFor: 'instance creation' stamp: 'KenD 12/24/2016 17:50:21'!
+forMorph: aMorph
+
+	aMorph removeHalo.
+	^ self new forMorph: aMorph! !
+
+!VisualPropertyEditor class methodsFor: 'new-morph participation' stamp: 'KenD 12/24/2016 15:51:18'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	^ false! !
+
+!VisualPropertyEditor class methodsFor: 'class initialization' stamp: 'KenD 12/24/2016 18:06:03'!
+initialize
+"
+	VisualPropertyEditor initialize.
+"
+	"Add typical Morph visual properties to MetaProperty's MetaPropDict"
+	
+	| classDict propsDict |
+	"Ensure named MetaProperties exist"
+	MetaProperty initializeDictionaries.
+
+	"Seed MetaProperties for known Morphs"
+	propsDict := MetaProperty preDefinedPropsDict.
+
+	classDict := MetaProperty metaPropsDictForClass: Morph.
+	classDict at: #layoutSpec   put: (propsDict at: #acceptsLayoutSpec). 
+
+	classDict := MetaProperty metaPropsDictForClass: RectangleLikeMorph.
+	classDict at: #morphExtent   put: (propsDict at: #acceptsPositivePoint). 
+	classDict at: #morphPosition put: (propsDict at: #acceptsPoint). 
+	classDict at: #color put: (propsDict at: #acceptsColor). 
+
+	classDict := MetaProperty metaPropsDictForClass: BorderedRectMorph.
+	classDict at: #borderColor put: (propsDict at: #acceptsColor). 
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
+	
+	classDict := MetaProperty metaPropsDictForClass: LineMorph.
+	classDict at: #startPoint put: (propsDict at: #acceptsPoint). 
+	classDict at: #endPoint put: (propsDict at: #acceptsPoint). 
+	classDict at: #color put: (propsDict at: #acceptsColor). 
+	classDict at: #lineWidth put: (propsDict at: #acceptsPositiveInteger). 
+
+	classDict := MetaProperty metaPropsDictForClass: PointerLineMorph.
+	classDict at: #endPointMorph put: (propsDict at: #acceptsMorph). 
+
+	classDict := MetaProperty metaPropsDictForClass: Panel.
+	classDict at: #widgetsColor put: (propsDict at: #acceptsColor). 
+	classDict at: #stayUp put: (propsDict at: #acceptsBoolean). 
+	
+	classDict := MetaProperty metaPropsDictForClass: FontMorph.
+	classDict at: #labelMorph put: (propsDict at: #acceptsLabelMorph). 
+	classDict at: #string put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
+
+	classDict := MetaProperty metaPropsDictForClass: PluggableButtonMorph.
+	classDict at: #label put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #icon put: (propsDict at: #acceptsForm).
+	classDict at: #iconName put: (propsDict at: #acceptsSymbol).
+
+	classDict := MetaProperty metaPropsDictForClass: ImageMorph.
+	classDict at: #image put: (propsDict at: #acceptsForm).
+
+	classDict := MetaProperty metaPropsDictForClass: BorderedImageMorph.
+	classDict at: #borderColor put: (propsDict at: #acceptsColor).
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
+	classDict at: #borderStyle put: (propsDict at: #acceptsBorderStyle).
+
+	classDict := MetaProperty metaPropsDictForClass: FramedLayoutMorph.
+	classDict at: #borderColor put: (propsDict at: #acceptsColor).
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger).
+	classDict at: #frameSelector put: (propsDict at: #acceptsBorderStyle).
+
+	classDict := MetaProperty metaPropsDictForClass: FrameMorph.
+"	classDict at: #borderColor put: (propsDict at: #acceptsColor).
+	classDict at: #borderWidth put: (propsDict at: #acceptsPositiveInteger). "
+	classDict at: #frameSelector put: (propsDict at: #acceptsBorderStyle).
+
+	classDict := MetaProperty metaPropsDictForClass: WindowTitleMorph.
+	classDict at: #titleString put: (propsDict at: #acceptsString).
+	
+	classDict := MetaProperty metaPropsDictForClass: StringMorph.
+	classDict at: #contents put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
+	
+	classDict := MetaProperty metaPropsDictForClass: MinimalStringMorph.
+	classDict at: #contents put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
+	
+	classDict := MetaProperty metaPropsDictForClass: OneLineEditorMorph.
+	classDict at: #contents put: (propsDict at: #acceptsString).
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #emphasis put: (propsDict at: #acceptsEmphasis). 
+
+	classDict := MetaProperty metaPropsDictForClass: VisualPropertyEditor .
+	classDict at: #showAllIvars put: (propsDict at: #acceptsBoolean).
+	classDict at: #showAllProps put: (propsDict at: #acceptsBoolean).
+	
+	classDict := MetaProperty metaPropsDictForClass: PluggableButtonMorph.
+	classDict at: #font put: (propsDict at: #acceptsFont).
+	classDict at: #icon put: (propsDict at: #acceptsForm).
+	classDict at: #label put: (propsDict at: #acceptsString).
+	classDict at: #iconName put: (propsDict at: #acceptsSymbol).
+
+	classDict := MetaProperty metaPropsDictForClass: SystemWindow .
+	classDict at: #labelString put: (propsDict at: #acceptsString).
+
+
+! !
+
+!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 14:19:19'!
+testAccepts
+
+	self assert: ((MetaProperty kind: String) accepts: 'aString').
+	self deny: ((MetaProperty kind: String) accepts: 2@3).
+	self assert: ((MetaProperty kind: String) accepts: #symbol).
+
+	"OneOf choice"
+	self assert: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #fie).
+	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: #bogus).
+	self deny: ((MetaPropertyOneOf kind: Symbol choices: #(fee fie fo fum)) accepts: 4@5).
+	self deny: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: nil).
+	self assert: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: true).
+	self assert: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: false).
+	self deny: ((MetaPropertyOneOf kind: Boolean choices: #(true false)) accepts: #bogus).
+
+	"Number Range"
+	self assert: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 1.2).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 0.7).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 7).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 4).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: 2@3).
+	self deny: ((MetaPropertyRange kind: Number minValue: 1 maxValue: 3) accepts: #bogus).
+		
+	"Point Range"
+	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@4).
+	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 4@3).
+	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 1@5).
+	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 5@1).
+	self deny: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: -1@1).
+	self assert: ((MetaPropertyRange kind: Point minValue: (0@0) maxValue: (4@4)) accepts: 0.3@1).
+
+
+	"Positive Point"
+	self assert: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: 23@47).
+	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: -23@47).
+	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: -23@-47).
+	self deny: ((MetaPropertyFrom kind: Point minValue: 0@0) accepts: 1@-1).
+
+	"Pattern Match"
+	self assert: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 'mombazzi').
+	self deny: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 'bamboozle').
+	self deny: ((MetaPropertyViaTest kind: String test: [ :s | '*baz*' match: s ]) accepts: 43).
+! !
+
+!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:55:45'!
+testCreationGuards
+
+	"Kind must be a Class"
+	self should: [ MetaProperty kind: 37 ] raise: Error.
+	self should: [ MetaProperty kind: Color blue ] raise: Error.
+	
+	"Values must be of right kind"
+	self should: [ MetaPropertyFrom kind: Point minValue: Color red ] raise: Error.
+	self should: [ MetaPropertyFrom kind: Number minValue: 3@4 ] raise: Error.
+	self should: [ MetaPropertyOneOf kind: Number choices: #(fee fie fo fum) ] raise: Error.
+	self should: [ MetaPropertyOneOf kind: Number choices: Color green ] raise: Error.
+	self should: [ MetaPropertyRange kind: Number minValue: 1@2 maxValue: 3 ] raise: Error.
+	self should: [ MetaPropertyRange kind: Number minValue: 1 maxValue: 2@3 ] raise: Error.
+	self should: [ MetaPropertyViaTest kind: Number test: Color white ] raise: Error.
+	self should: [ MetaPropertyViaTest kind: Number test: [ :a :b | a + b ] ] raise: Error.
+	self should: [ MetaPropertyViaTest kind: 34 test: [ :a :b | a + b ] ] raise: Error.! !
+
+!MetaPropertyTests methodsFor: 'testing' stamp: 'KenD 12/5/2016 13:22:28'!
+testPredefinedMProps
+
+	self assert: ((MetaProperty metaPropNamed: #acceptsString) accepts: 'aString').
+	self assert: ((MetaProperty metaPropNamed: #acceptsColor) accepts: Color blue).
+	self assert: ((MetaProperty metaPropNamed: #acceptsPositivePoint) accepts: 2@3).
+	self assert: ((MetaProperty metaPropNamed: #acceptsPositiveNumber) accepts: 0.1).
+	
+	self deny: ((MetaProperty metaPropNamed: #acceptsPositivePoint) accepts: -2@3).
+	self deny: ((MetaProperty metaPropNamed: #acceptsPositiveNumber) accepts: -1).! !
 MetaProperty initialize!
 MetaPropertyFrom initialize!
 MetaPropertyOneOf initialize!
+VirtualPropertyMenuItem initialize!
+VisualPropertyEditor initialize!
