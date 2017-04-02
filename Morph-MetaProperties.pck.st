@@ -1,10 +1,50 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3071] on 29 March 2017 at 3:22:10 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3075] on 2 April 2017 at 2:48:30 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 61!
-!requires: 'Morphic-Misc1' 1 109 nil!
+!provides: 'Morph-MetaProperties' 1 62!
 !requires: 'Cuis-Base' 50 3000 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
+!requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
+!classDefinition: #OrdinaryPropertyMenuItem category: #'Morph-MetaProperties'!
+MenuItemMorph subclass: #OrdinaryPropertyMenuItem
+	instanceVariableNames: 'accessKind name targetMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'OrdinaryPropertyMenuItem class' category: #'Morph-MetaProperties'!
+OrdinaryPropertyMenuItem class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualPropertyMenuItem category: #'Morph-MetaProperties'!
+MenuItemMorph subclass: #VirtualPropertyMenuItem
+	instanceVariableNames: 'metaProperty name prevValue targetMorph accessProc updateProc'
+	classVariableNames: 'BlankIcon BoolIcon CharIcon ChronIcon ClassIcon ClosureIcon CollectIcon CpxIcon FalseIcon FileIcon FloatIcon FolderIcon FontIcon FracIcon IntIcon NilIcon ObjIcon OneOfIcon PtIcon RngIcon StrIcon StreamIcon SymIcon TrueIcon WindowIcon'
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'VirtualPropertyMenuItem class' category: #'Morph-MetaProperties'!
+VirtualPropertyMenuItem class
+	instanceVariableNames: ''!
+
+!classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
+MenuMorph subclass: #VisualPropertyEditor
+	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'VisualPropertyEditor class' category: #'Morph-MetaProperties'!
+VisualPropertyEditor class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaPropertyTests category: #'Morph-MetaProperties'!
+TestCase subclass: #MetaPropertyTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morph-MetaProperties'!
+!classDefinition: 'MetaPropertyTests class' category: #'Morph-MetaProperties'!
+MetaPropertyTests class
+	instanceVariableNames: ''!
+
 !classDefinition: #MetaProperty category: #'Morph-MetaProperties'!
 Object subclass: #MetaProperty
 	instanceVariableNames: 'kind editProc'
@@ -75,46 +115,34 @@ MetaProperty subclass: #MetaPropertyViaTest
 MetaPropertyViaTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #OrdinaryPropertyMenuItem category: #'Morph-MetaProperties'!
-MenuItemMorph subclass: #OrdinaryPropertyMenuItem
-	instanceVariableNames: 'accessKind name targetMorph'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'OrdinaryPropertyMenuItem class' category: #'Morph-MetaProperties'!
-OrdinaryPropertyMenuItem class
-	instanceVariableNames: ''!
 
-!classDefinition: #VirtualPropertyMenuItem category: #'Morph-MetaProperties'!
-MenuItemMorph subclass: #VirtualPropertyMenuItem
-	instanceVariableNames: 'metaProperty name prevValue targetMorph accessProc updateProc'
-	classVariableNames: 'BlankIcon BoolIcon CharIcon ChronIcon ClassIcon ClosureIcon CollectIcon CpxIcon FalseIcon FileIcon FloatIcon FolderIcon FontIcon FracIcon IntIcon NilIcon ObjIcon OneOfIcon PtIcon RngIcon StrIcon StreamIcon SymIcon TrueIcon WindowIcon'
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'VirtualPropertyMenuItem class' category: #'Morph-MetaProperties'!
-VirtualPropertyMenuItem class
-	instanceVariableNames: ''!
+!OrdinaryPropertyMenuItem commentStamp: '<historical>' prior: 0!
+My instances supply menu iterms which can have their values dragged for DragNDrop.
 
-!classDefinition: #VisualPropertyEditor category: #'Morph-MetaProperties'!
-MenuMorph subclass: #VisualPropertyEditor
-	instanceVariableNames: 'targetMorph metaProps showAllIvars showAllProps'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'VisualPropertyEditor class' category: #'Morph-MetaProperties'!
-VisualPropertyEditor class
-	instanceVariableNames: ''!
+My accessKind is either #property #instanceVar.!
 
-!classDefinition: #MetaPropertyTests category: #'Morph-MetaProperties'!
-TestCase subclass: #MetaPropertyTests
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morph-MetaProperties'!
-!classDefinition: 'MetaPropertyTests class' category: #'Morph-MetaProperties'!
-MetaPropertyTests class
-	instanceVariableNames: ''!
+!VirtualPropertyMenuItem commentStamp: '<historical>' prior: 0!
+My instances display a menu selection for a Morph visual property.  
+See documentation method: MetaProperty class>>whyMe
 
+ivars:
+  metaProperty -- a PropertyMetaVisualPropertyMenuItem
+  name -- property name (a symbol)
+  prevValue -- cached previous property value (used for undo)
+  targetMorph -- changes to me are reflected in this specific morph
+  accessProc -- a closure of 0 args which returns a value
+  updateProc -- a closure which takes 1 value
+!
+
+!VisualPropertyEditor commentStamp: '<historical>' prior: 0!
+My instances present the public visual properties of Morphs -- those which have MetaProperties.
+
+MetaProperties can be added to any Morph class and all submorph classes will inherit them.
+
+See class MetaProperty and my class #initialize method for details. !
+
+!MetaPropertyTests commentStamp: '<historical>' prior: 0!
+Unit tests for MetaProeprties!
 
 !MetaProperty commentStamp: '<historical>' prior: 0!
 I am the parent class for Morph meta-properties.  
@@ -181,34 +209,6 @@ I can accept various kinds of objects and translate them into what I really want
 I test via  (aClosure value: newValue).
 
 aClosure should take one argument and return a boolean.!
-
-!OrdinaryPropertyMenuItem commentStamp: '<historical>' prior: 0!
-My instances supply menu iterms which can have their values dragged for DragNDrop.
-
-My accessKind is either #property #instanceVar.!
-
-!VirtualPropertyMenuItem commentStamp: '<historical>' prior: 0!
-My instances display a menu selection for a Morph visual property.  
-See documentation method: MetaProperty class>>whyMe
-
-ivars:
-  metaProperty -- a PropertyMetaVisualPropertyMenuItem
-  name -- property name (a symbol)
-  prevValue -- cached previous property value (used for undo)
-  targetMorph -- changes to me are reflected in this specific morph
-  accessProc -- a closure of 0 args which returns a value
-  updateProc -- a closure which takes 1 value
-!
-
-!VisualPropertyEditor commentStamp: '<historical>' prior: 0!
-My instances present the public visual properties of Morphs -- those which have MetaProperties.
-
-MetaProperties can be added to any Morph class and all submorph classes will inherit them.
-
-See class MetaProperty and my class #initialize method for details. !
-
-!MetaPropertyTests commentStamp: '<historical>' prior: 0!
-Unit tests for MetaProeprties!
 
 !ProtoObject methodsFor: '*morph-metaproperties' stamp: 'KenD 12/12/2016 14:41:10'!
 icon
@@ -493,635 +493,6 @@ icon
 icon
 
 	^ VirtualPropertyMenuItem fileIcon ! !
-
-!MetaProperty methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:21:39'!
-accepts: newValue
-
-	^ newValue isKindOf: kind! !
-
-!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/22/2016 14:38:58'!
-edit: myMorph menuItem: item
-
-	(self editProc) 
-	 	ifNil: [  (HoverHelpMorph contents: 'Need editor for ' , item name asString)
-			popUpForHand: myMorph world activeHand ]
-		ifNotNil: [ :closure | closure value: myMorph value: self value: item ]! !
-
-!MetaProperty methodsFor: 'accessing' stamp: 'KenD 12/14/2016 10:52:25'!
-editProc
-
-	^ editProc ! !
-
-!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:20:57'!
-initialize
-
-	kind := Object "default"! !
-
-!MetaProperty methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:33:35'!
-kind
-
-	^ kind! !
-
-!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:19:45'!
-kind: aClass
-
-	(aClass isKindOf: Class)
-	ifTrue:  [ kind := aClass ]
-	ifFalse: [ self error: 'Expected a class: ', aClass printString ].! !
-
-!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/14/2016 10:51:37'!
-kind: aClass editProc: aClosure
-
-	(aClass isKindOf: Class)
-	ifTrue:  [ kind := aClass ]
-	ifFalse: [ self error: 'Expected a class: ', aClass printString ].
-	
-	(aClosure isKindOf: BlockClosure)
-		ifFalse:  [ self error: 'Expected a closure for editing: ', aClosure printString ].
-	(aClosure numArgs = 3)
-		ifFalse: [ self error: 'Expected closure w 3 args [ :morph :metaProp :procName | ..] ', 
-							  aClosure printString ].
-	editProc := aClosure ! !
-
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:02:51'!
-addToInitialDictionaries
-
-	"Does nothing -- method inherited by subclasses which do not override it"! !
-
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 15:30:54'!
-initialize
-	"Add typical usages to dictionary for sharing."
-"
-	MetaProperty initialize.
-"
-	
-	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
-! !
-
-!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 3/29/2017 14:07:26'!
-initializeDictionaries
-	"Add typical usages to dictionary for sharing."
-"
-	MetaProperty initializeDictionaries.
-"
-	| props |
-	PreDefinedPropsDict := Dictionary new.
-	MetaPropDict            := Dictionary new.  "See VisualPropertyEditor class>>initialize"
-	
-	props := self preDefinedPropsDict.
-	props at: #acceptsString 
-			put: (MetaProperty 
-			kind: String
-			editProc: [ :morph :metaProp :menuItem | 
-						StringEntryPanel 
-								default: menuItem propertyValue
-								label: (menuItem name asString) ::
-								model: menuItem;
-								openInWorld;
-								morphPosition: morph morphPositionInWorld 
-												+ morph morphExtent ]).
-	props at: #acceptsSymbol 
-			put: (MetaProperty 
-					kind: Symbol
-					editProc: [ :morph :metaProp :menuItem | 
-						StringEntryPanel 
-								default: menuItem propertyValue
-								label: (menuItem name asString) ::
-								model: menuItem;
-								openInWorld;
-								morphPosition: morph morphPositionInWorld 
-												+ morph morphExtent ]).
-	props at: #acceptsCharacter 
-			put: (MetaProperty 
-					kind: Character
-					editProc: [ :morph :metaProp :menuItem | 
-						CharacterEntryPanel 
-								default: menuItem propertyValue
-								label: (menuItem name asString) ::
-								model: menuItem;
-								openInWorld;
-								morphPosition: morph morphPositionInWorld 
-												+ morph morphExtent
-						]).
-	props at: #acceptsNumber put: (MetaProperty kind: Number).
-	props at: #acceptsColor 
-		    put: (MetaProperty kind: Color
-								editProc: [ :morph :metaProp : name |
-												Color colorSelectionMenu ] ).
-	props at: #acceptsPoint 
-		    put: (MetaProperty 
-				kind: Point
-				editProc: [ :morph :metaProp :menuItem | 
-						PointEntryPanel 
-								default: menuItem propertyValue
-								label: (menuItem name asString) ::
-								model: menuItem;
-								openInWorld;
-								morphPosition: morph morphPositionInWorld 
-												+ morph morphExtent ]).
-	props at: #acceptsRectangle put: (MetaProperty kind: Rectangle).
-	props at: #acceptsBoolean put: (MetaProperty kind: Boolean).
-	props at: #acceptsMorph put: (MetaProperty kind: Morph).
-	props at: #acceptsNil put: (MetaProperty kind: UndefinedObject).
-	props at: #acceptsClass put: (MetaProperty kind: Class).
-	props at: #acceptsInteger put: (MetaProperty kind: Integer).
-	props at: #acceptsFraction put: (MetaProperty kind: Fraction ).
-	props at: #acceptsFloat put: (MetaProperty kind: Float).
-	props at: #acceptsCollection put: (MetaProperty kind: Collection ).
-	props at: #acceptsArray put: (MetaProperty kind: Array ).
-	props at: #acceptsDictionary put: (MetaProperty kind: Dictionary).
-	props at: #acceptsFileEntry put: (MetaProperty kind: FileEntry ).
-	props at: #acceptsText put: (MetaProperty kind: Text).
-	props at: #acceptsFont 
-		    put: (MetaProperty 
-				kind: AbstractFont
-				editProc: [ :morph :metaProp : name |
-								PickAFontPallet initializedInstance openInWorld ]  ).
-	props at: #acceptsForm put: (MetaProperty kind: Form).
-	props at: #acceptsLocation put: (MetaProperty kind: MorphicLocation).
-	props at: #acceptsLayoutSpec 
-			put: (MetaProperty 
-					kind: LayoutSpec
-					editProc: [ :morph :metaProp :menuItem | 
-								 morph editMyLayoutSpec ] ).
-	props at: #acceptsLabelMorph put: (MetaProperty kind: LabelMorph).
-
-	self allSubclassesDo: [ :subclass | subclass addToInitialDictionaries ].
-	
-	! !
-
-!MetaProperty class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:24:56'!
-kind: aClass
-
-	^ self new kind: aClass! !
-
-!MetaProperty class methodsFor: 'instance creation' stamp: 'KenD 12/14/2016 10:46:15'!
-kind: aClass editProc: aClosure
-
-	^ self new kind: aClass editProc: aClosure! !
-
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/14/2016 14:09:10'!
-metaPropDict
-	"Answer a dictionary of Class->Dict(name->metaProp)"
-
-	^ MetaPropDict! !
-
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/5/2016 07:39:48'!
-metaPropNamed: metaPropName
-
-	^ PreDefinedPropsDict at: metaPropName ifAbsent: [ nil ]
-	! !
-
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/2/2016 15:36:33'!
-metaPropsDictForClass: aClass
-
-	| classDict |
-	classDict := self metaPropDict.
-	classDict at: aClass ifAbsentPut: [ Dictionary new ].
-	
-	^ classDict at: aClass! !
-
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/2/2016 15:48:27'!
-metaPropsForMorph: aMorph
-	"Answer a combined Dictionary of name->metaProp by collecting all inherited MetaProps"
-	
-	| metaPropDict |
-	
-	metaPropDict := self metaPropsDictForClass: aMorph class.
-	aMorph class allSuperclassesDo: [ :sc | | dict |
-		dict := self metaPropsDictForClass: sc.
-		"supers w same name are ignored, else added"
-		dict keysAndValuesDo: [ :k :v | metaPropDict at: k ifAbsentPut: [ v ] ] 
-	].
-		
-	
-	^ metaPropDict! !
-
-!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/14/2016 14:09:20'!
-preDefinedPropsDict
-
-	^ PreDefinedPropsDict ! !
-
-!MetaProperty class methodsFor: 'documentation' stamp: 'KenD 12/2/2016 15:43:36'!
-whyMe
-
-^
-'
-Some Morph properties support private mechanics, but others should be visually shared and displayed in a PropertyEditor so that users can easily adjust visual properties.
-
-The basic idea here is to allow authors of Morph classes to attach MetaProperties so that a Morph''s visual instance variables and properties show up in a VisualPropertyEditor.  Instance variables and properties are private/hidden by default.
-
-To remove walls, a morph''s public properties (those that have been annotated to show up in a VisualPropertyEditor) can be updated by fill-in or DragNDrop for example from a Color, Font or some other Pallet or selected from a menu select list.
-
-Note that these (public) visual properties may be virtual.  The idea being that changing a property value may store a value into an instance variable, a #property, or invoke a bit of code that does the right thing and maintains some invariant.
-
-MetaProperties are considered immutable and may be shared.  They are associated with Morph classes and are inherited by Morph subclasses.
-
-See the #examples class category.
-'! !
-
-!MetaPropertyFrom methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:57:36'!
-accepts: newValue
-
-	^ (super accepts: newValue)
-		and: [ minValue <= newValue ]! !
-
-!MetaPropertyFrom methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:58:26'!
-kind: aClass minValue: min
-
-	super kind: aClass.
-	(min  isKindOf: aClass) ifFalse: [ self error: 'minValue must be aKindOf: ',  aClass printString ].
-	minValue := min.! !
-
-!MetaPropertyFrom methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:56:58'!
-minValue
-
-	^ minValue! !
-
-!MetaPropertyFrom methodsFor: 'accessing' stamp: 'KenD 12/22/2016 15:52:37'!
-minValue: aValue
-
-	minValue := aValue ! !
-
-!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 17:18:00'!
-addToInitialDictionaries
-	"Add typical usages to dictionary for sharing."
-"
-	MetaPropertyFrom addToInitialDictionaries.
-"
-	| props |
-	props := self preDefinedPropsDict.
-
-	props at: #acceptsPositivePoint     
-		put: (MetaPropertyFrom 
-			  kind: Point 
-			  minValue: 0@0
-			  editProc: [ :morph :metaProp :menuItem | 
-						PointEntryPanel 
-								default: menuItem propertyValue
-								label: (menuItem name asString) ::
-								model: menuItem;
-								openInWorld;
-								morphPosition: morph morphPositionInWorld 
-												+ morph morphExtent ]).
-	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).
-	props at: #acceptsPositiveInteger
-		    put: (MetaPropertyFrom 
-					kind: Integer 
-					minValue: 0
-					editProc: [ :morph :metaProp :menuItem | 
-						PositiveIntegerEntryPanel 
-								default: menuItem propertyValue
-								label: (menuItem name asString) ::
-								model: menuItem;
-								openInWorld;
-								morphPosition: morph morphPositionInWorld 
-												+ morph morphExtent ]).
-	! !
-
-!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:14:44'!
-initialize
-
-	self addToInitialDictionaries.! !
-
-!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:16'!
-kind: aClass minValue: min
-
-	^ self new kind: aClass minValue: min! !
-
-!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 15:53:32'!
-kind: aClass minValue: min editProc: editProc
-
-	^ self new kind: aClass editProc: editProc :: minValue: min! !
-
-!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:28'!
-minValue: min
-
-	^ self new kind: Object minValue: min! !
-
-!MetaPropertyOneOf methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:29:45'!
-accepts: newValue
-
-	^ (super accepts: newValue)
-		and: [ choiceCollection includes: newValue ]! !
-
-!MetaPropertyOneOf methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:34:10'!
-choices
-
-	^ choiceCollection! !
-
-!MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/24/2016 15:59:42'!
-edit: myMorph menuItem: item
-
-	| menu selectIndex |
-	menu := PopUpMenu labelArray: (self choices collect: [ :elt | elt printString]).
-	selectIndex := menu startUpWithCaption: 'Set ', item name asString, ' to:'.
-	item propertyValue: ( self choices at: selectIndex ). 
-	myMorph redrawNeeded.! !
-
-!MetaPropertyOneOf methodsFor: 'initialization' stamp: 'KenD 12/5/2016 13:50:52'!
-kind: aClass choices: aCollection
-
-	super kind: aClass.
-	(aCollection isKindOf: Collection)
-		ifFalse: [ self error: 'Expected a collection of value choices: ', aCollection printString ].
-	(aCollection allSatisfy: [ :elt | elt isKindOf: aClass])
-		ifFalse: [ self error: 'Expected collection elements of kind: ', aClass printString,
-					 ' got: ', aCollection printString ].
-	
-	choiceCollection := aCollection.
-! !
-
-!MetaPropertyOneOf class methodsFor: 'testing' stamp: 'KenD 12/18/2016 09:49:30'!
-accepts: newValue
-
-	(newValue isKindOf: Integer)
-	ifTrue: [
-		self notYetImplemented 
-	].
-	
-	(newValue isKindOf: String)
-	ifTrue: [
-		self notYetImplemented 
-	].
-	
-	"test decodeProc"! !
-
-!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 3/21/2017 17:33:47'!
-addToInitialDictionaries
-	"Add typical usages to dictionary for sharing."
-"
-	MetaPropertyOneOf addToInitialDictionaries.
-"
-	| props |
-	props := self preDefinedPropsDict.
-	
-	props at: #acceptsBoolean       put: (MetaPropertyOneOf kind: Boolean choices: #(true false)).
-	props at: #acceptsBorderStyle put: (MetaPropertyOneOf kind: Symbol choices: #(inset raised simple)).
-	props at: #acceptsAlignment 
-		  put: (MetaPropertyOneOf kind: Symbol choices: #(leftFlush rightFlush centered justified)).
-! !
-
-!MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:40:39'!
-choices: aCollection
-
-	^ self new kind: Object choices: aCollection! !
-
-!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:14:53'!
-initialize
-
-	self addToInitialDictionaries.! !
-
-!MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:30:57'!
-kind: aClass choices: aCollection
-
-	^ self new kind: aClass choices: aCollection! !
-
-!MetaPropertyMultiSelect methodsFor: 'testing' stamp: 'KenD 12/18/2016 15:19:50'!
-accepts: newValue
-
-	| encoding  |
-	(self encodingInRange: newValue) ifTrue: [ ^ true ]. "already encoded"
-	
-	"test via decodeProc"
-	[ 
-		encoding := encodeProc value: newValue.
-		^ self encodingInRange: encoding 
-	]
-	on: Error do: [ ^ false ]! !
-
-!MetaPropertyMultiSelect methodsFor: 'accessing' stamp: 'KenD 12/18/2016 15:10:14'!
-decodeProc
-	"Answer a closure which takes an integer and answers a string"
-
-	^ decodeProc ! !
-
-!MetaPropertyMultiSelect methodsFor: 'editing' stamp: 'KenD 12/18/2016 14:44:23'!
-edit: myMorph menuItem: item
-
-	| menu encodedResult |
-	menu := (MultiSelectMenu 
-							choices: choiceCollection
-							seed: (self encodeProc value: item propertyValue)
-							title: item name asString).
-	encodedResult := menu invokeModal.
-	item propertyValue: encodedResult. 
-	myMorph redrawNeeded.! !
-
-!MetaPropertyMultiSelect methodsFor: 'accessing' stamp: 'KenD 12/18/2016 15:09:43'!
-encodeProc
-	"Answer a closure which takes a value and encodes it into an integer"
-
-	^ encodeProc ! !
-
-!MetaPropertyMultiSelect methodsFor: 'testing' stamp: 'KenD 12/18/2016 12:54:37'!
-encodingInRange: encoded
-
-	(encoded isKindOf: Integer)
-		ifTrue: [  "Already encoded"
-			^ ((0 <= encoded)
-				and: [ encoded <= maxValue ])
-		]
-		ifFalse: [ ^ false ]! !
-
-!MetaPropertyMultiSelect methodsFor: 'initialization' stamp: 'KenD 12/18/2016 09:12:42'!
-multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
-
-	super kind: Object choices: aCollection.
-	encodeProc := encoder.
-	decodeProc := decoder.
-	maxValue := (1 bitShift: (aCollection size)) - 1. "bitMask"
-	
-	((encoder isKindOf: BlockClosure) and: [ encoder numArgs = 1 ])
-		ifFalse: [ self error: 'Encoder should be a closure of 1 argument: ', encoder printString ].
-	((decoder isKindOf: BlockClosure) and: [ decoder numArgs = 1 ])
-		ifFalse: [ self error: 'Decoder should be a closure of 1 argument: ', decoder printString ].
-
-! !
-
-!MetaPropertyMultiSelect class methodsFor: 'class initialization' stamp: 'KenD 12/18/2016 14:49:02'!
-addToInitialDictionaries
-	"Add typical usages to dictionary for sharing."
-"
-	MetaPropertyMultiSelect addToInitialDictionaries.
-"
-	| props |
-	props := self preDefinedPropsDict.
-	
-	props  at: #acceptsEmphasis 
-			put: (MetaPropertyMultiSelect 
-				multiChoiceFrom: TextEmphasis choices 
-				encodeProc:
-				 [ :intOrString |
-					(intOrString isKindOf: Integer) 
-						ifTrue: [ intOrString ]
-						ifFalse: [ (intOrString isKindOf: String) 
-									ifTrue:  [ TextEmphasis codeForChoice: intOrString ]
-									ifFalse: [ nil ]
-								]
-				]
-				decodeProc: [ :encoded | TextEmphasis stringForCode: encoded ]).! !
-
-!MetaPropertyMultiSelect class methodsFor: 'instance creation' stamp: 'KenD 12/18/2016 09:13:11'!
-multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
-
-	^ self new multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder! !
-
-!MetaPropertyRange methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:43:49'!
-accepts: newValue
-
-	^ (super accepts: newValue)
-		and: [ minValue <= newValue ]
-			and: [ newValue <= maxValue ]! !
-
-!MetaPropertyRange methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:45:45'!
-kind: aClass minValue: min maxValue: max
-
-	super kind: aClass.
-	(min  isKindOf: aClass) ifFalse: [ self error: 'minValue must be aKindOf: ',  aClass printString ].
-	(max isKindOf: aClass) ifFalse: [ self error: 'maxValue must be aKindOf: ', aClass printString ].
-	minValue := min.
-	maxValue := max.! !
-
-!MetaPropertyRange methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:42:29'!
-maxValue
-
-	^ maxValue! !
-
-!MetaPropertyRange methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:42:19'!
-minValue
-
-	^ minValue! !
-
-!MetaPropertyRange class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:41:31'!
-kind: aClass minValue: min maxValue: max
-
-	^ self new kind: aClass minValue: min maxValue: max! !
-
-!MetaPropertyRange class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:41:43'!
-minValue: min maxValue: max
-
-	^ self new kind: Object minValue: min maxValue: max! !
-
-!MetaPropertyTransducer methodsFor: 'testing' stamp: 'KenD 12/22/2016 20:16:03'!
-accepts: newValue
-
-	^ (self kinds anySatisfy: [ :class | newValue isKindOf: class ])! !
-
-!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:58:24'!
-decodeProc
-	"Emulate multiselect protocol"
-	^ [ :value | value ] "identity/pass-through"! !
-
-!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:58:51'!
-encodeProc
-	"Emulate multiselect protocol"
-	^ transformProc ! !
-
-!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:37:37'!
-kinds
-
-	^ kinds! !
-
-!MetaPropertyTransducer methodsFor: 'initialization' stamp: 'KenD 12/22/2016 19:43:30'!
-kinds: classCollection transformProc: aClosure
-
-	(classCollection allSatisfy: [ :c | c isKindOf: Class ])
-		ifFalse: [ self error: 'Expected a collection of classes: ', classCollection printString ].
-	
-	(aClosure isKindOf: BlockClosure)
-		ifFalse:  [ self error: 'Expected a closure for transforming a value: ', aClosure printString ].
-	(aClosure numArgs = 1)
-		ifFalse: [ self error: 'Expected a closure for transforming a value: ', aClosure printString ].
-	transformProc := aClosure.
-	kinds := classCollection.! !
-
-!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:37:52'!
-transformProc
-
-	^ transformProc ! !
-
-!MetaPropertyTransducer class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:27:55'!
-addToInitialDictionaries
-	"Add typical usages to dictionary for sharing."
-"
-	MetaPropertyTransducer addToInitialDictionaries.
-"
-	| props |
-	props := self preDefinedPropsDict.
-
-	"Override"
-	props at: #acceptsMorph
-		    put: (MetaPropertyTransducer 
-					kinds: { Morph. Form. String. } 
-					transformProc: [ :newVal |
-						(newVal isKindOf: Morph)
-						ifTrue: [ newVal ]
-						ifFalse: [ (newVal isKindOf: String)
-							ifTrue: [ StringMorph contents: newVal ]
-							ifFalse: [ (newVal isKindOf: Form)
-								ifTrue:  [ ImageMorph new image: newVal ]
-								ifFalse: [ self error: 'Expected a Morph/Form/String got: ',
-										newVal printString ].
-							]
-						]
-					]
-				).
-
-! !
-
-!MetaPropertyTransducer class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 19:44:06'!
-kinds: classCollection transformProc: aClosure
-
-	^ self new kinds: classCollection transformProc: aClosure! !
-
-!MetaPropertyViaTest methodsFor: 'testing' stamp: 'KenD 12/4/2016 15:19:09'!
-accepts: newValue
-
-	^ (super accepts: newValue)
-		and: [ testClosure value: newValue ]! !
-
-!MetaPropertyViaTest methodsFor: 'initialization' stamp: 'KenD 12/4/2016 15:18:19'!
-kind: aClass test: aClosure
-
-	super kind: aClass.
-	(aClosure isKindOf: BlockClosure) 
-		ifFalse: [ self error: 'Expected a BlockClosure: ', aClosure printString ].
-	(aClosure argumentCount = 1) 
-		ifFalse: [ self error: 'Test should take one argument and answer a boolean: ',
-					aClosure printString ].
-	testClosure := aClosure.! !
-
-!MetaPropertyViaTest methodsFor: 'accessing' stamp: 'KenD 12/4/2016 15:18:32'!
-test
-
-	^ testClosure! !
-
-!MetaPropertyViaTest methodsFor: 'accessing' stamp: 'KenD 12/4/2016 15:18:29'!
-testClosure
-
-	^ testClosure! !
-
-!MetaPropertyViaTest class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:30:03'!
-addToInitialDictionaries
-	"Add typical usages to dictionary for sharing."
-"
-	MetaPropertyViaTest addToInitialDictionaries.
-"
-"
-	| props |
-	props := self preDefinedPropsDict.
-"! !
-
-!MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:17'!
-kind: aClass test: aClosure
-
-	^ self new kind: aClass test: aClosure! !
-
-!MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:10'!
-test: aClosure
-
-	^ self new kind: Object test: aClosure! !
 
 !OrdinaryPropertyMenuItem methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 13:53:49'!
 allowsMorphDrop
@@ -2165,8 +1536,640 @@ testPredefinedMProps
 	
 	self deny: ((MetaProperty metaPropNamed: #acceptsPositivePoint) accepts: -2@3).
 	self deny: ((MetaProperty metaPropNamed: #acceptsPositiveNumber) accepts: -1).! !
+
+!MetaProperty methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:21:39'!
+accepts: newValue
+
+	^ newValue isKindOf: kind! !
+
+!MetaProperty methodsFor: 'editing' stamp: 'KenD 12/22/2016 14:38:58'!
+edit: myMorph menuItem: item
+
+	(self editProc) 
+	 	ifNil: [  (HoverHelpMorph contents: 'Need editor for ' , item name asString)
+			popUpForHand: myMorph world activeHand ]
+		ifNotNil: [ :closure | closure value: myMorph value: self value: item ]! !
+
+!MetaProperty methodsFor: 'accessing' stamp: 'KenD 12/14/2016 10:52:25'!
+editProc
+
+	^ editProc ! !
+
+!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:20:57'!
+initialize
+
+	kind := Object "default"! !
+
+!MetaProperty methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:33:35'!
+kind
+
+	^ kind! !
+
+!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:19:45'!
+kind: aClass
+
+	(aClass isKindOf: Class)
+	ifTrue:  [ kind := aClass ]
+	ifFalse: [ self error: 'Expected a class: ', aClass printString ].! !
+
+!MetaProperty methodsFor: 'initialization' stamp: 'KenD 12/14/2016 10:51:37'!
+kind: aClass editProc: aClosure
+
+	(aClass isKindOf: Class)
+	ifTrue:  [ kind := aClass ]
+	ifFalse: [ self error: 'Expected a class: ', aClass printString ].
+	
+	(aClosure isKindOf: BlockClosure)
+		ifFalse:  [ self error: 'Expected a closure for editing: ', aClosure printString ].
+	(aClosure numArgs = 3)
+		ifFalse: [ self error: 'Expected closure w 3 args [ :morph :metaProp :procName | ..] ', 
+							  aClosure printString ].
+	editProc := aClosure ! !
+
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:02:51'!
+addToInitialDictionaries
+
+	"Does nothing -- method inherited by subclasses which do not override it"! !
+
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 15:30:54'!
+initialize
+	"Add typical usages to dictionary for sharing."
+"
+	MetaProperty initialize.
+"
+	
+	"self initializeDictionaries." "invoked in VisualPropertyEditor class>>initialize"
+! !
+
+!MetaProperty class methodsFor: 'class initialization' stamp: 'KenD 4/2/2017 14:47:19'!
+initializeDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaProperty initializeDictionaries.
+"
+	| props |
+	PreDefinedPropsDict 
+		ifNil: [  PreDefinedPropsDict := IdentityDictionary new ].
+	MetaPropDict  "See VisualPropertyEditor class>>initialize"
+		ifNil: [ MetaPropDict  := Dictionary new ]. 
+	
+	props := self preDefinedPropsDict.
+	props at: #acceptsString 
+			put: (MetaProperty 
+			kind: String
+			editProc: [ :morph :metaProp :menuItem | 
+						StringEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
+	props at: #acceptsSymbol 
+			put: (MetaProperty 
+					kind: Symbol
+					editProc: [ :morph :metaProp :menuItem | 
+						StringEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
+	props at: #acceptsCharacter 
+			put: (MetaProperty 
+					kind: Character
+					editProc: [ :morph :metaProp :menuItem | 
+						CharacterEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent
+						]).
+	props at: #acceptsNumber put: (MetaProperty kind: Number).
+	props at: #acceptsColor 
+		    put: (MetaProperty kind: Color
+								editProc: [ :morph :metaProp : name |
+												Color colorSelectionMenu ] ).
+	props at: #acceptsPoint 
+		    put: (MetaProperty 
+				kind: Point
+				editProc: [ :morph :metaProp :menuItem | 
+						PointEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
+	props at: #acceptsRectangle put: (MetaProperty kind: Rectangle).
+	props at: #acceptsBoolean put: (MetaProperty kind: Boolean).
+	props at: #acceptsMorph put: (MetaProperty kind: Morph).
+	props at: #acceptsNil put: (MetaProperty kind: UndefinedObject).
+	props at: #acceptsClass put: (MetaProperty kind: Class).
+	props at: #acceptsInteger put: (MetaProperty kind: Integer).
+	props at: #acceptsFraction put: (MetaProperty kind: Fraction ).
+	props at: #acceptsFloat put: (MetaProperty kind: Float).
+	props at: #acceptsCollection put: (MetaProperty kind: Collection ).
+	props at: #acceptsArray put: (MetaProperty kind: Array ).
+	props at: #acceptsDictionary put: (MetaProperty kind: Dictionary).
+	props at: #acceptsFileEntry put: (MetaProperty kind: FileEntry ).
+	props at: #acceptsText put: (MetaProperty kind: Text).
+	props at: #acceptsFont 
+		    put: (MetaProperty 
+				kind: AbstractFont
+				editProc: [ :morph :metaProp : name |
+								PickAFontPallet initializedInstance openInWorld ]  ).
+	props at: #acceptsForm put: (MetaProperty kind: Form).
+	props at: #acceptsLocation put: (MetaProperty kind: MorphicLocation).
+	props at: #acceptsLayoutSpec 
+			put: (MetaProperty 
+					kind: LayoutSpec
+					editProc: [ :morph :metaProp :menuItem | 
+								 morph editMyLayoutSpec ] ).
+	props at: #acceptsLabelMorph put: (MetaProperty kind: LabelMorph).
+
+	self allSubclassesDo: [ :subclass | subclass addToInitialDictionaries ].
+	
+	! !
+
+!MetaProperty class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:24:56'!
+kind: aClass
+
+	^ self new kind: aClass! !
+
+!MetaProperty class methodsFor: 'instance creation' stamp: 'KenD 12/14/2016 10:46:15'!
+kind: aClass editProc: aClosure
+
+	^ self new kind: aClass editProc: aClosure! !
+
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/14/2016 14:09:10'!
+metaPropDict
+	"Answer a dictionary of Class->Dict(name->metaProp)"
+
+	^ MetaPropDict! !
+
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/5/2016 07:39:48'!
+metaPropNamed: metaPropName
+
+	^ PreDefinedPropsDict at: metaPropName ifAbsent: [ nil ]
+	! !
+
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/2/2016 15:36:33'!
+metaPropsDictForClass: aClass
+
+	| classDict |
+	classDict := self metaPropDict.
+	classDict at: aClass ifAbsentPut: [ Dictionary new ].
+	
+	^ classDict at: aClass! !
+
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/2/2016 15:48:27'!
+metaPropsForMorph: aMorph
+	"Answer a combined Dictionary of name->metaProp by collecting all inherited MetaProps"
+	
+	| metaPropDict |
+	
+	metaPropDict := self metaPropsDictForClass: aMorph class.
+	aMorph class allSuperclassesDo: [ :sc | | dict |
+		dict := self metaPropsDictForClass: sc.
+		"supers w same name are ignored, else added"
+		dict keysAndValuesDo: [ :k :v | metaPropDict at: k ifAbsentPut: [ v ] ] 
+	].
+		
+	
+	^ metaPropDict! !
+
+!MetaProperty class methodsFor: 'accessing' stamp: 'KenD 12/14/2016 14:09:20'!
+preDefinedPropsDict
+
+	^ PreDefinedPropsDict ! !
+
+!MetaProperty class methodsFor: 'documentation' stamp: 'KenD 12/2/2016 15:43:36'!
+whyMe
+
+^
+'
+Some Morph properties support private mechanics, but others should be visually shared and displayed in a PropertyEditor so that users can easily adjust visual properties.
+
+The basic idea here is to allow authors of Morph classes to attach MetaProperties so that a Morph''s visual instance variables and properties show up in a VisualPropertyEditor.  Instance variables and properties are private/hidden by default.
+
+To remove walls, a morph''s public properties (those that have been annotated to show up in a VisualPropertyEditor) can be updated by fill-in or DragNDrop for example from a Color, Font or some other Pallet or selected from a menu select list.
+
+Note that these (public) visual properties may be virtual.  The idea being that changing a property value may store a value into an instance variable, a #property, or invoke a bit of code that does the right thing and maintains some invariant.
+
+MetaProperties are considered immutable and may be shared.  They are associated with Morph classes and are inherited by Morph subclasses.
+
+See the #examples class category.
+'! !
+
+!MetaPropertyFrom methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:57:36'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ minValue <= newValue ]! !
+
+!MetaPropertyFrom methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:58:26'!
+kind: aClass minValue: min
+
+	super kind: aClass.
+	(min  isKindOf: aClass) ifFalse: [ self error: 'minValue must be aKindOf: ',  aClass printString ].
+	minValue := min.! !
+
+!MetaPropertyFrom methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:56:58'!
+minValue
+
+	^ minValue! !
+
+!MetaPropertyFrom methodsFor: 'accessing' stamp: 'KenD 12/22/2016 15:52:37'!
+minValue: aValue
+
+	minValue := aValue ! !
+
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 17:18:00'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyFrom addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+
+	props at: #acceptsPositivePoint     
+		put: (MetaPropertyFrom 
+			  kind: Point 
+			  minValue: 0@0
+			  editProc: [ :morph :metaProp :menuItem | 
+						PointEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
+	props at: #acceptsPositiveNumber put: (MetaPropertyFrom kind: Number minValue: 0).
+	props at: #acceptsPositiveInteger
+		    put: (MetaPropertyFrom 
+					kind: Integer 
+					minValue: 0
+					editProc: [ :morph :metaProp :menuItem | 
+						PositiveIntegerEntryPanel 
+								default: menuItem propertyValue
+								label: (menuItem name asString) ::
+								model: menuItem;
+								openInWorld;
+								morphPosition: morph morphPositionInWorld 
+												+ morph morphExtent ]).
+	! !
+
+!MetaPropertyFrom class methodsFor: 'class initialization' stamp: 'KenD 4/2/2017 14:43:50'!
+initialize
+
+	self preDefinedPropsDict ifNil: [ PreDefinedPropsDict := IdentityDictionary new].
+	self addToInitialDictionaries.! !
+
+!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:16'!
+kind: aClass minValue: min
+
+	^ self new kind: aClass minValue: min! !
+
+!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 15:53:32'!
+kind: aClass minValue: min editProc: editProc
+
+	^ self new kind: aClass editProc: editProc :: minValue: min! !
+
+!MetaPropertyFrom class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:59:28'!
+minValue: min
+
+	^ self new kind: Object minValue: min! !
+
+!MetaPropertyOneOf methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:29:45'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ choiceCollection includes: newValue ]! !
+
+!MetaPropertyOneOf methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:34:10'!
+choices
+
+	^ choiceCollection! !
+
+!MetaPropertyOneOf methodsFor: 'editing' stamp: 'KenD 12/24/2016 15:59:42'!
+edit: myMorph menuItem: item
+
+	| menu selectIndex |
+	menu := PopUpMenu labelArray: (self choices collect: [ :elt | elt printString]).
+	selectIndex := menu startUpWithCaption: 'Set ', item name asString, ' to:'.
+	item propertyValue: ( self choices at: selectIndex ). 
+	myMorph redrawNeeded.! !
+
+!MetaPropertyOneOf methodsFor: 'initialization' stamp: 'KenD 12/5/2016 13:50:52'!
+kind: aClass choices: aCollection
+
+	super kind: aClass.
+	(aCollection isKindOf: Collection)
+		ifFalse: [ self error: 'Expected a collection of value choices: ', aCollection printString ].
+	(aCollection allSatisfy: [ :elt | elt isKindOf: aClass])
+		ifFalse: [ self error: 'Expected collection elements of kind: ', aClass printString,
+					 ' got: ', aCollection printString ].
+	
+	choiceCollection := aCollection.
+! !
+
+!MetaPropertyOneOf class methodsFor: 'testing' stamp: 'KenD 12/18/2016 09:49:30'!
+accepts: newValue
+
+	(newValue isKindOf: Integer)
+	ifTrue: [
+		self notYetImplemented 
+	].
+	
+	(newValue isKindOf: String)
+	ifTrue: [
+		self notYetImplemented 
+	].
+	
+	"test decodeProc"! !
+
+!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 3/21/2017 17:33:47'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyOneOf addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	
+	props at: #acceptsBoolean       put: (MetaPropertyOneOf kind: Boolean choices: #(true false)).
+	props at: #acceptsBorderStyle put: (MetaPropertyOneOf kind: Symbol choices: #(inset raised simple)).
+	props at: #acceptsAlignment 
+		  put: (MetaPropertyOneOf kind: Symbol choices: #(leftFlush rightFlush centered justified)).
+! !
+
+!MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:40:39'!
+choices: aCollection
+
+	^ self new kind: Object choices: aCollection! !
+
+!MetaPropertyOneOf class methodsFor: 'class initialization' stamp: 'KenD 12/14/2016 14:14:53'!
+initialize
+
+	self addToInitialDictionaries.! !
+
+!MetaPropertyOneOf class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:30:57'!
+kind: aClass choices: aCollection
+
+	^ self new kind: aClass choices: aCollection! !
+
+!MetaPropertyMultiSelect methodsFor: 'testing' stamp: 'KenD 12/18/2016 15:19:50'!
+accepts: newValue
+
+	| encoding  |
+	(self encodingInRange: newValue) ifTrue: [ ^ true ]. "already encoded"
+	
+	"test via decodeProc"
+	[ 
+		encoding := encodeProc value: newValue.
+		^ self encodingInRange: encoding 
+	]
+	on: Error do: [ ^ false ]! !
+
+!MetaPropertyMultiSelect methodsFor: 'accessing' stamp: 'KenD 12/18/2016 15:10:14'!
+decodeProc
+	"Answer a closure which takes an integer and answers a string"
+
+	^ decodeProc ! !
+
+!MetaPropertyMultiSelect methodsFor: 'editing' stamp: 'KenD 12/18/2016 14:44:23'!
+edit: myMorph menuItem: item
+
+	| menu encodedResult |
+	menu := (MultiSelectMenu 
+							choices: choiceCollection
+							seed: (self encodeProc value: item propertyValue)
+							title: item name asString).
+	encodedResult := menu invokeModal.
+	item propertyValue: encodedResult. 
+	myMorph redrawNeeded.! !
+
+!MetaPropertyMultiSelect methodsFor: 'accessing' stamp: 'KenD 12/18/2016 15:09:43'!
+encodeProc
+	"Answer a closure which takes a value and encodes it into an integer"
+
+	^ encodeProc ! !
+
+!MetaPropertyMultiSelect methodsFor: 'testing' stamp: 'KenD 12/18/2016 12:54:37'!
+encodingInRange: encoded
+
+	(encoded isKindOf: Integer)
+		ifTrue: [  "Already encoded"
+			^ ((0 <= encoded)
+				and: [ encoded <= maxValue ])
+		]
+		ifFalse: [ ^ false ]! !
+
+!MetaPropertyMultiSelect methodsFor: 'initialization' stamp: 'KenD 12/18/2016 09:12:42'!
+multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
+
+	super kind: Object choices: aCollection.
+	encodeProc := encoder.
+	decodeProc := decoder.
+	maxValue := (1 bitShift: (aCollection size)) - 1. "bitMask"
+	
+	((encoder isKindOf: BlockClosure) and: [ encoder numArgs = 1 ])
+		ifFalse: [ self error: 'Encoder should be a closure of 1 argument: ', encoder printString ].
+	((decoder isKindOf: BlockClosure) and: [ decoder numArgs = 1 ])
+		ifFalse: [ self error: 'Decoder should be a closure of 1 argument: ', decoder printString ].
+
+! !
+
+!MetaPropertyMultiSelect class methodsFor: 'class initialization' stamp: 'KenD 12/18/2016 14:49:02'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyMultiSelect addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+	
+	props  at: #acceptsEmphasis 
+			put: (MetaPropertyMultiSelect 
+				multiChoiceFrom: TextEmphasis choices 
+				encodeProc:
+				 [ :intOrString |
+					(intOrString isKindOf: Integer) 
+						ifTrue: [ intOrString ]
+						ifFalse: [ (intOrString isKindOf: String) 
+									ifTrue:  [ TextEmphasis codeForChoice: intOrString ]
+									ifFalse: [ nil ]
+								]
+				]
+				decodeProc: [ :encoded | TextEmphasis stringForCode: encoded ]).! !
+
+!MetaPropertyMultiSelect class methodsFor: 'instance creation' stamp: 'KenD 12/18/2016 09:13:11'!
+multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
+
+	^ self new multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder! !
+
+!MetaPropertyRange methodsFor: 'testing' stamp: 'KenD 12/4/2016 14:43:49'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ minValue <= newValue ]
+			and: [ newValue <= maxValue ]! !
+
+!MetaPropertyRange methodsFor: 'initialization' stamp: 'KenD 12/4/2016 14:45:45'!
+kind: aClass minValue: min maxValue: max
+
+	super kind: aClass.
+	(min  isKindOf: aClass) ifFalse: [ self error: 'minValue must be aKindOf: ',  aClass printString ].
+	(max isKindOf: aClass) ifFalse: [ self error: 'maxValue must be aKindOf: ', aClass printString ].
+	minValue := min.
+	maxValue := max.! !
+
+!MetaPropertyRange methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:42:29'!
+maxValue
+
+	^ maxValue! !
+
+!MetaPropertyRange methodsFor: 'accessing' stamp: 'KenD 12/4/2016 14:42:19'!
+minValue
+
+	^ minValue! !
+
+!MetaPropertyRange class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:41:31'!
+kind: aClass minValue: min maxValue: max
+
+	^ self new kind: aClass minValue: min maxValue: max! !
+
+!MetaPropertyRange class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 14:41:43'!
+minValue: min maxValue: max
+
+	^ self new kind: Object minValue: min maxValue: max! !
+
+!MetaPropertyTransducer methodsFor: 'testing' stamp: 'KenD 12/22/2016 20:16:03'!
+accepts: newValue
+
+	^ (self kinds anySatisfy: [ :class | newValue isKindOf: class ])! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:58:24'!
+decodeProc
+	"Emulate multiselect protocol"
+	^ [ :value | value ] "identity/pass-through"! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:58:51'!
+encodeProc
+	"Emulate multiselect protocol"
+	^ transformProc ! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:37:37'!
+kinds
+
+	^ kinds! !
+
+!MetaPropertyTransducer methodsFor: 'initialization' stamp: 'KenD 12/22/2016 19:43:30'!
+kinds: classCollection transformProc: aClosure
+
+	(classCollection allSatisfy: [ :c | c isKindOf: Class ])
+		ifFalse: [ self error: 'Expected a collection of classes: ', classCollection printString ].
+	
+	(aClosure isKindOf: BlockClosure)
+		ifFalse:  [ self error: 'Expected a closure for transforming a value: ', aClosure printString ].
+	(aClosure numArgs = 1)
+		ifFalse: [ self error: 'Expected a closure for transforming a value: ', aClosure printString ].
+	transformProc := aClosure.
+	kinds := classCollection.! !
+
+!MetaPropertyTransducer methodsFor: 'accessing' stamp: 'KenD 12/22/2016 19:37:52'!
+transformProc
+
+	^ transformProc ! !
+
+!MetaPropertyTransducer class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:27:55'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyTransducer addToInitialDictionaries.
+"
+	| props |
+	props := self preDefinedPropsDict.
+
+	"Override"
+	props at: #acceptsMorph
+		    put: (MetaPropertyTransducer 
+					kinds: { Morph. Form. String. } 
+					transformProc: [ :newVal |
+						(newVal isKindOf: Morph)
+						ifTrue: [ newVal ]
+						ifFalse: [ (newVal isKindOf: String)
+							ifTrue: [ StringMorph contents: newVal ]
+							ifFalse: [ (newVal isKindOf: Form)
+								ifTrue:  [ ImageMorph new image: newVal ]
+								ifFalse: [ self error: 'Expected a Morph/Form/String got: ',
+										newVal printString ].
+							]
+						]
+					]
+				).
+
+! !
+
+!MetaPropertyTransducer class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 19:44:06'!
+kinds: classCollection transformProc: aClosure
+
+	^ self new kinds: classCollection transformProc: aClosure! !
+
+!MetaPropertyViaTest methodsFor: 'testing' stamp: 'KenD 12/4/2016 15:19:09'!
+accepts: newValue
+
+	^ (super accepts: newValue)
+		and: [ testClosure value: newValue ]! !
+
+!MetaPropertyViaTest methodsFor: 'initialization' stamp: 'KenD 12/4/2016 15:18:19'!
+kind: aClass test: aClosure
+
+	super kind: aClass.
+	(aClosure isKindOf: BlockClosure) 
+		ifFalse: [ self error: 'Expected a BlockClosure: ', aClosure printString ].
+	(aClosure argumentCount = 1) 
+		ifFalse: [ self error: 'Test should take one argument and answer a boolean: ',
+					aClosure printString ].
+	testClosure := aClosure.! !
+
+!MetaPropertyViaTest methodsFor: 'accessing' stamp: 'KenD 12/4/2016 15:18:32'!
+test
+
+	^ testClosure! !
+
+!MetaPropertyViaTest methodsFor: 'accessing' stamp: 'KenD 12/4/2016 15:18:29'!
+testClosure
+
+	^ testClosure! !
+
+!MetaPropertyViaTest class methodsFor: 'class initialization' stamp: 'KenD 12/23/2016 15:30:03'!
+addToInitialDictionaries
+	"Add typical usages to dictionary for sharing."
+"
+	MetaPropertyViaTest addToInitialDictionaries.
+"
+"
+	| props |
+	props := self preDefinedPropsDict.
+"! !
+
+!MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:17'!
+kind: aClass test: aClosure
+
+	^ self new kind: aClass test: aClosure! !
+
+!MetaPropertyViaTest class methodsFor: 'instance creation' stamp: 'KenD 12/4/2016 15:21:10'!
+test: aClosure
+
+	^ self new kind: Object test: aClosure! !
+VirtualPropertyMenuItem initialize!
+VisualPropertyEditor initialize!
 MetaProperty initialize!
 MetaPropertyFrom initialize!
 MetaPropertyOneOf initialize!
-VirtualPropertyMenuItem initialize!
-VisualPropertyEditor initialize!
