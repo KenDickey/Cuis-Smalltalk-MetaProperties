@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3260] on 12 February 2018 at 4:25:20 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3267] on 9 March 2018 at 4:16:04 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 63!
+!provides: 'Morph-MetaProperties' 1 64!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
-!requires: 'Morphic-Misc1' 1 109 nil!
-!requires: 'Cuis-Base' 50 3260 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
+!requires: 'Cuis-Base' 50 3260 nil!
+!requires: 'Morphic-Misc1' 1 109 nil!
 SystemOrganization addCategory: #'Morph-MetaProperties'!
 
 
@@ -1090,14 +1090,13 @@ windowIcon
 
 	^WindowIcon! !
 
-!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 12/22/2016 15:55:24'!
+!VirtualPropertyMenuItem class methodsFor: 'class initialization' stamp: 'KenD 3/9/2018 16:14:52'!
 initialize
 "
 	VirtualPropertyMenuItem initialize.
 "
 	| dirName |
-	dirName :=  ((CodePackage installedPackages at: self category)
-		    		  fullFileName upToLastPathSeparator), '/Icons/'.
+	dirName :=  ((self package) fullFileName upToLastPathSeparator), '/Icons/'.
 
 	BlankIcon := ImageReadWriter formFromFileNamed: dirName , 'Blank.png'.
 	BoolIcon := ImageReadWriter formFromFileNamed: dirName , 'Bool.png'.
