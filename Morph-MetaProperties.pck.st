@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3267] on 9 March 2018 at 4:16:04 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3319] on 12 May 2018 at 8:05:38 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 64!
-!requires: 'Graphics-Files-Additional' 1 18 nil!
-!requires: 'Morphic-ColorEditor' 1 31 nil!
-!requires: 'Cuis-Base' 50 3260 nil!
+!provides: 'Morph-MetaProperties' 1 66!
 !requires: 'Morphic-Misc1' 1 109 nil!
+!requires: 'Morphic-ColorEditor' 1 31 nil!
+!requires: 'Graphics-Files-Additional' 1 18 nil!
+!requires: 'Cuis-Base' 50 3260 nil!
 SystemOrganization addCategory: #'Morph-MetaProperties'!
 
 
@@ -260,7 +260,7 @@ addIVarsDisplay
 
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/12/2016 19:38:47'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 5/12/2018 17:53:52'!
 addMetaPropsDisplay
 	" Add display of MetaProperty selections to self"
 
@@ -286,35 +286,35 @@ addMetaPropsDisplay
 						propMeta: (self metaProps at: name)
 			]
 		).
-		propMorph  target: propMorph;
-					  selector: #edit.
+		propMorph  target: propMorph
+					  selector: #edit
+					  arguments: nil.
 		self addMorphBack: propMorph
 	].
 ! !
 
-!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/23/2016 14:06:53'!
+!VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 5/12/2018 17:56:47'!
 addOperationsDisplay
 	"This is a separate method so subclasses can override"
 
-	self add: 'Refresh Me'  target: self 
-			selector: #refreshView;
-		 add: 'toggle Instance Variable display' target: self 
-			selector: #toggleIVarView;
-		 add: 'toggle Instance Properties display' target: self 
-			selector: #toggleOrdinaryPropsView;
-		 add: 'show Drop Target for morph' target: self targetMorph 
-			selector: #showDropTarget.
+	self add: 'Refresh Me'  
+				target: self action: #refreshView;
+		 add: 'toggle Instance Variable display' 
+				target: self action: #toggleIVarView;
+		 add: 'toggle Instance Properties display' 
+				target: self action: #toggleOrdinaryPropsView;
+		 add: 'show Drop Target for morph' 
+				target: self targetMorph action: #showDropTarget.
 			
 	(self targetMorph isKindOf: LayoutMorph)
 		ifTrue: [ 
 			self add: 'edit LayoutMorph properties'
-				  target: self targetMorph 
-				  selector: #editMe
+				  target: self targetMorph action: #editMe
 		].
 
 	self
-		 add: 'open a Message Window for morph' target: self targetMorph 
-			selector: #messageWindow.! !
+		 add: 'open a Message Window for morph' 
+			target: self targetMorph action: #messageWindow.! !
 
 !VisualPropertyEditor methodsFor: 'construction' stamp: 'KenD 12/2/2016 19:13:17'!
 addOrdinaryPropertiesDisplay
@@ -762,6 +762,16 @@ itemForProperty: aName targetMorph: aMorph
 	targetMorph := aMorph.
 	name := aName.! !
 
+!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 5/12/2018 19:45:14'!
+icon
+
+	^icon! !
+
+!OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 5/12/2018 19:45:42'!
+icon: anIcon
+
+	self setIcon: anIcon! !
+
 !OrdinaryPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 12/2/2016 16:07:12'!
 name
 
@@ -893,7 +903,7 @@ targetMorph
 
 	^ targetMorph ! !
 
-!VirtualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 12/12/2016 14:38:06'!
+!VirtualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 5/12/2018 19:48:48'!
 propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor accessProc: getterClosure updateProc: setterClosure
 
 	super initialize.
@@ -903,18 +913,20 @@ propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor accessProc: getter
 	prevValue := getterClosure value.	
 	accessProc := getterClosure.
 	updateProc := setterClosure.
-	self setContents;
-		 target: self;
-		 icon: prevValue icon; 
-		 selector: #edit! !
+	self
+		contents: ( (name asString , ':  ', (self propertyValue printString))
+						truncateWithElipsisTo: 40 );
+		setIcon: prevValue icon;
+		target: self selector: #edit arguments: nil.
+! !
 
-!VirtualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 12/6/2016 14:25:15'!
+!VirtualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 5/12/2018 19:49:34'!
 setContents
 	"(re)set my content string and icon"
 
 	self contents: ( (name asString , ':  ', (self propertyValue printString))
 						truncateWithElipsisTo: 40 ).
-	self icon: (self propertyValue icon)! !
+	self setIcon: (self propertyValue icon)! !
 
 !VirtualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:36:45'!
 showAccept: aMorph
@@ -2039,6 +2051,11 @@ morphForDrag
 	
 	^ FontMorph font: self
 ! !
+
+!AbstractFont class methodsFor: '*morph-metaproperties' stamp: 'KenD 5/12/2018 20:04:57'!
+availableFonts
+
+	^AvailableFonts ! !
 
 !Morph methodsFor: '*morph-metaproperties' stamp: 'KenD 12/11/2016 15:40:47'!
 morphForDrag

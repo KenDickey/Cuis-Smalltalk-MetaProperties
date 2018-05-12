@@ -2,6 +2,8 @@
 ===============================
 VisualPropertyEditor for Morphs
 
+Tested in Cuis 3319.
+
 This package adds an ***open visual properties menu*** selection to a Morph's edit menu (the menu available from a Morph's constuction halo).
 
 Common graphical properties are presented for easy editing via drag 'n drop.
@@ -20,7 +22,7 @@ Note that if a value is not a Morph, a ***SignMorph*** is created for the value 
 
 Tested in Cuis 5.0 revision 3000 -- ***CODE IN DEVELOPMENT*** -- Suggestions appreciated!
 
-Requires packages:
+Requires packages from:
 -  Cuis-Smalltalk-Morphic-Misc1
 -  Cuis-Smalltalk-NamedColors
 -  Cuis-Smalltalk-ColorEditor
