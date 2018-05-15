@@ -2,7 +2,7 @@
 ===============================
 VisualPropertyEditor for Morphs
 
-Tested in Cuis 3319.
+Tested in Cuis 3329.
 
 This package adds an ***open visual properties menu*** selection to a Morph's edit menu (the menu available from a Morph's constuction halo).
 
