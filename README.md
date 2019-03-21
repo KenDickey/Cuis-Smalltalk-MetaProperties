@@ -18,14 +18,18 @@ You can toggle display of a Morph's non-visual instance variables and/or propert
 
 Note that if a value is not a Morph, a ***SignMorph*** is created for the value so that you can drag and drop it.  You can inspect a SignMorph to see the contained object's value.
 
+# Grainy video at https://www.youtube.com/watch?v=k8es6eqY56k&feature=youtu.be
+
 ![VisualPropertyEditor via MetaProperties](VisualPropertiesEditor.png)
 
-Tested in Cuis 5.0 revision 3000 -- ***CODE IN DEVELOPMENT*** -- Suggestions appreciated!
+Tested in Cuis 5.0 revision 3665 -- Suggestions appreciated!
 
 Requires packages from:
 -  Cuis-Smalltalk-Morphic-Misc1
 -  Cuis-Smalltalk-NamedColors
 -  Cuis-Smalltalk-ColorEditor
+
+Note also, the Cuis-Smalltalk-Babysteps MorphIt package!
 
 More fonts available via (not required):
 -  Cuis-Smalltalk-SF2-Import
