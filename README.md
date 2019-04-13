@@ -1,28 +1,24 @@
 # Cuis-Smalltalk-MetaProperties
 ===============================
-VisualPropertyEditor for Morphs
+VisualProperty Access for Morphs
 
-Tested in Cuis 3329.
+Tested in Cuis 3695.
 
-This package adds an ***open visual properties menu*** selection to a Morph's edit menu (the menu available from a Morph's constuction halo).
+This package adds ** visual property menu items ** to a Morph's edit menu (the menu available from a Morph's constuction halo).
 
 Common graphical properties are presented for easy editing via drag 'n drop.
 
 So you can open a ___visual properties menu___ and drag a color, font, position point, drop it on a visual property menu item and have the morph change.  You can also drag values ___from___ the menu.  So you can drag a color/font/position/border-width/image/.. from one Morph's visual property menu and drop it on another.
 
-You can also click on some fields (more in progress) to get either a simple editor or pallet of choices for that property.  Currently, you can click on a Color, Font, or TextEmphasis property.
+You can also click on visual menu item fields to get either a simple editor or pallet of choices for that property. 
 
 If you open a ColorEditor, you can drop a color on its main color swatch to see that color's metrics and edit that color.  You can drag a color from the ColorEditor's color swatch and drop on a Color property in the Morph's visual properties editor.
 
-You can toggle display of a Morph's non-visual instance variables and/or properties and drag (but not edit) their values as well.
-
 Note that if a value is not a Morph, a ***SignMorph*** is created for the value so that you can drag and drop it.  You can inspect a SignMorph to see the contained object's value.
 
-# Grainy video at https://www.youtube.com/watch?v=k8es6eqY56k&feature=youtu.be
+![VisualProperty menus](MetaProps+Menus.png)
 
-![VisualPropertyEditor via MetaProperties](VisualPropertiesEditor.png)
-
-Tested in Cuis 5.0 revision 3665 -- Suggestions appreciated!
+Tested in Cuis 5.0 revision 3695 -- Suggestions appreciated!
 
 Requires packages from:
 -  Cuis-Smalltalk-Morphic-Misc1
@@ -43,8 +39,6 @@ More fonts available via (not required):
 ````
 
 The basic usage is for annotating Morph subclasses for visual editing via DragNDrop.
-
-This means making visual __only__ the instance variables and properties for controlling a Morph's visual characteristics in order to allow a ***VisualPropertyEditor*** to be constructed. 
 
 This annotation is done by adding ***MetaProperties*** for the typical instance variables and properties.  MetaProperties are used to check what values an iVar #accepts:
 
