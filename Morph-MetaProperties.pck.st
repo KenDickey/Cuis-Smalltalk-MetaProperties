@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3695] on 13 April 2019 at 2:53:01 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3695] on 14 April 2019 at 4:21:25 pm'!
 'Description MetaProperties describe and define public visual properties of Morphs.  They are used by a PropertyEditor.'!
-!provides: 'Morph-MetaProperties' 1 72!
+!provides: 'Morph-MetaProperties' 1 74!
 !requires: 'Morphic-Misc1' 1 109 nil!
 !requires: 'Graphics-Files-Additional' 1 18 nil!
 !requires: 'Morphic-ColorEditor' 1 31 nil!
@@ -706,6 +706,11 @@ initialize
 
 ! !
 
+!VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 4/14/2019 15:29:05'!
+displayString
+
+	^ name asString , ': ', (self propertyValue printString)! !
+
 !VisualPropertyMenuItem methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:29:30'!
 metaProperty
 
@@ -808,7 +813,7 @@ undo
 
 	self targetMorph setProperty: self name  toValue: self prevValue! !
 
-!VisualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 4/13/2019 14:22:53'!
+!VisualPropertyMenuItem methodsFor: 'initialization' stamp: 'KenD 4/14/2019 16:09:36'!
 propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor accessProc: getterClosure updateProc: setterClosure
 
 	super initialize.
@@ -819,21 +824,39 @@ propName: aSymbol morph: aMorph propMeta: aPropertyDescriptor accessProc: getter
 	accessProc := getterClosure.
 	updateProc := setterClosure.
 	self
-		contents: ( (name asString , ':  ', (self propertyValue printString))
-						truncateWithElipsisTo: (self owner ifNil: [40] ifNotNil: [self owner morphWidth ]) );
+		contents: ( self displayStringForWidth: (self owner 
+							ifNil: [60] 
+							ifNotNil: [(self owner morphWidth) - 30]) );
 		setIcon: prevValue icon;
 		target: self selector: #edit arguments: nil.
 ! !
 
-!VisualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 4/13/2019 14:46:56'!
+!VisualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 4/14/2019 16:19:18'!
+displayStringForWidth: maxWidth
+	"Answer a string which fits in maxwidth"
+	|  myString count stringWidth  |
+	myString := self displayString.
+	(myString size <= 0) ifTrue: [ ^ '' ].
+	stringWidth := font widthOfString: '..'.
+	count := 1.
+	1 to: myString size do: [ :index | 
+		stringWidth := stringWidth + (font widthOf: (myString at: index)).
+		(stringWidth < maxWidth) ifTrue: [count := index]
+	].
+
+	(myString size <= count)
+		ifTrue: [ ^myString ] "fits"
+		ifFalse: [ ^(myString truncateTo: count) , '..' ] 
+	! !
+
+!VisualPropertyMenuItem methodsFor: 'private' stamp: 'KenD 4/14/2019 16:12:02'!
 updateContents
 	"(re)set my content string and icon"
 
 	| myWidth |
-	myWidth := self owner ifNil: [40] ifNotNil: [self owner morphWidth - 10 ].
+	myWidth := self owner ifNil: [60] ifNotNil: [self owner morphWidth - 10 ].
 	self morphWidth: myWidth.
-	self contents: ( (name asString , ':  ', (self propertyValue printString))
-						truncateWithElipsisTo:  myWidth ).
+	self contents: ( self displayStringForWidth: (myWidth - 20) ). "space for icon + border"
 	self setIcon: (self propertyValue icon)! !
 
 !VisualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 12/18/2016 15:36:45'!
@@ -878,11 +901,10 @@ showReject: aMorph
 	leftStroke   addAlarm: #delete after: 400.	
 	rightStroke addAlarm: #delete after: 400.! !
 
-!VisualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 4/13/2019 14:35:14'!
+!VisualPropertyMenuItem methodsFor: 'events' stamp: 'KenD 4/14/2019 15:27:49'!
 update
 
 	self updateContents.
-	self targetMorph triggerEvent: #propertyChanged.
 	self targetMorph redrawNeeded.! !
 
 !VisualPropertyMenuItem class methodsFor: 'accessing' stamp: 'KenD 11/28/2016 16:21:29'!
@@ -1727,7 +1749,7 @@ multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
 
 ! !
 
-!MetaPropertyMultiSelect class methodsFor: 'class initialization' stamp: 'KenD 12/18/2016 14:49:02'!
+!MetaPropertyMultiSelect class methodsFor: 'class initialization' stamp: 'KenD 4/14/2019 14:18:34'!
 addToInitialDictionaries
 	"Add typical usages to dictionary for sharing."
 "
@@ -1745,10 +1767,14 @@ addToInitialDictionaries
 						ifTrue: [ intOrString ]
 						ifFalse: [ (intOrString isKindOf: String) 
 									ifTrue:  [ TextEmphasis codeForChoice: intOrString ]
-									ifFalse: [ nil ]
+									ifFalse: [ 0 ]
 								]
 				]
-				decodeProc: [ :encoded | TextEmphasis stringForCode: encoded ]).! !
+				decodeProc: [ :encoded | 
+					TextEmphasis stringForCode: ((encoded isKindOf: Integer) 
+								ifTrue:[encoded]  ifFalse:[0])
+				]
+				).! !
 
 !MetaPropertyMultiSelect class methodsFor: 'instance creation' stamp: 'KenD 12/18/2016 09:13:11'!
 multiChoiceFrom: aCollection encodeProc: encoder decodeProc: decoder
